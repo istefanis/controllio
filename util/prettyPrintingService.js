@@ -10,7 +10,7 @@ import {
   getNumerator,
   getDenominator,
   getTermsArray,
-} from "../../math/computerAlgebra/algebraicOperations.js";
+} from "../math/computerAlgebra/algebraicOperations.js";
 import {
   primitiveOperationsSymbols,
   isSymbol,
