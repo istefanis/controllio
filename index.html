@@ -1,0 +1,294 @@
+<!--
+Controllio · Open source web drafting table for studying control systems
+-->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="shortcut icon" type="image/png" href="/assets/favicon.png" />
+
+    <!-- icons -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.3/font/bootstrap-icons.min.css"
+      integrity="sha512-YFENbnqHbCRmJt5d+9lHimyEMt8LKSNTMLSaHjvsclnZGICeY/0KYEeiHwD1Ux4Tcao0h60tdcMv+0GljvWyHg=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+
+    <!-- plots lib -->
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/function-plot/1.23.2/function-plot.js"
+      integrity="sha512-Mt2z8Bi3iT3BwXeGZ42UC3Fa7AriMjH2rA3tuWrVRNK7Pg09xnSyCEs4Q2fSdTebQ88RuNrTo78YCLV03///Dw=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
+
+    <link rel="stylesheet" href="view/style/main.css" />
+    <script type="module" src="script.js"></script>
+    <title>
+      Controllio · Open source web drafting table for studying control systems
+    </title>
+  </head>
+  <body>
+    <nav id="navbar">
+      <section class="ribbon-section app-title-section">
+        <header class="ribbon-section-header">
+          <h1>Controllio</h1>
+        </header>
+        <div class="ribbon-section-contents">
+          <a
+            class="navbar-button"
+            id="fork-button"
+            href="https://github.com/istefanis/controllio"
+            target="_blank"
+          >
+            <i class="bi-github"></i>
+            <p>Fork</p>
+          </a>
+        </div>
+      </section>
+      <section class="ribbon-section">
+        <header class="ribbon-section-header">
+          <h2>File</h2>
+        </header>
+        <div class="ribbon-section-contents">
+          <button class="navbar-button" id="export-file-button">
+            <i class="bi-download"></i>
+            <p>Export</p>
+          </button>
+          <button class="navbar-button" id="import-file-button">
+            <i class="bi-upload"></i>
+            <p>Import</p>
+          </button>
+        </div>
+      </section>
+      <section class="ribbon-section">
+        <header class="ribbon-section-header">
+          <h2>State</h2>
+        </header>
+        <div class="ribbon-section-contents">
+          <button class="navbar-button" id="previous-button">
+            <i class="bi-skip-start"></i>
+            <p>Prev</p>
+          </button>
+          <button class="navbar-button" id="next-button">
+            <i class="bi-skip-end"></i>
+            <p>Next</p>
+          </button>
+          <button class="navbar-button hidden" id="save-button">
+            <i class="bi-save"></i>
+            <p>Save</p>
+          </button>
+          <button class="navbar-button hidden" id="load-button">
+            <i class="bi-arrow-counterclockwise"></i>
+            <p>Load</p>
+          </button>
+        </div>
+      </section>
+      <section class="ribbon-section">
+        <header class="ribbon-section-header">
+          <h2>Design</h2>
+        </header>
+        <div class="ribbon-section-contents">
+          <button class="navbar-button" id="tf-button">
+            <i class="bi-card-text"></i>
+            <p>Tf</p>
+          </button>
+          <button class="navbar-button" id="adder-button">
+            <i class="bi-plus-circle"></i>
+            <p>Adder</p>
+          </button>
+          <button class="navbar-button" id="connection-button">
+            <i class="bi-bezier2"></i>
+            <p>Connection</p>
+          </button>
+          <button class="navbar-button" id="ready-made-tf-button">
+            <i class="bi-cart"></i>
+            <p>Ready-made</p>
+          </button>
+          <button class="navbar-button" id="delete-button">
+            <i class="bi-x-square"></i>
+            <p>Delete</p>
+          </button>
+          <!-- to be displayed only for non-mobile devices -->
+          <button class="navbar-button hidden" id="delete-all-button">
+            <i class="bi-trash3"></i>
+            <p>Delete all</p>
+          </button>
+        </div>
+      </section>
+      <section class="ribbon-section">
+        <header class="ribbon-section-header">
+          <h2>Optimize</h2>
+        </header>
+        <div
+          class="ribbon-section-contents"
+          id="optimize-topology-button-container"
+        >
+          <button class="navbar-button" id="optimize-topology-button">
+            <i class="bi-bounding-box-circles"></i>
+            <p>Topology</p>
+          </button>
+        </div>
+      </section>
+      <section class="ribbon-section">
+        <header class="ribbon-section-header">
+          <h2>Simplify</h2>
+        </header>
+        <div class="ribbon-section-contents">
+          <button class="navbar-button" id="simplify-button">
+            <i class="bi-play"></i>
+            <p>Run</p>
+          </button>
+          <div class="flex-column-center">
+            <input
+              type="range"
+              min="1"
+              value="5"
+              max="10"
+              id="speed-slider"
+              list="speed-slider-markers"
+            />
+            <datalist id="speed-slider-markers">
+              <option value="1" label="-"></option>
+              <option value="5" label="speed"></option>
+              <option value="10" label="+"></option>
+            </datalist>
+          </div>
+        </div>
+      </section>
+      <!-- to be displayed only for non-mobile devices -->
+      <section class="ribbon-section hidden" id="log-mode-slider-section">
+        <header class="ribbon-section-header">
+          <h2>Console log</h2>
+        </header>
+        <div class="ribbon-section-contents">
+          <div class="flex-column-center">
+            <input
+              type="range"
+              min="1"
+              value="1"
+              max="4"
+              id="log-mode-slider"
+              list="log-mode-markers"
+            />
+            <datalist id="log-mode-markers">
+              <option value="1" label="N/A"></option>
+              <option value="2" label="AL"></option>
+              <option value="3" label="SF"></option>
+              <option value="4" label="CP"></option>
+            </datalist>
+          </div>
+        </div>
+      </section>
+      <section class="ribbon-section">
+        <header class="ribbon-section-header">
+          <h2>Help</h2>
+        </header>
+        <div class="ribbon-section-contents">
+          <button class="navbar-button" id="user-guide-button">
+            <i class="bi-book"></i>
+            <p>User Guide</p>
+          </button>
+        </div>
+      </section>
+    </nav>
+    <main class="grid">
+      <canvas id="canvas"></canvas>
+      <!-- elements to be added here -->
+    </main>
+    <section class="element-analysis-window hidden">
+      <div class="element-analysis-window-header">
+        <p>Transfer function</p>
+        <button class="element-analysis-window-close-button">&times;</button>
+      </div>
+      <div class="element-analysis-window-contents">
+        <form class="modify-element-value">
+          <div>
+            <p>Numer:</p>
+            <input
+              type="text"
+              placeholder="4"
+              id="update-element-numerator-input"
+              class="update-element-value-input"
+            />
+          </div>
+          <div>
+            <p>Denom:</p>
+            <input
+              type="text"
+              placeholder="[1, 2, 3]"
+              id="update-element-denominator-input"
+              class="update-element-value-input"
+            />
+          </div>
+          <button class="update-element-value-button" type="submit">
+            Update value
+          </button>
+        </form>
+        <div class="element-analysis-window-tab-buttons tab-buttons-container">
+          <button
+            class="tab-button"
+            id="element-analysis-window-tab-button-1"
+            data-tab-id="1"
+          >
+            Bode plot
+          </button>
+          <button
+            class="tab-button"
+            id="element-analysis-window-tab-button-2"
+            data-tab-id="2"
+          >
+            Nyquist plot
+          </button>
+          <!-- <button
+            class="tab-button"
+            id="element-analysis-window-tab-button-3"
+            data-tab-id="3"
+          >
+            Time response
+          </button> -->
+        </div>
+        <div class="element-analysis-window-tab-contents tab-contents">
+          <section
+            class="tab-content"
+            id="element-analysis-window-tab-content-1"
+          >
+            <div class="plot-container" id="plot-container-tab-1"></div>
+            <div id="characteristic-numbers-container">
+              <p id="filter-type"></p>
+              <div id="characteristic-numbers-grid"></div>
+            </div>
+          </section>
+          <section
+            class="tab-content"
+            id="element-analysis-window-tab-content-2"
+          >
+            <div class="plot-container" id="plot-container-tab-2"></div>
+          </section>
+          <!-- <section
+            class="tab-content"
+            id="element-analysis-window-tab-content-3"
+          >
+            <div class="plot-container" id="plot-container-tab-3"></div>
+          </section> -->
+        </div>
+      </div>
+    </section>
+    <section class="popup-window hidden">
+      <div class="popup-window-header">
+        <p>Popup window</p>
+        <button class="popup-window-close-button">&times;</button>
+      </div>
+      <div class="popup-window-contents-container">
+        <div class="popup-window-contents">
+          <!-- contents to be added here -->
+        </div>
+      </div>
+    </section>
+    <section class="page-overlay hidden"></section>
+  </body>
+</html>

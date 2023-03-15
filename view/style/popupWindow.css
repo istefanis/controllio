@@ -1,0 +1,181 @@
+/*
+ * Controllio · Open source web drafting table for studying control systems
+ */
+
+/*
+ * View / Style / PopupWindow
+ */
+
+.popup-window {
+  width: 300px;
+  max-width: 90%;
+  max-height: 80%;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  overflow: hidden;
+  background-color: #fff;
+  box-shadow: 0 15px 15px rgba(0, 0, 0, 0.2);
+  border: 1px solid var(--color-grey-200);
+  border-radius: 4px;
+  z-index: 500;
+  display: flex;
+  flex-direction: column;
+}
+
+.popup-window-large {
+  width: 80%;
+  max-width: 1024px;
+  height: 80%;
+  max-height: 640px;
+}
+
+@media (max-width: 480px) {
+  .popup-window-large {
+    width: 90%;
+  }
+}
+
+.popup-window-header {
+  height: 30px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  text-align: center;
+  background-color: var(--color-grey-240);
+}
+
+.popup-window-header p {
+  margin: 0 0 0 5px;
+  user-select: none;
+}
+
+.popup-window-close-button {
+  width: 25px;
+  height: 25px;
+  margin: 0 5px 0 0;
+  background-color: var(--color-grey-240);
+  border: 1px solid var(--color-grey-200);
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.popup-window-close-button:hover {
+  background-color: #fff;
+}
+
+.popup-window-contents-container {
+  height: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.popup-window-contents {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: start;
+  border-radius: 4px;
+  z-index: 200;
+}
+
+.popup-window-selectable-content {
+  width: 100%;
+  height: 40px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 6px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.popup-window-selectable-content:hover {
+  background-color: var(--color-grey-240);
+}
+
+.popup-window-selectable-content i {
+  padding: 0 8px;
+  font-size: 14px;
+}
+
+/* Custom popup windows: tfs */
+
+.popup-window-tf-content {
+  height: 65px;
+  display: flex;
+  flex-direction: row;
+  justify-content: left;
+  padding-left: 6px;
+}
+
+.popup-window-tf-description {
+  position: sticky;
+  left: 90px;
+  padding-left: 20px;
+}
+
+/* Custom popup windows: text */
+
+.popup-window-text-content {
+  width: 100%;
+}
+
+.popup-window-text-content p {
+  margin: 15px;
+}
+
+.popup-window-text-content i {
+  margin: 5px;
+  font-size: 18px;
+}
+
+.popup-window-text-content button,
+.popup-window-text-content label {
+  height: 25px;
+  min-width: 50px;
+  margin: 15px 0 15px 0;
+  min-height: 30px;
+  background-color: #fff;
+  border: 1px solid var(--color-grey-200);
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.popup-window-text-content label {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.popup-window-text-content button:hover,
+.popup-window-text-content label:hover {
+  background-color: var(--color-grey-240);
+}
+
+.popup-window-text-content input {
+  text-align: end;
+  margin-left: 10px;
+  max-width: 120px;
+}
+
+.popup-window-row-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  margin: 0 15px;
+}
+
+tr {
+  text-align: left;
+}
+
+th {
+  min-width: 50px;
+}

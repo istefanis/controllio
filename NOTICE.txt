@@ -1,0 +1,10 @@
+Controllio
+Copyright (c) 2023 Ioannis Stefanis
+
+The app uses:
+
+- the Bootstrap Icons, licensed under the MIT License, provided by https://icons.getbootstrap.com/, and delivered by https://cdnjs.com/
+
+- the Roboto & Roboto Mono fonts, licensed under the Apache License, Version 2.0, and provided by https://fonts.google.com/
+
+- the Function Plot library, licensed under the MIT License, available at https://github.com/mauriciopoppe/function-plot, and delivered by https://cdnjs.com/

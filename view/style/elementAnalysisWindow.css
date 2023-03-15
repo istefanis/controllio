@@ -1,0 +1,152 @@
+/*
+ * Controllio · Open source web drafting table for studying control systems
+ */
+
+/*
+ * View / Style / ElementAnalysisWindow
+ */
+
+.element-analysis-window {
+  width: 380px;
+  max-width: 100%;
+  /* height: 400px; */
+  max-height: 100%;
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 15px 15px rgba(0, 0, 0, 0.2);
+  border-top: 1px solid var(--color-grey-200);
+  border-left: 1px solid var(--color-grey-200);
+  background-color: #fff;
+  border-radius: 4px;
+  z-index: 400;
+}
+
+.element-analysis-window-header {
+  height: 30px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  text-align: center;
+  background-color: var(--color-grey-240);
+}
+
+.element-analysis-window-header p {
+  margin: 0 0 0 10px;
+  user-select: none;
+}
+
+.element-analysis-window-close-button {
+  width: 25px;
+  height: 25px;
+  margin: 0 5px 0 0;
+  background-color: var(--color-grey-240);
+  border: 1px solid var(--color-grey-200);
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.element-analysis-window-close-button:hover {
+  background-color: #fff;
+}
+
+.element-analysis-window-contents {
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  /* flex-wrap: wrap; */
+  justify-content: left;
+  /* gap: 8px; */
+  overflow-y: auto;
+}
+
+.element-analysis-window-contents * {
+  margin: 0;
+}
+
+.element-analysis-window-contents form {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+.element-analysis-window-contents form div {
+  display: flex;
+  flex-direction: row;
+}
+
+.element-analysis-window-contents form div p {
+  width: 60px;
+  flex-shrink: 0;
+  align-self: center;
+}
+
+.element-analysis-window-tab-contents {
+  min-height: 368px;
+  overflow-y: scroll;
+}
+
+.element-analysis-window-tab-contents > .tab-content {
+  margin: 0;
+}
+
+.update-element-value-input {
+  flex-grow: 1;
+}
+
+.update-element-value-button {
+  min-height: 25px;
+  align-self: flex-end;
+  background-color: #fff;
+  border: 1px solid var(--color-grey-200);
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.update-element-value-button:hover {
+  background-color: var(--color-grey-240);
+}
+
+/* Plots: */
+
+.plot-container {
+  width: 100%;
+}
+
+.bode-subplot {
+  width: 100%;
+  height: 150px;
+}
+
+.nyquist-plot {
+  width: 100%;
+  height: 350px;
+}
+
+text {
+  color: #000;
+}
+
+text.axis-label {
+  font-family: "Roboto", sans-serif;
+  font-size: 10px;
+}
+
+#characteristic-numbers-container {
+  width: 100%;
+  margin: -10px 0 10px 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+#characteristic-numbers-grid {
+  display: grid;
+  grid-template-columns: 2fr 5fr;
+  /* font-size: 11px; */
+}

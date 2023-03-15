@@ -1,0 +1,209 @@
+/*
+ * Controllio · Open source web drafting table for studying control systems
+ */
+
+/*
+ * View / Style / Navbar
+ */
+
+#navbar {
+  position: relative;
+  background-color: #fff;
+  border-bottom: 1px solid var(--color-grey-200);
+  display: flex;
+  flex-wrap: wrap;
+  z-index: 200;
+  background-color: var(--color-grey-252);
+  user-select: none;
+}
+
+.ribbon-section {
+  margin-left: -1px;
+  margin-bottom: -1px;
+  margin-top: -1px;
+  /* max-width: 425px; */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: #fff;
+  border: 1px solid var(--color-grey-230);
+}
+
+.app-title-section {
+  max-width: 80px;
+  flex-grow: 0;
+}
+
+.app-title-section i {
+  margin: 0 4px;
+}
+
+.ribbon-section-header {
+  height: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: 100%;
+  text-align: center;
+  background-color: var(--color-grey-244);
+}
+
+.ribbon-section-header h2 {
+  margin: 0;
+  padding: 0 15px;
+}
+
+.app-title-section .ribbon-section-header {
+  height: 50%;
+  background-color: var(--color-blue-darker);
+  color: #fff;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.app-title-section .ribbon-section-contents {
+  max-height: 50%;
+  height: 50%;
+}
+
+.ribbon-section-contents {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  padding: 8px;
+}
+
+.app-title-section .ribbon-section-contents i {
+  margin-bottom: 1px;
+}
+
+@media (max-width: 800px) {
+  .ribbon-section {
+    flex-grow: 1;
+  }
+  .app-title-section {
+    flex-grow: 0;
+  }
+}
+
+@media (max-width: 480px) {
+  .app-title-section {
+    max-width: 65px;
+  }
+  h1 {
+    font-size: 11px;
+  }
+
+  .ribbon-section-header h2 {
+    margin: 0;
+    padding: 0 5px;
+  }
+  .ribbon-section-contents {
+    gap: 2px;
+    padding: 4px;
+  }
+}
+
+/* 
+Buttons & UI elements 
+*/
+
+h1,
+h2 {
+  font-size: 12px;
+  font-weight: 500;
+  margin: 0;
+  padding: 0;
+}
+
+.navbar-button {
+  box-sizing: border-box;
+  min-width: 42px;
+  height: 40px;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: end;
+  align-items: center;
+  text-align: center;
+  gap: 2px;
+  padding: 4px;
+
+  border-radius: 4px;
+  background-color: #fff;
+  border: 0;
+
+  /* font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; */
+  font-family: "Roboto", sans-serif;
+}
+
+a.navbar-button {
+  color: #000;
+  text-decoration: none;
+}
+
+.app-title-section .navbar-button {
+  height: 20px;
+  flex-direction: row;
+  justify-content: center;
+}
+
+.navbar-button p {
+  margin: 0;
+  font-size: 12px;
+}
+
+input[type="file"] {
+  display: none;
+}
+
+.navbar-button:enabled:hover,
+a.navbar-button:hover,
+label.navbar-button:hover {
+  background-color: var(--color-grey-240);
+  cursor: pointer;
+}
+
+.button-active:enabled {
+  background-color: var(--color-grey-220);
+}
+
+.button-active:enabled:hover {
+  background-color: var(--color-grey-220);
+}
+
+#simplify-button {
+  /* to accommodate all text contents */
+  min-width: 60px;
+}
+
+#speed-slider {
+  width: 120px;
+  accent-color: var(--color-grey-240);
+  cursor: pointer;
+}
+
+#speed-slider-markers {
+  display: flex;
+  justify-content: space-between;
+  width: 105px;
+}
+
+#log-mode-slider {
+  width: 120px;
+  accent-color: var(--color-grey-240);
+  cursor: pointer;
+}
+
+#log-mode-markers {
+  display: flex;
+  justify-content: space-between;
+  width: 105px;
+}
+
+option {
+  font-size: 12px;
+}

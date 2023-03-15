@@ -1,0 +1,89 @@
+/*
+ * Controllio · Open source web drafting table for studying control systems
+ */
+
+/*
+ * View / Style / Element
+ */
+
+.element {
+  position: absolute;
+  top: 100px;
+  left: 100px;
+
+  border-radius: 4px;
+  touch-action: none;
+  user-select: none;
+  cursor: default;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  /* font-family: "Courier New", Courier, monospace; */
+  font-family: "Roboto Mono", monospace;
+
+  font-size: 12px;
+}
+.element:hover {
+  cursor: pointer;
+  border-width: 2px;
+}
+
+.element p {
+  margin: 0;
+  padding: 0;
+  text-align: center;
+}
+
+.tf {
+  min-width: 40px;
+  min-height: 60px;
+  padding: 0 10px;
+
+  background-color: var(--color-blue);
+  border: 1px solid var(--color-blue-darker);
+}
+
+.popup-window-tf {
+  position: inherit;
+  height: 60px;
+}
+
+.popup-window-tf:hover {
+  border-width: 1px;
+}
+
+/* applies only for tfs */
+.element-expanded {
+  background-color: var(--color-purple);
+  border: 2px solid var(--color-purple-darker);
+  z-index: 100;
+}
+
+.adder {
+  min-width: 24px;
+  min-height: 24px;
+  border-radius: 12px;
+
+  background: var(--color-white-transparent);
+  border: 1px solid var(--color-grey-80);
+}
+
+.adder.element-expanded {
+  background-color: var(--color-green);
+  border: 2px solid var(--color-green-darker);
+  z-index: 100;
+}
+
+/* placed last, so that they apply for both tfs & adders */
+.element-active {
+  background-color: var(--color-green);
+  border: 2px solid var(--color-green-darker);
+}
+
+.element-attention {
+  background-color: var(--color-red);
+  border: 2px solid var(--color-red-darker);
+}
