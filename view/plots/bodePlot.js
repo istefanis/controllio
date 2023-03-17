@@ -248,7 +248,13 @@ export default class BodePlot {
           fnType: "points",
           graphType: "polyline",
         },
-        // {"f(x) = 0.707"}
+        {
+          fn: "0.707",
+          color: "red",
+          nSamples: 30,
+          graphType: "scatter",
+          skipTip: true,
+        },
       ],
     });
 

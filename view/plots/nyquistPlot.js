@@ -111,16 +111,18 @@ export default class NyquistPlot {
   }
 
   createNyquistPlot() {
+    const arrowsNumber = 100;
+
     let plotBoundRect = this.#nyquistPlotDomElement.getBoundingClientRect();
     let plotWidth = plotBoundRect.width;
     let plotHeight = plotBoundRect.height;
 
     //calculate min & max values
-    const reals = this.#curvePoints.map((x) => x[1]);
+    // const reals = this.#curvePoints.map((x) => x[1]);
     // const minReal = Math.min(...reals);
     // const maxReal = Math.max(...reals);
 
-    const imags = this.#curvePoints.map((x) => x[2]);
+    // const imags = this.#curvePoints.map((x) => x[2]);
     // const minImag = Math.min(...imags);
     // const maxImag = Math.max(...imags);
 
@@ -142,10 +144,41 @@ export default class NyquistPlot {
       grid: true,
       data: [
         {
-          points: this.#curvePoints.map((x) => [x[1], x[2]]),
+          points: this.#curvePoints
+            .filter((x) => x[0] > 0)
+            .map((x) => [x[1], x[2]]),
           fnType: "points",
           graphType: "polyline",
         },
+        {
+          points: this.#curvePoints
+            .filter((x) => x[0] < 0)
+            .map((x) => [x[1], x[2]]),
+          fnType: "points",
+          graphType: "polyline",
+          color: "gray",
+        },
+        {
+          points: [[-1, 0]],
+          fnType: "points",
+          graphType: "scatter",
+          color: "red",
+        },
+        ...Array.from(Array(arrowsNumber))
+          .map((_, i) =>
+            Math.floor((i / arrowsNumber) * this.#curvePoints.length)
+          )
+          .map((x) => {
+            return {
+              vector: [
+                this.#curvePoints[x + 1][1] - this.#curvePoints[x][1],
+                this.#curvePoints[x + 1][2] - this.#curvePoints[x][2],
+              ],
+              offset: [this.#curvePoints[x][1], this.#curvePoints[x][2]],
+              graphType: "polyline",
+              fnType: "vector",
+            };
+          }),
       ],
     });
 
