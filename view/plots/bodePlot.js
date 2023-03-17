@@ -14,7 +14,7 @@ import { functionFromPolynomialTermsArray } from "../../util/commons.js";
 import { logMessages } from "../../util/loggingService.js";
 import { computeAndDisplayCharacteristicNumbers } from "./characteristicNumbersService.js";
 import {
-  AdjustableStep,
+  VariableStep,
   PhaseUnwrapper,
   removeOrFormatAxisTickElement,
 } from "./plotService.js";
@@ -97,35 +97,50 @@ export default class BodePlot {
     //
     // curve points numerical computation loop
     //
+    let newMagnitudeValue;
     let newPhaseValue;
+    let lastMagnitudeValue = magnitude(this.#wMin);
     let lastPhaseValue = (180 / Math.PI) * phase(this.#wMin);
 
-    const adjustableStep = new AdjustableStep();
+    const variableStep = new VariableStep();
     const phaseUnwrapper = new PhaseUnwrapper();
 
     let lastW = this.#wMin;
+    let magnitudeCurveSlope = 0;
     let phaseCurveSlope = 0;
     let i = 0;
 
     for (
       let w = this.#wMin;
       w <= this.#wMax;
-      w += adjustableStep.getAdjustedStepSize(w, phaseCurveSlope)
+      w += variableStep.getAdjustedStepSize(
+        w,
+        Math.max(magnitudeCurveSlope, phaseCurveSlope)
+      )
     ) {
-      //new phase value
-      newPhaseValue = phaseUnwrapper.adjustNewPhaseValue(
+      //new values
+      newMagnitudeValue = magnitude(w);
+      newPhaseValue = phaseUnwrapper.unwrapPhaseValue(
         (180 / Math.PI) * phase(w),
-        lastPhaseValue
+        lastPhaseValue,
+        w
       );
 
       //add new points
-      this.#magnitudeCurvePoints.push([w, magnitude(w)]);
+      this.#magnitudeCurvePoints.push([w, newMagnitudeValue]);
       this.#phaseCurvePoints.push([w, newPhaseValue]);
 
-      //update other values
+      //new curve slopes (note the log axes)
+      magnitudeCurveSlope = Math.abs(
+        Math.log10(newMagnitudeValue / lastMagnitudeValue) /
+          Math.log10(w / lastW)
+      );
       phaseCurveSlope =
         Math.abs(Math.abs(newPhaseValue) - Math.abs(lastPhaseValue)) /
-        (w - lastW);
+        Math.log10(w / lastW);
+
+      //update other values
+      lastMagnitudeValue = newMagnitudeValue;
       lastPhaseValue = newPhaseValue;
       lastW = w;
       i++;
@@ -135,39 +150,54 @@ export default class BodePlot {
       "checkpoints"
     );
 
-    //adjust phase points based on min possible absolute phase value at wMax
-    const minPossibleAbsolutePhaseValueAtWmax = Math.min(
-      90 *
-        (this.#numeratorTermsArray.length +
-          this.#denominatorTermsArray.length -
-          2),
+    //adjust phase based on possible absolute phase value at wMax according to transfer function polynomial
+    const possiblePhaseValueAtWmax1 =
       -90 *
-        (this.#denominatorTermsArray.length - this.#numeratorTermsArray.length)
+      (this.#denominatorTermsArray.length - this.#numeratorTermsArray.length);
+    const possiblePhaseValueAtWmax2 =
+      -90 *
+      (this.#denominatorTermsArray.length +
+        this.#numeratorTermsArray.length -
+        2);
+
+    const minPossiblePhaseValueAtWmax = Math.min(
+      possiblePhaseValueAtWmax1,
+      possiblePhaseValueAtWmax2
+    );
+    const maxPossiblePhaseValueAtWmax = Math.max(
+      possiblePhaseValueAtWmax1,
+      possiblePhaseValueAtWmax2
     );
 
-    if (lastPhaseValue > minPossibleAbsolutePhaseValueAtWmax + 10) {
-      const factor = Math.floor(
-        (Math.abs(lastPhaseValue - minPossibleAbsolutePhaseValueAtWmax) + 10) /
-          180
+    if (lastPhaseValue > maxPossiblePhaseValueAtWmax + 10) {
+      const factor = Math.ceil(
+        (Math.abs(lastPhaseValue - maxPossiblePhaseValueAtWmax) - 10) / 360
       );
       logMessages(
-        [`[CP-88] Phase adjustment via wMax: ${-factor * 180}`],
+        [
+          `[CP-88] Range of possible phase values at wMax: [${maxPossiblePhaseValueAtWmax}, ${minPossiblePhaseValueAtWmax}]. Phase adjustment via wMax: ${
+            -factor * 360
+          }`,
+        ],
         "checkpoints"
       );
       this.#phaseCurvePoints.forEach(
-        (_, i) => (this.#phaseCurvePoints[i][1] -= factor * 180)
+        (_, i) => (this.#phaseCurvePoints[i][1] -= factor * 360)
       );
-    } else if (lastPhaseValue + 10 < minPossibleAbsolutePhaseValueAtWmax) {
-      const factor = Math.floor(
-        (Math.abs(minPossibleAbsolutePhaseValueAtWmax - lastPhaseValue) + 10) /
-          180
+    } else if (lastPhaseValue + 10 < minPossiblePhaseValueAtWmax) {
+      const factor = Math.ceil(
+        (Math.abs(minPossiblePhaseValueAtWmax - lastPhaseValue) + 10) / 360
       );
       logMessages(
-        [`[CP-89] Phase adjustment via wMax: ${factor * 180}`],
+        [
+          `[CP-89] Range of possible phase values at wMax: [${maxPossiblePhaseValueAtWmax}, ${minPossiblePhaseValueAtWmax}]. Phase adjustment via wMax: ${
+            factor * 360
+          }`,
+        ],
         "checkpoints"
       );
       this.#phaseCurvePoints.forEach(
-        (_, i) => (this.#phaseCurvePoints[i][1] += factor * 180)
+        (_, i) => (this.#phaseCurvePoints[i][1] += factor * 360)
       );
     }
   }
@@ -337,11 +367,12 @@ const computeBodeMagnitudeAndPhaseWFunctions = function (
   );
 
   const magnitude = (w) =>
-    Math.sqrt(numReal(w) ** 2 + numImag(w) ** 2) /
-    Math.sqrt(denReal(w) ** 2 + denImag(w) ** 2);
+    Math.sqrt(
+      (numReal(w) ** 2 + numImag(w) ** 2) / (denReal(w) ** 2 + denImag(w) ** 2)
+    );
 
   const phase = (w) =>
-    Math.atan(numImag(w) / numReal(w)) - Math.atan(denImag(w) / denReal(w));
+    Math.atan2(numImag(w), numReal(w)) - Math.atan2(denImag(w), denReal(w));
 
   return [magnitude, phase];
 };

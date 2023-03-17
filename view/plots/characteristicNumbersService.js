@@ -164,7 +164,9 @@ const computeFilterTypeText = function (minMagnitude, maxMagnitude) {
     isHighPassFilter = true;
     return;
   }
-  console.log(filterTypeText);
+  if (filterTypeText !== "") {
+    console.log(filterTypeText);
+  }
 };
 
 const computeBandwidthAndThresholdText = function () {
