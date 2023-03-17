@@ -9,6 +9,9 @@
 import { isPowerOfTen, roundDecimal } from "../../util/commons.js";
 import { logMessages } from "../../util/loggingService.js";
 
+// to abort computations that take too long
+export const maxCurvePointsAllowed = 250000;
+
 /**
  * Remove altogether (if not needed), or adjust the appearance of a plot's axis tick element
  */
@@ -158,14 +161,14 @@ export class PhaseUnwrapper {
     this.#newAdjustment = 0;
     let diff = newPhaseValue - lastPhaseValue;
     if (diff > 1.8 * 180) {
-      console.log("case1", newPhaseValue, lastPhaseValue);
+      // console.log("case1", newPhaseValue, lastPhaseValue);
       logMessages(
         [`[CP-85] Phase unwarp adjustment by -360, at w=${w}`],
         "checkpoints"
       );
       this.#newAdjustment = -360;
     } else if (diff < -1.8 * 180) {
-      console.log("case2", newPhaseValue, lastPhaseValue);
+      // console.log("case2", newPhaseValue, lastPhaseValue);
       logMessages(
         [`[CP-86] Phase unwarp adjustment by +360, at w=${w}`],
         "checkpoints"

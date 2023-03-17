@@ -12,7 +12,10 @@ import {
 } from "../../math/complex/complexNumbersService.js";
 import { functionFromPolynomialTermsArray } from "../../util/commons.js";
 import { logMessages } from "../../util/loggingService.js";
-import { removeOrFormatAxisTickElement } from "./plotService.js";
+import {
+  maxCurvePointsAllowed,
+  removeOrFormatAxisTickElement,
+} from "./plotService.js";
 
 // import functionPlot from "function-plot";
 
@@ -66,29 +69,45 @@ export default class NyquistPlot {
     // curve points numerical computation loop
     //
     let i = 0;
+    let computationAborted = false;
     let wMin;
     let wMax;
 
-    wMin = -1 * 10 ** 4;
+    wMin = -1 * 10 ** 3;
     wMax = -1 * 10 ** -8;
-    for (let w = wMin; w <= wMax; w += 0.25 * Math.log10(-w + 1)) {
+    for (let w = wMin; w <= wMax; w += 0.1 * Math.log10(-0.1 * w + 1)) {
       // console.log(w);
       //add new point
       this.#curvePoints.push([w, real(w), imag(w)]);
       i++;
+
+      //guard clause
+      if (i > maxCurvePointsAllowed) {
+        computationAborted = true;
+        console.error("Too many curve points - computation aborted");
+        break;
+      }
     }
-    wMin = 10 ** -8;
-    wMax = 10 ** 4;
-    for (let w = wMin; w <= wMax; w += 0.5 * Math.log10(0.25 * w + 1)) {
-      // console.log(w);
-      //add new point
-      this.#curvePoints.push([w, real(w), imag(w)]);
-      i++;
+    if (!computationAborted) {
+      wMin = 10 ** -8;
+      wMax = 10 ** 3;
+      for (let w = wMin; w <= wMax; w += 0.1 * Math.log10(0.1 * w + 1)) {
+        // console.log(w);
+        //add new point
+        this.#curvePoints.push([w, real(w), imag(w)]);
+        i++;
+
+        //guard clause
+        if (i > maxCurvePointsAllowed) {
+          console.error("Too many curve points - computation aborted");
+          break;
+        }
+      }
+      logMessages(
+        ["[CP-92] Total number of nyquist curve points: " + i],
+        "checkpoints"
+      );
     }
-    logMessages(
-      ["[CP-92] Total number of nyquist curve points: " + i],
-      "checkpoints"
-    );
   }
 
   createNyquistPlot() {

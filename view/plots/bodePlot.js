@@ -17,6 +17,7 @@ import {
   VariableStep,
   PhaseUnwrapper,
   removeOrFormatAxisTickElement,
+  maxCurvePointsAllowed,
 } from "./plotService.js";
 
 // import functionPlot from "function-plot";
@@ -144,6 +145,12 @@ export default class BodePlot {
       lastPhaseValue = newPhaseValue;
       lastW = w;
       i++;
+
+      //guard clause
+      if (i > maxCurvePointsAllowed) {
+        console.error("Too many curve points - computation aborted");
+        break;
+      }
     }
     logMessages(
       ["[CP-87] Total number of Bode curve points: " + i],
@@ -224,10 +231,7 @@ export default class BodePlot {
       xAxis: {
         label: "Frequency [rad/s]",
         type: "log",
-        domain: [
-          this.#magnitudeCurvePoints[0][0],
-          this.#magnitudeCurvePoints[this.#magnitudeCurvePoints.length - 1][0],
-        ],
+        domain: [this.#wMin, this.#wMax],
       },
       yAxis: {
         label: "Magnitude (abs)",
@@ -255,10 +259,7 @@ export default class BodePlot {
       xAxis: {
         label: "Frequency [rad/s]",
         type: "log",
-        domain: [
-          this.#phaseCurvePoints[0][0],
-          this.#phaseCurvePoints[this.#phaseCurvePoints.length - 1][0],
-        ],
+        domain: [this.#wMin, this.#wMax],
       },
       yAxis: {
         label: "Phase [deg]",
