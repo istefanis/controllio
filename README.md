@@ -1,6 +1,6 @@
 # Controllio
 
-![app](https://github.com/istefanis/controllio/blob/main/assets/app.png)
+![app](https://github.com/istefanis/controllio/blob/main/assets/img/app.png)
 
 A web app which lets Control Systems engineers design & experiment with LTI (linear time-invariant) dynamical systems online.
 
