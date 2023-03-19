@@ -163,14 +163,14 @@ export class PhaseUnwrapper {
     if (diff > 1.8 * 180) {
       // console.log("case1", newPhaseValue, lastPhaseValue);
       logMessages(
-        [`[CP-85] Phase unwarp adjustment by -360, at w=${w}`],
+        [`[CP-85] Phase unwarp adjustment by -360, at w=${roundDecimal(w, 5)}`],
         "checkpoints"
       );
       this.#newAdjustment = -360;
     } else if (diff < -1.8 * 180) {
       // console.log("case2", newPhaseValue, lastPhaseValue);
       logMessages(
-        [`[CP-86] Phase unwarp adjustment by +360, at w=${w}`],
+        [`[CP-86] Phase unwarp adjustment by +360, at w=${roundDecimal(w, 5)}`],
         "checkpoints"
       );
       this.#newAdjustment = 360;

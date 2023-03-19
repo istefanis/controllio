@@ -26,6 +26,9 @@ export const roundDecimal = function (x, digits) {
   return +x.toFixed(digits);
 };
 
+//
+// Polynomial
+//
 export const functionFromPolynomialTermsArray = function (termsArray) {
   return function (s) {
     const length = termsArray.length;
@@ -35,6 +38,22 @@ export const functionFromPolynomialTermsArray = function (termsArray) {
   };
 };
 
+export const zeroRootsFromPolynomialTermsArray = function (termsArray) {
+  let zeroRootsCounter = 0;
+  termsArray
+    .slice()
+    .reverse()
+    .forEach((x, i) => {
+      if (i === zeroRootsCounter && x === 0) {
+        zeroRootsCounter++;
+      }
+    });
+  return zeroRootsCounter;
+};
+
+//
+// Await
+//
 export const sleep = (millisec) => new Promise((r) => setTimeout(r, millisec));
 
 export const pauseSimulation = async () => {

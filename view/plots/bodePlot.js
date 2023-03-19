@@ -167,54 +167,48 @@ export default class BodePlot {
       "checkpoints"
     );
 
-    //adjust phase based on possible absolute phase value at wMax according to transfer function polynomial
-    const possiblePhaseValueAtWmax1 =
-      -90 *
-      (this.#denominatorTermsArray.length - this.#numeratorTermsArray.length);
-    const possiblePhaseValueAtWmax2 =
-      -90 *
-      (this.#denominatorTermsArray.length +
-        this.#numeratorTermsArray.length -
-        2);
+    //adjust phase based on expected phase value at wMax according to the transfer function polynomials
+    const zerosAtPositiveHalfplane = this.#zeros.filter((x) => x[0] > 0).length;
+    const zerosAtNegativeHalfplaneOrYAxis = this.#zeros.filter(
+      (x) => x[0] <= 0
+    ).length;
 
-    const minPossiblePhaseValueAtWmax = Math.min(
-      possiblePhaseValueAtWmax1,
-      possiblePhaseValueAtWmax2
-    );
-    const maxPossiblePhaseValueAtWmax = Math.max(
-      possiblePhaseValueAtWmax1,
-      possiblePhaseValueAtWmax2
-    );
+    const expectedPhaseValueAtWmax =
+      -90 *
+      (this.#denominatorTermsArray.length -
+        1 +
+        zerosAtPositiveHalfplane -
+        zerosAtNegativeHalfplaneOrYAxis);
 
-    if (lastPhaseValue > maxPossiblePhaseValueAtWmax + 10) {
+    if (lastPhaseValue > expectedPhaseValueAtWmax + 10) {
       const factor = Math.ceil(
-        (Math.abs(lastPhaseValue - maxPossiblePhaseValueAtWmax) - 10) / 360
+        (Math.abs(lastPhaseValue - expectedPhaseValueAtWmax) - 10) / 180
       );
       logMessages(
         [
-          `[CP-88] Range of possible phase values at wMax: [${maxPossiblePhaseValueAtWmax}, ${minPossiblePhaseValueAtWmax}]. Phase adjustment via wMax: ${
-            -factor * 360
+          `[CP-88] Current phase value at wMax: ${lastPhaseValue}. Expected phase value at wMax: ${expectedPhaseValueAtWmax}. Phase adjustment via wMax: ${
+            -factor * 180
           }`,
         ],
         "checkpoints"
       );
       this.#phaseCurvePoints.forEach(
-        (_, i) => (this.#phaseCurvePoints[i][1] -= factor * 360)
+        (_, i) => (this.#phaseCurvePoints[i][1] -= factor * 180)
       );
-    } else if (lastPhaseValue + 10 < minPossiblePhaseValueAtWmax) {
+    } else if (lastPhaseValue + 10 < expectedPhaseValueAtWmax) {
       const factor = Math.ceil(
-        (Math.abs(minPossiblePhaseValueAtWmax - lastPhaseValue) + 10) / 360
+        (Math.abs(expectedPhaseValueAtWmax - lastPhaseValue) - 10) / 180
       );
       logMessages(
         [
-          `[CP-89] Range of possible phase values at wMax: [${maxPossiblePhaseValueAtWmax}, ${minPossiblePhaseValueAtWmax}]. Phase adjustment via wMax: ${
-            factor * 360
+          `[CP-89] Current phase value at wMax: ${lastPhaseValue}. Expected phase value at wMax: ${expectedPhaseValueAtWmax}. Phase adjustment via wMax: ${
+            factor * 180
           }`,
         ],
         "checkpoints"
       );
       this.#phaseCurvePoints.forEach(
-        (_, i) => (this.#phaseCurvePoints[i][1] += factor * 360)
+        (_, i) => (this.#phaseCurvePoints[i][1] += factor * 180)
       );
     }
   }

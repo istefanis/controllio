@@ -17,7 +17,10 @@
  */
 
 import findRoots from "../../assets/lib/durand-kerner/roots.js";
-import { roundDecimal } from "../../util/commons.js";
+import {
+  roundDecimal,
+  zeroRootsFromPolynomialTermsArray,
+} from "../../util/commons.js";
 
 //
 // Real root-finding methods for non-linear functions of a single variable
@@ -112,7 +115,20 @@ export const halfIntervalMethod = function (f, a, b) {
  */
 export const findComplexRootsOfPolynomial = function (termsArray) {
   const complexRoots = [];
-  const r = findRoots(termsArray.slice().reverse());
+  let r;
+  if (termsArray.length - 1 === zeroRootsFromPolynomialTermsArray(termsArray)) {
+    //if all roots are zero, provide a tailored initial guess
+    r = findRoots(
+      termsArray.slice().reverse(),
+      undefined,
+      undefined,
+      undefined,
+      Array(termsArray.length - 1).fill(0),
+      undefined
+    );
+  } else {
+    r = findRoots(termsArray.slice().reverse());
+  }
   if (r && r[0]) {
     for (let i = 0; i <= r[0].length - 1; i++) {
       //real & imag parts respectively
