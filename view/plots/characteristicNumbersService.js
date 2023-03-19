@@ -115,21 +115,19 @@ const computeValuesRequired = function (magnitude, phase, wMin, wMax) {
 
 const computeFilterTypeText = function (minMagnitude, maxMagnitude) {
   if (minMagnitude > bandwidthThreshold) {
-    filterTypeText = "All pass filter";
+    filterTypeText = "All-pass filter";
     isAllPassFilter = true;
     return;
   }
   if (maxMagnitude < bandwidthThreshold) {
-    filterTypeText = "No pass filter";
+    filterTypeText = "No-pass filter";
     isNoPassFilter = true;
     return;
   }
   if (
     magnitudeAtWMin < bandwidthThreshold &&
     magnitudeAtWMax < bandwidthThreshold &&
-    maxMagnitude > bandwidthThreshold &&
-    wLowerCutoff &&
-    wUpperCutoff
+    maxMagnitude > bandwidthThreshold
   ) {
     filterTypeText = "Band-pass filter";
     isBandPassFilter = true;
@@ -138,27 +136,27 @@ const computeFilterTypeText = function (minMagnitude, maxMagnitude) {
   if (
     magnitudeAtWMin > bandwidthThreshold &&
     magnitudeAtWMax > bandwidthThreshold &&
-    minMagnitude < bandwidthThreshold &&
-    wLowerCutoff &&
-    wUpperCutoff
+    minMagnitude < bandwidthThreshold
   ) {
     filterTypeText = "Band-stop filter";
     isBandStopFilter = true;
     return;
   }
   if (
-    magnitudeAtWMin / magnitudeAtWMax > 1.5 &&
+    magnitudeAtWMin > magnitudeAtWMax &&
     magnitudeAtWMin > bandwidthThreshold &&
-    !(magnitudeAtWMax > 3 * bandwidthThreshold)
+    magnitudeAtWMax < 3 * bandwidthThreshold &&
+    magnitudeAtWMin / magnitudeAtWMax > 1.5
   ) {
     filterTypeText = "Low-pass filter";
     isLowPassFilter = true;
     return;
   }
   if (
-    magnitudeAtWMax / magnitudeAtWMin > 1.5 &&
+    magnitudeAtWMax > magnitudeAtWMin &&
     magnitudeAtWMax > bandwidthThreshold &&
-    !(magnitudeAtWMin > 3 * bandwidthThreshold)
+    magnitudeAtWMin < 3 * bandwidthThreshold &&
+    magnitudeAtWMax / magnitudeAtWMin > 1.5
   ) {
     filterTypeText = "High-pass filter";
     isHighPassFilter = true;
@@ -226,33 +224,16 @@ const computeBandwidthAndThresholdText = function () {
 };
 
 const computeRollOffText = function (wMin, wMax) {
-  if (isLowPassFilter) {
-    const rollOff = roundDecimal(
-      Math.log(magintudeAt100 / magnitudeAtWMax) / Math.log(100 / wMax), //log(AR2/AR1)/log(w2/w1))
-      3
-    );
-    rollOffText =
-      rollOff === 0
-        ? "0 (high)"
-        : `${roundDecimal(20 * rollOff, 3)} [dB/dec] (high)`;
-    return;
-  }
-
-  if (isHighPassFilter) {
-    const rollOff = roundDecimal(
-      Math.log(magnitudeAtWMin / magnitudeAt001) / Math.log(wMin / 0.01),
-      3
-    );
-    rollOffText =
-      rollOff === 0
-        ? "0 (low)"
-        : `${roundDecimal(20 * rollOff, 3)} [dB/dec] (low)`;
-    return;
-  }
-
-  if (isBandPassFilter) {
+  if (
+    isAllPassFilter ||
+    isNoPassFilter ||
+    isBandPassFilter ||
+    isBandStopFilter ||
+    isLowPassFilter ||
+    isHighPassFilter
+  ) {
     const rollOffLow = roundDecimal(
-      Math.log(magnitudeAtWMin / magnitudeAt001) / Math.log(wMin / 0.01),
+      Math.log(magnitudeAtWMin / magnitudeAt001) / Math.log(wMin / 0.01), //log(AR2/AR1)/log(w2/w1))
       3
     );
     const rollOffHigh = roundDecimal(
