@@ -36,6 +36,8 @@ export default class NyquistPlot {
 
   #curvePoints = [];
 
+  #nyquistObserver;
+
   constructor(
     plotContainerDomElement,
     numeratorTermsArray,
@@ -63,6 +65,8 @@ export default class NyquistPlot {
 
     this.createNyquistPlot();
     this.insertZerosAndPolesMarkup();
+
+    return this.#nyquistObserver;
   }
   /**
    * Numerical computation of Nyquist plot curve points
@@ -229,10 +233,10 @@ export default class NyquistPlot {
     this.adjustNyquistPlotAppearance();
 
     //attach observer to remove axis ticks every time the plot is panned or zoomed
-    const observer = new MutationObserver(() =>
+    this.#nyquistObserver = new MutationObserver(() =>
       this.adjustNyquistPlotAppearance.call(this)
     );
-    observer.observe(this.#plotContainerDomElement, {
+    this.#nyquistObserver.observe(this.#plotContainerDomElement, {
       childList: true,
       subtree: true,
     });

@@ -70,6 +70,9 @@ let zeros = [];
 let poles = [];
 let activeTab;
 
+let bodeObserver;
+let nyquistObserver;
+
 export const openOrUpdateElementAnalysisWindow = (domElement) => {
   let updateExistingWindow = false;
   if (expandedDomElement) {
@@ -203,10 +206,11 @@ const populateActiveTab = function () {
     `element-analysis-window-tab-content-${activeTab}`
   ).style.display = "block";
 
+  disconnectObservers();
   resetPlotContainersMarkup();
 
   if (activeTab === 1) {
-    new BodePlot(
+    bodeObserver = new BodePlot(
       plotContainerTab1,
       numeratorTermsArray,
       denominatorTermsArray,
@@ -214,7 +218,7 @@ const populateActiveTab = function () {
       poles
     );
   } else if (activeTab === 2) {
-    new NyquistPlot(
+    nyquistObserver = new NyquistPlot(
       plotContainerTab2,
       numeratorTermsArray,
       denominatorTermsArray,
@@ -257,7 +261,7 @@ const removeElementAnalysisWindowEventListeners = function () {
 
 const tabButtonsCallback = function (e) {
   let currentTabButton = e.target.closest(".tab-button");
-  if (currentTabButton) {
+  if (currentTabButton && !currentTabButton.classList.contains("active")) {
     tabcontent.forEach((x) => (x.style.display = "none"));
     tabButtons.forEach((x) => x.classList.remove("active"));
 
@@ -272,4 +276,13 @@ const resetPlotContainersMarkup = function () {
   plotContainerTab1.innerHTML = "";
   plotContainerTab2.innerHTML = "";
   // plotContainerTab3.innerHTML = "";
+};
+
+const disconnectObservers = function () {
+  if (bodeObserver) {
+    bodeObserver.disconnect();
+  }
+  if (nyquistObserver) {
+    nyquistObserver.disconnect();
+  }
 };

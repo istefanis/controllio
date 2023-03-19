@@ -47,6 +47,8 @@ export default class BodePlot {
   #wMin = 5 * 10 ** -4;
   #wMax = 5 * 10 ** 3;
 
+  #bodeObserver;
+
   constructor(
     plotContainerDomElement,
     numeratorTermsArray,
@@ -84,6 +86,8 @@ export default class BodePlot {
       this.#minMagnitude,
       this.#maxMagnitude
     );
+
+    return this.#bodeObserver;
   }
 
   /**
@@ -298,10 +302,10 @@ export default class BodePlot {
     this.adjustBodePlotAppearance();
 
     //attach observer to remove axis ticks every time the plot is panned or zoomed
-    const observer = new MutationObserver(() =>
+    this.#bodeObserver = new MutationObserver(() =>
       this.adjustBodePlotAppearance.call(this)
     );
-    observer.observe(this.#plotContainerDomElement, {
+    this.#bodeObserver.observe(this.#plotContainerDomElement, {
       childList: true,
       subtree: true,
     });
