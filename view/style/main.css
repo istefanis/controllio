@@ -14,6 +14,7 @@
 @import url("https://fonts.googleapis.com/css2?family=Roboto&family=Roboto+Mono&display=swap");
 
 /* Colors */
+
 :root {
   --color-white-transparent: rgba(255, 255, 255, 0.3);
 
@@ -43,6 +44,8 @@
 .red {
   color: red;
 }
+
+/* Core styles */
 
 html,
 body,
@@ -88,24 +91,6 @@ body,
   z-index: 300;
 }
 
-.hidden {
-  display: none;
-}
-
-.flex-row-center {
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
-}
-
-.flex-column-center {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-}
-
 /* Tabs */
 
 .tab-buttons-container {
@@ -127,7 +112,7 @@ body,
 }
 
 .tab-button {
-  height: 40px;
+  height: 35px;
   padding: 0 15px;
   background-color: #fff;
   border: 0;
@@ -146,4 +131,28 @@ body,
 .tab-content {
   display: none;
   margin: 15px;
+}
+
+/* Util */
+
+.hidden {
+  display: none;
+}
+
+.font-size-smaller {
+  font-size: 11px;
+}
+
+.flex-row-center {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}
+
+.flex-column-center {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }

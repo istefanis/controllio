@@ -111,6 +111,14 @@ export const makeElementUnhidden = (element) => {
   element.classList.remove("hidden");
 };
 
+export const makeElementFontSizeSmaller = (element) => {
+  element.classList.add("font-size-smaller");
+};
+
+export const makeElementFontSizeNormal = (element) => {
+  element.classList.remove("font-size-smaller");
+};
+
 /**
  * Increase the element's z-index, to bring it to the front
  */

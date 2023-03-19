@@ -71,8 +71,8 @@
   width: 100%;
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  margin-bottom: 8px;
+  gap: 8px;
+  margin-bottom: 5px;
 }
 
 .element-analysis-window-contents form div {
@@ -87,7 +87,7 @@
 }
 
 .element-analysis-window-tab-contents {
-  min-height: 368px;
+  min-height: 390px;
   overflow-y: scroll;
 }
 
@@ -120,12 +120,12 @@
 
 .bode-subplot {
   width: 100%;
-  height: 150px;
+  height: 155px;
 }
 
 .nyquist-plot {
   width: 100%;
-  height: 350px;
+  height: 320px;
 }
 
 text {
@@ -149,4 +149,18 @@ text.axis-label {
   display: grid;
   grid-template-columns: 2fr 5fr;
   /* font-size: 11px; */
+}
+
+#zeros-and-poles-container {
+  /* width: 100%; */
+  margin: 5px 0 5px 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+#zeros-and-poles-grid {
+  display: grid;
+  grid-template-columns: 1fr 7fr;
+  gap: 5px;
 }

@@ -16,8 +16,11 @@
  * noted below as 'SICP'
  */
 
+import findRoots from "../../assets/lib/durand-kerner/roots.js";
+import { roundDecimal } from "../../util/commons.js";
+
 //
-// Root-finding methods for non-linear functions of a single variable
+// Real root-finding methods for non-linear functions of a single variable
 //
 
 let maxLoopCounter = 0;
@@ -96,4 +99,27 @@ export const halfIntervalMethod = function (f, a, b) {
       return halfIntervalMethod(f, 1.05 * a, 0.95 * b);
     }
   }
+};
+
+//
+// Complex root-finding method for polynomials
+//
+
+/**
+ * Using an implementation of the Weierstrass / Durand-Kerner method,
+ * compute the complex roots of a polynomial and return them inside an array.
+ * Each root (element of the array) is an array itself, containing the root's real & imag parts
+ */
+export const findComplexRootsOfPolynomial = function (termsArray) {
+  const complexRoots = [];
+  const r = findRoots(termsArray.slice().reverse());
+  if (r && r[0]) {
+    for (let i = 0; i <= r[0].length - 1; i++) {
+      //real & imag parts respectively
+      complexRoots.push([roundDecimal(r[0][i], 3), roundDecimal(r[1][i], 3)]);
+    }
+  }
+  return complexRoots.sort(function (x1, x2) {
+    return x1[0] - x2[0];
+  });
 };

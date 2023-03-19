@@ -29,6 +29,8 @@ export default class BodePlot {
   #phasePlotDomElement;
   #numeratorTermsArray;
   #denominatorTermsArray;
+  #zeros;
+  #poles;
 
   #plotContainerDomElement;
   #phaseCanvasElement;
@@ -48,7 +50,9 @@ export default class BodePlot {
   constructor(
     plotContainerDomElement,
     numeratorTermsArray,
-    denominatorTermsArray
+    denominatorTermsArray,
+    zeros,
+    poles
   ) {
     this.#plotContainerDomElement = plotContainerDomElement;
     //create the two plot DOM elements inside the container
@@ -62,6 +66,8 @@ export default class BodePlot {
     this.#phasePlotDomElement = document.getElementById("plot2");
     this.#numeratorTermsArray = numeratorTermsArray;
     this.#denominatorTermsArray = denominatorTermsArray;
+    this.#zeros = zeros;
+    this.#poles = poles;
 
     this.computeBodePlotCurvePoints(
       this.#numeratorTermsArray,

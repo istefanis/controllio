@@ -13,6 +13,10 @@ import {
 import { functionFromPolynomialTermsArray } from "../../util/commons.js";
 import { logMessages } from "../../util/loggingService.js";
 import {
+  makeElementFontSizeNormal,
+  makeElementFontSizeSmaller,
+} from "../../util/uiService.js";
+import {
   maxCurvePointsAllowed,
   removeOrFormatAxisTickElement,
 } from "./plotService.js";
@@ -25,6 +29,8 @@ export default class NyquistPlot {
   #nyquistPlotDomElement;
   #numeratorTermsArray;
   #denominatorTermsArray;
+  #zeros;
+  #poles;
 
   #plotContainerDomElement;
 
@@ -33,7 +39,9 @@ export default class NyquistPlot {
   constructor(
     plotContainerDomElement,
     numeratorTermsArray,
-    denominatorTermsArray
+    denominatorTermsArray,
+    zeros,
+    poles
   ) {
     this.#plotContainerDomElement = plotContainerDomElement;
     //create the plot DOM element inside the container
@@ -45,6 +53,8 @@ export default class NyquistPlot {
     this.#nyquistPlotDomElement = document.getElementById("plot1");
     this.#numeratorTermsArray = numeratorTermsArray;
     this.#denominatorTermsArray = denominatorTermsArray;
+    this.#zeros = zeros;
+    this.#poles = poles;
 
     this.computeNyquistPlotCurvePoints(
       this.#numeratorTermsArray,
@@ -52,8 +62,8 @@ export default class NyquistPlot {
     );
 
     this.createNyquistPlot();
+    this.insertZerosAndPolesMarkup();
   }
-
   /**
    * Numerical computation of Nyquist plot curve points
    */
@@ -133,12 +143,10 @@ export default class NyquistPlot {
       height: plotHeight,
       xAxis: {
         label: "Real part",
-        // type: "log",
         domain: [-10, 10],
       },
       yAxis: {
         label: "Imag part",
-        // type: "log",
         domain: [-10, 10],
       },
       grid: true,
@@ -158,6 +166,40 @@ export default class NyquistPlot {
           graphType: "polyline",
           color: "gray",
         },
+        {
+          points: this.#zeros,
+          fnType: "points",
+          graphType: "scatter",
+          color: "gray",
+        },
+        {
+          points: this.#poles,
+          fnType: "points",
+          graphType: "scatter",
+          color: "green",
+        },
+        ...this.#poles.map((z) => {
+          return {
+            points: [
+              [z[0] - 0.1, z[1] - 0.1],
+              [z[0] + 0.1, z[1] + 0.1],
+            ],
+            fnType: "points",
+            graphType: "polyline",
+            color: "green",
+          };
+        }),
+        ...this.#poles.map((z) => {
+          return {
+            points: [
+              [z[0] - 0.1, z[1] + 0.1],
+              [z[0] + 0.1, z[1] - 0.1],
+            ],
+            fnType: "points",
+            graphType: "polyline",
+            color: "green",
+          };
+        }),
         {
           points: [[-1, 0]],
           fnType: "points",
@@ -181,6 +223,7 @@ export default class NyquistPlot {
           }),
       ],
     });
+    // const zoomLevel = nyquistPlot.options.xAxis.domain[1] - nyquistPlot.options.xAxis.domain[0];
 
     //adjust appearance
     this.adjustNyquistPlotAppearance();
@@ -196,6 +239,23 @@ export default class NyquistPlot {
   }
 
   adjustNyquistPlotAppearance() {
+    const circles = this.#nyquistPlotDomElement.querySelectorAll("g circle");
+    circles.forEach((c) => {
+      //select zeros only (colored gray)
+      if (["#dbdbdb"].includes(c.getAttribute("fill"))) {
+        c.style.opacity = 1;
+        c.r.baseVal.value = 2.5;
+      }
+      //select poles only (colored green)
+      else if (["#00db00"].includes(c.getAttribute("fill"))) {
+        c.style.opacity = 0.5;
+        c.r.baseVal.value = 2.5;
+      } else {
+        c.style.opacity = 1;
+        c.r.baseVal.value = 1.5;
+      }
+    });
+
     //remove axis ticks
     this.#nyquistPlotDomElement
       .getElementsByClassName("x axis")[0]
@@ -205,6 +265,45 @@ export default class NyquistPlot {
       .getElementsByClassName("y axis")[0]
       .querySelectorAll("text")
       .forEach(removeOrFormatAxisTickElement);
+  }
+
+  insertZerosAndPolesMarkup() {
+    const zerosAndPolesGrid = document.getElementById("zeros-and-poles-grid");
+    if (this.#zeros.concat(this.#poles).length > 10) {
+      makeElementFontSizeSmaller(zerosAndPolesGrid);
+    } else {
+      makeElementFontSizeNormal(zerosAndPolesGrid);
+    }
+    const markup = `
+    <p>Zero${this.#zeros.length === 1 ? "" : "s"}:</p><p> ${
+      this.#zeros.length > 0
+        ? this.#zeros
+            .filter((x) => x[1] >= 0)
+            .map(
+              (x) =>
+                `${x[1] > 0 ? "(" : ""}${x[0]}${
+                  x[1] > 0 ? ` ± ${x[1]}*i` : ""
+                }${x[1] > 0 ? ")" : ""}`
+            )
+            .join(", ")
+        : "N/A"
+    }</p>
+    <p>Pole${this.#poles.length === 1 ? "" : "s"}:</p><p> ${
+      this.#poles.length > 0
+        ? this.#poles
+            .filter((x) => x[1] >= 0)
+            .map(
+              (x) =>
+                `${x[1] > 0 ? "(" : ""}${x[0]}${
+                  x[1] > 0 ? ` ± ${x[1]}*i` : ""
+                }${x[1] > 0 ? ")" : ""}`
+            )
+            .join(", ")
+        : "N/A"
+    }</p>
+  `;
+    zerosAndPolesGrid.innerHTML = "";
+    zerosAndPolesGrid.insertAdjacentHTML("afterbegin", markup);
   }
 }
 

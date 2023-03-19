@@ -24,6 +24,7 @@ import {
 import { polynomialTermsArrayToStringWithoutCoeffs } from "../util/prettyPrintingService.js";
 import BodePlot from "./plots/bodePlot.js";
 import NyquistPlot from "./plots/nyquistPlot.js";
+import { findComplexRootsOfPolynomial } from "../math/numericalAnalysis/numericalAnalysisService.js";
 
 //
 // Select DOM elements
@@ -65,6 +66,8 @@ const plotContainerTab2 = document.getElementById("plot-container-tab-2");
 let expandedDomElement;
 let numeratorTermsArray;
 let denominatorTermsArray;
+let zeros = [];
+let poles = [];
 let activeTab;
 
 export const openOrUpdateElementAnalysisWindow = (domElement) => {
@@ -121,6 +124,10 @@ const populateElementAnalysisWindow = function (element, updateExistingWindow) {
         !Number.isNaN(+x) ? roundDecimal(x, 3) : x
       )
     );
+
+  //compute zeros & poles
+  zeros = findComplexRootsOfPolynomial(numeratorTermsArray);
+  poles = findComplexRootsOfPolynomial(denominatorTermsArray);
 
   if (!updateExistingWindow) {
     //set first tab as active by default
@@ -181,6 +188,9 @@ const updateElementValueCallback = function (e) {
       element.setValue(newTfValue);
       //store state
       element.getBlock().storeNewHistoricalState();
+      //compute zeros & poles
+      zeros = findComplexRootsOfPolynomial(numeratorTermsArray);
+      poles = findComplexRootsOfPolynomial(denominatorTermsArray);
     }
 
     //update plot
@@ -196,12 +206,20 @@ const populateActiveTab = function () {
   resetPlotContainersMarkup();
 
   if (activeTab === 1) {
-    new BodePlot(plotContainerTab1, numeratorTermsArray, denominatorTermsArray);
+    new BodePlot(
+      plotContainerTab1,
+      numeratorTermsArray,
+      denominatorTermsArray,
+      zeros,
+      poles
+    );
   } else if (activeTab === 2) {
     new NyquistPlot(
       plotContainerTab2,
       numeratorTermsArray,
-      denominatorTermsArray
+      denominatorTermsArray,
+      zeros,
+      poles
     );
   }
 };
