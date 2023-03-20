@@ -73,14 +73,18 @@ export const setExpandedElement = (element) => {
   deleteButton.disabled = false;
 };
 
-export const resetExpandedOrSelectedElements = function () {
-  resetSelectedElements();
+export const resetExpandedElements = function () {
   if (expandedElement) {
     closeElementAnalysisWindow();
     moveToGroundLevel(expandedElement);
     expandedElement = null;
     deleteButton.disabled = true;
   }
+};
+
+export const resetExpandedOrSelectedElements = function () {
+  resetSelectedElements();
+  resetExpandedElements();
 };
 
 export const deleteExpandedOrSelectedElements = function () {
@@ -243,8 +247,8 @@ export const startSelectionOrDrag = function (e) {
     if (expandedElement) {
       //unexpand element when new selection area dragging starts
       // console.log("start4-2");
-      closeElementAnalysisWindow();
       moveToGroundLevel(expandedElement);
+      closeElementAnalysisWindow();
       expandedElement = null;
       deleteButton.disabled = true;
     }

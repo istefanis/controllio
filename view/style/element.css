@@ -83,6 +83,11 @@
   border: 2px solid var(--color-green-darker);
 }
 
+.adder.element-active {
+  background-color: var(--color-green);
+  border: 2px solid var(--color-green-darker);
+}
+
 .element-attention {
   background-color: var(--color-red);
   border: 2px solid var(--color-red-darker);

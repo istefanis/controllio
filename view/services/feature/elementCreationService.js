@@ -50,12 +50,12 @@ export const createNewTf = function (invokedByTouchEvent) {
       left:
         newTfButton.getBoundingClientRect().left +
         (invokedByTouchEvent
-          ? (Math.random() - 0.5) * 20
+          ? (Math.random() - 0.5) * 40
           : -indicativeTfWidth / 2),
       top:
         newTfButton.getBoundingClientRect().top +
         (invokedByTouchEvent
-          ? indicativeTfHeight + (Math.random() - 0.5) * 20 + getNavbarHeight()
+          ? indicativeTfHeight + (Math.random() - 0.5) * 60 + getNavbarHeight()
           : -indicativeTfHeight / 2),
     };
     const block = getTopBlock();
@@ -73,6 +73,7 @@ export const createNewTf = function (invokedByTouchEvent) {
 
     deleteButton.disabled = true;
     if (invokedByTouchEvent && isMobileDevice) {
+      openOrUpdateElementAnalysisWindow(tfDomElement, true);
     } else if (invokedByTouchEvent) {
       setExpandedElement(tfDomElement);
       openOrUpdateElementAnalysisWindow(tfDomElement);
@@ -107,12 +108,12 @@ export const createNewReadyMadeTf = function (
   const position = {
     left: invokedByTouchEvent
       ? newReadyMadeTfButton.getBoundingClientRect().left +
-        (Math.random() - 0.5) * 20
+        (Math.random() - 0.5) * 40
       : domElementMiddleX - domElementWidth / 2,
     top: invokedByTouchEvent
       ? newReadyMadeTfButton.getBoundingClientRect().top +
         indicativeTfHeight +
-        (Math.random() - 0.5) * 20 +
+        (Math.random() - 0.5) * 60 +
         getNavbarHeight() / 2
       : domElementMiddleY - indicativeTfHeight / 2,
   };
@@ -134,6 +135,7 @@ export const createNewReadyMadeTf = function (
 
   deleteButton.disabled = true;
   if (invokedByTouchEvent && isMobileDevice) {
+    openOrUpdateElementAnalysisWindow(tfDomElement, true);
   } else if (invokedByTouchEvent) {
     setExpandedElement(tfDomElement);
     openOrUpdateElementAnalysisWindow(tfDomElement);
@@ -156,11 +158,11 @@ export const createNewAdder = function (invokedByTouchEvent) {
     const position = {
       left:
         newAdderButton.getBoundingClientRect().left +
-        (invokedByTouchEvent ? (Math.random() - 0.5) * 20 : -adderWidth / 2),
+        (invokedByTouchEvent ? (Math.random() - 0.5) * 40 : -adderWidth / 2),
       top:
         newAdderButton.getBoundingClientRect().top +
         (invokedByTouchEvent
-          ? adderHeight + (Math.random() - 0.5) * 20 + getNavbarHeight()
+          ? adderHeight + (Math.random() - 0.5) * 60 + getNavbarHeight()
           : -adderHeight / 2),
     };
     const block = getTopBlock();
@@ -174,6 +176,7 @@ export const createNewAdder = function (invokedByTouchEvent) {
 
     deleteButton.disabled = true;
     if (invokedByTouchEvent && isMobileDevice) {
+      openOrUpdateElementAnalysisWindow(adderDomElement, true);
     } else if (invokedByTouchEvent) {
       setExpandedElement(adderDomElement);
       openOrUpdateElementAnalysisWindow(adderDomElement);

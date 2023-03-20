@@ -25,6 +25,7 @@ import { polynomialTermsArrayToStringWithoutCoeffs } from "../util/prettyPrintin
 import BodePlot from "./plots/bodePlot.js";
 import NyquistPlot from "./plots/nyquistPlot.js";
 import { findComplexRootsOfPolynomial } from "../math/numericalAnalysis/numericalAnalysisService.js";
+import { resetExpandedElements } from "./services/core/elementSelectingAndDraggingService.js";
 
 //
 // Select DOM elements
@@ -75,13 +76,32 @@ let activeTab;
 let bodeObserver;
 let nyquistObserver;
 
-export const openOrUpdateElementAnalysisWindow = (domElement) => {
+export const openOrUpdateElementAnalysisWindow = function (
+  domElement,
+  onlyMakeElementExpandedWithoutOpeningWindow
+) {
   deleteButton.disabled = false;
-
   let updateExistingWindow = false;
+
+  if (onlyMakeElementExpandedWithoutOpeningWindow) {
+    makeElementExpanded(domElement);
+    //store expanded element
+    expandedDomElement = domElement;
+    return;
+  }
+
   if (expandedDomElement) {
-    makeElementUnexpanded(expandedDomElement);
-    updateExistingWindow = true;
+    if (expandedDomElement !== domElement) {
+      makeElementUnexpanded(expandedDomElement);
+
+      //retrieve expandedElement
+      const expandedElement = getElementFromElementId(
+        +expandedDomElement.dataset.elementId
+      );
+      if (expandedElement.isBlock() || expandedElement.isTf()) {
+        updateExistingWindow = true;
+      }
+    }
   }
   makeElementExpanded(domElement);
   //store expanded element
@@ -98,7 +118,7 @@ export const openOrUpdateElementAnalysisWindow = (domElement) => {
   }
 };
 
-export const closeElementAnalysisWindow = () => {
+export const closeElementAnalysisWindow = function () {
   if (expandedDomElement) {
     removeElementAnalysisWindowEventListeners();
 
@@ -110,11 +130,11 @@ export const closeElementAnalysisWindow = () => {
     makeElementUnexpanded(expandedDomElement);
     expandedDomElement = null;
 
+    resetExpandedElements();
+
     makeElementHidden(elementAnalysisWindow);
 
     resetPlotContainersMarkup();
-
-    deleteButton.disabled = true;
   }
 };
 
