@@ -71,8 +71,8 @@ export const createNewTf = function (invokedByTouchEvent) {
     const tfId = tf.getElementId();
     const tfDomElement = document.querySelector(`#element${tfId}`);
 
+    deleteButton.disabled = true;
     if (invokedByTouchEvent && isMobileDevice) {
-      deleteButton.disabled = true;
     } else if (invokedByTouchEvent) {
       setExpandedElement(tfDomElement);
       openOrUpdateElementAnalysisWindow(tfDomElement);
@@ -132,8 +132,8 @@ export const createNewReadyMadeTf = function (
   const tfId = tf.getElementId();
   const tfDomElement = document.querySelector(`#element${tfId}`);
 
+  deleteButton.disabled = true;
   if (invokedByTouchEvent && isMobileDevice) {
-    deleteButton.disabled = true;
   } else if (invokedByTouchEvent) {
     setExpandedElement(tfDomElement);
     openOrUpdateElementAnalysisWindow(tfDomElement);
@@ -172,8 +172,8 @@ export const createNewAdder = function (invokedByTouchEvent) {
     const adderId = adder.getElementId();
     const adderDomElement = document.querySelector(`#element${adderId}`);
 
+    deleteButton.disabled = true;
     if (invokedByTouchEvent && isMobileDevice) {
-      deleteButton.disabled = true;
     } else if (invokedByTouchEvent) {
       setExpandedElement(adderDomElement);
       openOrUpdateElementAnalysisWindow(adderDomElement);
