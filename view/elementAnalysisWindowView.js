@@ -59,6 +59,8 @@ const tabcontent = Array.from(
   elementAnalysisWindowContents.getElementsByClassName("tab-content")
 );
 
+const deleteButton = document.getElementById("delete-button");
+
 const plotContainerTab1 = document.getElementById("plot-container-tab-1");
 const plotContainerTab2 = document.getElementById("plot-container-tab-2");
 // const plotContainerTab3 = document.getElementById("plot-container-tab-3");
@@ -74,6 +76,8 @@ let bodeObserver;
 let nyquistObserver;
 
 export const openOrUpdateElementAnalysisWindow = (domElement) => {
+  deleteButton.disabled = false;
+
   let updateExistingWindow = false;
   if (expandedDomElement) {
     makeElementUnexpanded(expandedDomElement);
@@ -109,6 +113,8 @@ export const closeElementAnalysisWindow = () => {
     makeElementHidden(elementAnalysisWindow);
 
     resetPlotContainersMarkup();
+
+    deleteButton.disabled = true;
   }
 };
 

@@ -12,13 +12,13 @@ import { disableHistoricalStateStorage } from "../../../model/blockStateService.
 import { Adder } from "../../../model/elements/adder.js";
 import { Tf } from "../../../model/elements/tf.js";
 import {
-  isMobileDevice,
   indicativeTfHeight,
   indicativeTfWidth,
   adderWidth,
   adderHeight,
   makeButtonActive,
   makeButtonInActive,
+  isMobileDevice,
 } from "../../../util/uiService.js";
 import {
   closeElementAnalysisWindow,
@@ -33,7 +33,9 @@ import {
 } from "../core/elementSelectingAndDraggingService.js";
 import { getTopBlock } from "../../../script.js";
 
-export const createNewTf = function () {
+const deleteButton = document.getElementById("delete-button");
+
+export const createNewTf = function (invokedByTouchEvent) {
   const newTfButton = document.getElementById("tf-button");
 
   disableHistoricalStateStorage();
@@ -47,10 +49,12 @@ export const createNewTf = function () {
     const position = {
       left:
         newTfButton.getBoundingClientRect().left +
-        (isMobileDevice ? (Math.random() - 0.5) * 20 : -indicativeTfWidth / 2),
+        (invokedByTouchEvent
+          ? (Math.random() - 0.5) * 20
+          : -indicativeTfWidth / 2),
       top:
         newTfButton.getBoundingClientRect().top +
-        (isMobileDevice
+        (invokedByTouchEvent
           ? indicativeTfHeight + (Math.random() - 0.5) * 20 + getNavbarHeight()
           : -indicativeTfHeight / 2),
     };
@@ -67,7 +71,9 @@ export const createNewTf = function () {
     const tfId = tf.getElementId();
     const tfDomElement = document.querySelector(`#element${tfId}`);
 
-    if (isMobileDevice) {
+    if (invokedByTouchEvent && isMobileDevice) {
+      deleteButton.disabled = true;
+    } else if (invokedByTouchEvent) {
       setExpandedElement(tfDomElement);
       openOrUpdateElementAnalysisWindow(tfDomElement);
     } else {
@@ -88,7 +94,8 @@ export const createNewReadyMadeTf = function (
   denTermsArray,
   domElementMiddleX,
   domElementMiddleY,
-  domElementWidth
+  domElementWidth,
+  invokedByTouchEvent
 ) {
   const newReadyMadeTfButton = document.getElementById("ready-made-tf-button");
 
@@ -98,11 +105,11 @@ export const createNewReadyMadeTf = function (
 
   //compute required components
   const position = {
-    left: isMobileDevice
+    left: invokedByTouchEvent
       ? newReadyMadeTfButton.getBoundingClientRect().left +
         (Math.random() - 0.5) * 20
       : domElementMiddleX - domElementWidth / 2,
-    top: isMobileDevice
+    top: invokedByTouchEvent
       ? newReadyMadeTfButton.getBoundingClientRect().top +
         indicativeTfHeight +
         (Math.random() - 0.5) * 20 +
@@ -125,7 +132,9 @@ export const createNewReadyMadeTf = function (
   const tfId = tf.getElementId();
   const tfDomElement = document.querySelector(`#element${tfId}`);
 
-  if (isMobileDevice) {
+  if (invokedByTouchEvent && isMobileDevice) {
+    deleteButton.disabled = true;
+  } else if (invokedByTouchEvent) {
     setExpandedElement(tfDomElement);
     openOrUpdateElementAnalysisWindow(tfDomElement);
   } else {
@@ -133,7 +142,7 @@ export const createNewReadyMadeTf = function (
   }
 };
 
-export const createNewAdder = function () {
+export const createNewAdder = function (invokedByTouchEvent) {
   const newAdderButton = document.getElementById("adder-button");
 
   disableHistoricalStateStorage();
@@ -147,10 +156,10 @@ export const createNewAdder = function () {
     const position = {
       left:
         newAdderButton.getBoundingClientRect().left +
-        (isMobileDevice ? (Math.random() - 0.5) * 20 : -adderWidth / 2),
+        (invokedByTouchEvent ? (Math.random() - 0.5) * 20 : -adderWidth / 2),
       top:
         newAdderButton.getBoundingClientRect().top +
-        (isMobileDevice
+        (invokedByTouchEvent
           ? adderHeight + (Math.random() - 0.5) * 20 + getNavbarHeight()
           : -adderHeight / 2),
     };
@@ -163,10 +172,9 @@ export const createNewAdder = function () {
     const adderId = adder.getElementId();
     const adderDomElement = document.querySelector(`#element${adderId}`);
 
-    if (isMobileDevice) {
-      const deleteButton = document.getElementById("delete-button");
-      deleteButton.disabled = false;
-
+    if (invokedByTouchEvent && isMobileDevice) {
+      deleteButton.disabled = true;
+    } else if (invokedByTouchEvent) {
       setExpandedElement(adderDomElement);
       openOrUpdateElementAnalysisWindow(adderDomElement);
     } else {

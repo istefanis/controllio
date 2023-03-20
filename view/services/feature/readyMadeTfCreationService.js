@@ -16,7 +16,9 @@ import { openPopupWindow } from "../../popupWindowView.js";
 
 const readyMadeTfsArray = [];
 
-export const openNewReadyMadeTfPopupWindow = async function () {
+export const openNewReadyMadeTfPopupWindow = async function (
+  invokedByTouchEvent
+) {
   //create the popup window contents markup
   const contentsMarkup = readyMadeTfsArray
     .map((x, i) => {
@@ -51,7 +53,8 @@ export const openNewReadyMadeTfPopupWindow = async function () {
       readyMadeTfsArray[selectedContentId][2],
       middleX,
       middleY,
-      domElementBoundRect.width
+      domElementBoundRect.width,
+      invokedByTouchEvent
     );
   }
 };

@@ -7,7 +7,7 @@
  */
 
 import { getTopBlock } from "../script.js";
-import { isMobileDevice } from "../util/uiService.js";
+import { isMobileDevice, isTouchScreenDevice } from "../util/uiService.js";
 import { setLogMode } from "../util/loggingService.js";
 import {
   createNewAdder,
@@ -102,17 +102,31 @@ const displayAndInitSaveToAndLoadFromLocalStorageButtons = function () {
 // Tf button
 //
 const tfButton = document.getElementById("tf-button");
-tfButton.addEventListener("click", function (e) {
-  createNewTf();
+tfButton.addEventListener("mousedown", function (e) {
+  createNewTf(false);
 });
+if (isTouchScreenDevice) {
+  tfButton.addEventListener("touchstart", function (e) {
+    //touch events have precedence over mouse events -
+    //preventDefault() prevents a mouse event from being invoked too
+    e.preventDefault();
+    createNewTf(true);
+  });
+}
 
 //
 // Adder button
 //
 const adderButton = document.getElementById("adder-button");
-adderButton.addEventListener("click", function (e) {
-  createNewAdder();
+adderButton.addEventListener("mousedown", function (e) {
+  createNewAdder(false);
 });
+if (isTouchScreenDevice) {
+  adderButton.addEventListener("touchstart", function (e) {
+    e.preventDefault();
+    createNewAdder(true);
+  });
+}
 
 //
 // Connection button
@@ -127,9 +141,15 @@ connectionButton.addEventListener("click", function (e) {
 //
 const readyMadeTfButton = document.getElementById("ready-made-tf-button");
 
-readyMadeTfButton.addEventListener("click", async function () {
-  await openNewReadyMadeTfPopupWindow();
+readyMadeTfButton.addEventListener("mousedown", async function () {
+  await openNewReadyMadeTfPopupWindow(false);
 });
+if (isTouchScreenDevice) {
+  readyMadeTfButton.addEventListener("touchstart", async function (e) {
+    e.preventDefault();
+    await openNewReadyMadeTfPopupWindow(true);
+  });
+}
 
 //
 // Delete button

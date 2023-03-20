@@ -7,6 +7,7 @@
  */
 
 import { getTopBlock } from "../script.js";
+import { isTouchScreenDevice } from "../util/uiService.js";
 import { closePopupWindow } from "./popupWindowView.js";
 import {
   startSelectionOrDrag,
@@ -21,14 +22,15 @@ import {
 //
 let grid = document.querySelector(".grid");
 
-grid.addEventListener("touchstart", startSelectionOrDrag);
 grid.addEventListener("mousedown", startSelectionOrDrag);
-
-grid.addEventListener("touchmove", selectionOrDrag);
 grid.addEventListener("mousemove", selectionOrDrag);
-
-grid.addEventListener("touchend", endSelectionOrDrag);
 grid.addEventListener("mouseup", endSelectionOrDrag);
+
+if (isTouchScreenDevice) {
+  grid.addEventListener("touchstart", startSelectionOrDrag);
+  grid.addEventListener("touchmove", selectionOrDrag);
+  grid.addEventListener("touchend", endSelectionOrDrag);
+}
 
 //
 // Keydown listener

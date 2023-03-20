@@ -104,7 +104,6 @@ export const setNewlyCreatedElement = (element) => {
   newlyCreatedElement = element;
   if (element !== null) {
     expandedElement = element;
-    deleteButton.disabled = false;
     currentElement = element;
     selectedElements = [];
     isDraggingActive = true;

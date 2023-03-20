@@ -19,14 +19,12 @@ export const marginAroundElements = 30;
 export const maxUtilizedCanvasWidth = 1440;
 export const maxUtilizedCanvasHeight = 960;
 
-/**
- * Check whether the application runs on a mobile device
- */
+//
+// Check whether the application runs on a touchscreen or mobile device
+//
+export let isTouchScreenDevice = navigator.maxTouchPoints > 0;
 export let isMobileDevice =
-  (window.innerWidth < 720 && window.innerHeight < 720) ||
-  (navigator.maxTouchPoints > 0 &&
-    window.innerWidth < 1680 &&
-    window.innerHeight < 1680);
+  window.innerWidth < 1024 && window.innerHeight < 1024;
 
 /**
  * Check whether a selection 'bounding client rectangle'
