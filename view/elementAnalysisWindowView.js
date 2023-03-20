@@ -29,6 +29,7 @@ import {
   resetActiveElements,
   resetExpandedElements,
 } from "./services/core/elementSelectingAndDraggingService.js";
+import { enableHistoricalStateStorage } from "../model/blockStateService.js";
 
 //
 // Select DOM elements
@@ -213,7 +214,9 @@ const updateElementValueCallback = function (e) {
     ) {
       element.setValue(newTfValue);
       //store state
+      enableHistoricalStateStorage();
       element.getBlock().storeNewHistoricalState();
+
       //compute zeros & poles
       zeros = findComplexRootsOfPolynomial(numeratorTermsArray);
       poles = findComplexRootsOfPolynomial(denominatorTermsArray);

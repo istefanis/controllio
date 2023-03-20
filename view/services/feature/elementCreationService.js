@@ -8,7 +8,10 @@
 
 import { Polynomial } from "../../../math/computerAlgebra/dataTypes/polynomials.js";
 import { Ratio } from "../../../math/computerAlgebra/dataTypes/ratios.js";
-import { disableHistoricalStateStorage } from "../../../model/blockStateService.js";
+import {
+  disableHistoricalStateStorage,
+  enableHistoricalStateStorage,
+} from "../../../model/blockStateService.js";
 import { Adder } from "../../../model/elements/adder.js";
 import { Tf } from "../../../model/elements/tf.js";
 import {
@@ -75,9 +78,17 @@ export const createNewTf = function (invokedByTouchEvent) {
 
     deleteButton.disabled = true;
     if (invokedByTouchEvent && isMobileDevice) {
+      //store state
+      enableHistoricalStateStorage();
+      block.storeNewHistoricalState();
+
       resetActiveElements();
       makeElementActive(tfDomElement);
     } else if (invokedByTouchEvent) {
+      //store state
+      enableHistoricalStateStorage();
+      block.storeNewHistoricalState();
+
       setExpandedElement(tfDomElement);
       openOrUpdateElementAnalysisWindow(tfDomElement);
     } else {
@@ -138,9 +149,17 @@ export const createNewReadyMadeTf = function (
 
   deleteButton.disabled = true;
   if (invokedByTouchEvent && isMobileDevice) {
+    //store state
+    enableHistoricalStateStorage();
+    block.storeNewHistoricalState();
+
     resetActiveElements();
     makeElementActive(tfDomElement);
   } else if (invokedByTouchEvent) {
+    //store state
+    enableHistoricalStateStorage();
+    block.storeNewHistoricalState();
+
     setExpandedElement(tfDomElement);
     openOrUpdateElementAnalysisWindow(tfDomElement);
   } else {
@@ -180,9 +199,17 @@ export const createNewAdder = function (invokedByTouchEvent) {
 
     deleteButton.disabled = true;
     if (invokedByTouchEvent && isMobileDevice) {
+      //store state
+      enableHistoricalStateStorage();
+      block.storeNewHistoricalState();
+
       resetActiveElements();
       makeElementActive(adderDomElement);
     } else if (invokedByTouchEvent) {
+      //store state
+      enableHistoricalStateStorage();
+      block.storeNewHistoricalState();
+
       setExpandedElement(adderDomElement);
       openOrUpdateElementAnalysisWindow(adderDomElement);
     } else {
