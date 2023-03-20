@@ -25,7 +25,10 @@ import { polynomialTermsArrayToStringWithoutCoeffs } from "../util/prettyPrintin
 import BodePlot from "./plots/bodePlot.js";
 import NyquistPlot from "./plots/nyquistPlot.js";
 import { findComplexRootsOfPolynomial } from "../math/numericalAnalysis/numericalAnalysisService.js";
-import { resetExpandedElements } from "./services/core/elementSelectingAndDraggingService.js";
+import {
+  resetActiveElements,
+  resetExpandedElements,
+} from "./services/core/elementSelectingAndDraggingService.js";
 
 //
 // Select DOM elements
@@ -76,19 +79,11 @@ let activeTab;
 let bodeObserver;
 let nyquistObserver;
 
-export const openOrUpdateElementAnalysisWindow = function (
-  domElement,
-  onlyMakeElementExpandedWithoutOpeningWindow
-) {
+export const openOrUpdateElementAnalysisWindow = function (domElement) {
   deleteButton.disabled = false;
   let updateExistingWindow = false;
 
-  if (onlyMakeElementExpandedWithoutOpeningWindow) {
-    makeElementExpanded(domElement);
-    //store expanded element
-    expandedDomElement = domElement;
-    return;
-  }
+  resetActiveElements();
 
   if (expandedDomElement) {
     if (expandedDomElement !== domElement) {
@@ -119,6 +114,8 @@ export const openOrUpdateElementAnalysisWindow = function (
 };
 
 export const closeElementAnalysisWindow = function () {
+  resetActiveElements();
+
   if (expandedDomElement) {
     removeElementAnalysisWindowEventListeners();
 

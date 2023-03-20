@@ -19,6 +19,7 @@ import {
   makeButtonActive,
   makeButtonInActive,
   isMobileDevice,
+  makeElementActive,
 } from "../../../util/uiService.js";
 import {
   closeElementAnalysisWindow,
@@ -28,6 +29,7 @@ import { getNavbarHeight } from "../../navbarView.js";
 import {
   deleteExpandedOrSelectedElements,
   getNewlyCreatedElement,
+  resetActiveElements,
   setExpandedElement,
   setNewlyCreatedElement,
 } from "../core/elementSelectingAndDraggingService.js";
@@ -73,7 +75,8 @@ export const createNewTf = function (invokedByTouchEvent) {
 
     deleteButton.disabled = true;
     if (invokedByTouchEvent && isMobileDevice) {
-      openOrUpdateElementAnalysisWindow(tfDomElement, true);
+      resetActiveElements();
+      makeElementActive(tfDomElement);
     } else if (invokedByTouchEvent) {
       setExpandedElement(tfDomElement);
       openOrUpdateElementAnalysisWindow(tfDomElement);
@@ -135,7 +138,8 @@ export const createNewReadyMadeTf = function (
 
   deleteButton.disabled = true;
   if (invokedByTouchEvent && isMobileDevice) {
-    openOrUpdateElementAnalysisWindow(tfDomElement, true);
+    resetActiveElements();
+    makeElementActive(tfDomElement);
   } else if (invokedByTouchEvent) {
     setExpandedElement(tfDomElement);
     openOrUpdateElementAnalysisWindow(tfDomElement);
@@ -176,7 +180,8 @@ export const createNewAdder = function (invokedByTouchEvent) {
 
     deleteButton.disabled = true;
     if (invokedByTouchEvent && isMobileDevice) {
-      openOrUpdateElementAnalysisWindow(adderDomElement, true);
+      resetActiveElements();
+      makeElementActive(adderDomElement);
     } else if (invokedByTouchEvent) {
       setExpandedElement(adderDomElement);
       openOrUpdateElementAnalysisWindow(adderDomElement);

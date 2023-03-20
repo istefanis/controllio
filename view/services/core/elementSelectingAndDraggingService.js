@@ -73,6 +73,14 @@ export const setExpandedElement = (element) => {
   deleteButton.disabled = false;
 };
 
+//there can be elements that are displayed as active, but not counted among selected
+//(newly created tfs in touchscreen devices are such, so that their analysis window
+//can be opened with a single touch)
+export const resetActiveElements = function () {
+  allElements = Array.from(document.querySelectorAll(".element"));
+  allElements.forEach(makeElementInactive);
+};
+
 export const resetExpandedElements = function () {
   if (expandedElement) {
     closeElementAnalysisWindow();
@@ -219,6 +227,7 @@ export const startSelectionOrDrag = function (e) {
   } else if (currentElement) {
     // console.log("start3");
     //single element selection case (drag and drop single element)
+    resetActiveElements();
     resetSelectedElements();
     setCursorCoordinates(e);
     moveΤοForeground(currentElement);
@@ -241,6 +250,7 @@ export const startSelectionOrDrag = function (e) {
     // console.log("start4");
     //new selection area case (drag and drop multiple elements - phase 1)
     allElements = Array.from(document.querySelectorAll(".element"));
+    resetActiveElements();
     resetSelectedElements();
     setInitialCursorCoordinates(e);
 

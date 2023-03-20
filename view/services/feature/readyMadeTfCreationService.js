@@ -13,12 +13,15 @@ import {
   removeSupTagsFromMarkup,
 } from "../../../util/prettyPrintingService.js";
 import { openPopupWindow } from "../../popupWindowView.js";
+import { closeElementAnalysisWindow } from "../../elementAnalysisWindowView.js";
 
 const readyMadeTfsArray = [];
 
 export const openNewReadyMadeTfPopupWindow = async function (
   invokedByTouchEvent
 ) {
+  closeElementAnalysisWindow();
+
   //create the popup window contents markup
   const contentsMarkup = readyMadeTfsArray
     .map((x, i) => {

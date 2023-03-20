@@ -81,11 +81,13 @@
 .element-active {
   background-color: var(--color-green);
   border: 2px solid var(--color-green-darker);
+  z-index: 50;
 }
 
 .adder.element-active {
   background-color: var(--color-green);
   border: 2px solid var(--color-green-darker);
+  z-index: 50;
 }
 
 .element-attention {
