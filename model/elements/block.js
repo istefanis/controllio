@@ -19,6 +19,7 @@ import {
   storeNewHistoricalBlockState,
   clearBlockStateHistory,
 } from "../blockStateService.js";
+import { removeElementWithElementId } from "../elementService.js";
 
 /**
  * Circuit elements (tfs, adders and blocks) are implemented as objects, using the message-passing style
@@ -90,6 +91,7 @@ export class Block {
     this._iAmSimplified = false;
     this._blocks = this._blocks.filter((y) => y !== x);
     removeRenderedElement(x.getElementId());
+    removeElementWithElementId(x.getElementId());
     storeNewHistoricalBlockState.call(this);
   };
 
@@ -107,6 +109,7 @@ export class Block {
     this._iAmSimplified = false;
     this._tfs = this._tfs.filter((y) => y !== x);
     removeRenderedElement(x.getElementId());
+    removeElementWithElementId(x.getElementId());
     storeNewHistoricalBlockState.call(this);
   };
 
@@ -124,6 +127,7 @@ export class Block {
     this._iAmSimplified = false;
     this._adders = this._adders.filter((y) => y !== x);
     removeRenderedElement(x.getElementId());
+    removeElementWithElementId(x.getElementId());
     storeNewHistoricalBlockState.call(this);
   };
 

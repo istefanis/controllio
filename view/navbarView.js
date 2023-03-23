@@ -18,7 +18,10 @@ import {
   deleteExpandedOrSelectedElements,
   toggleNewConnectionMode,
 } from "./services/core/elementSelectingAndDraggingService.js";
-import { renderAllLines } from "./services/core/lineRenderingService.js";
+import {
+  getLineViewsNumber,
+  renderAllLines,
+} from "./services/core/lineRenderingService.js";
 import { resetCanvas } from "./services/core/canvasService.js";
 import { closeElementAnalysisWindow } from "./elementAnalysisWindowView.js";
 import { openNewReadyMadeTfPopupWindow } from "./services/feature/readyMadeTfCreationService.js";
@@ -234,7 +237,9 @@ simplifyButton.addEventListener("click", async function (e) {
 
     simplificationStarted = false;
     simplifyButton.innerHTML = runButtonMarkup;
-    optimizeTopologyButton.disabled = false;
+    if (getLineViewsNumber() > 0) {
+      optimizeTopologyButton.disabled = false;
+    }
     previousButton.disabled = false;
     pauseButtonDisplayed = false;
     pauseButtonClicked = false;

@@ -97,16 +97,20 @@ export const resetExpandedOrSelectedElements = function () {
 
 export const deleteExpandedOrSelectedElements = function () {
   if (expandedElement) {
-    closeElementAnalysisWindow();
     const element = getElementFromElementId(+expandedElement.dataset.elementId);
+    closeElementAnalysisWindow();
     deleteElement(element);
     expandedElement = null;
     deleteButton.disabled = true;
   } else if (selectedElements.length !== 0) {
+    const block = getElementFromElementId(
+      +selectedElements[0].dataset.elementId
+    ).getBlock();
     selectedElements.forEach((x) => {
       const element = getElementFromElementId(+x.dataset.elementId);
-      deleteElement(element);
+      deleteElement(element, true);
     });
+    block.storeNewHistoricalState();
     selectedElements = [];
     deleteButton.disabled = true;
   }

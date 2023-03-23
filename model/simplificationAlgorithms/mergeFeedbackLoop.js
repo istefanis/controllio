@@ -193,14 +193,14 @@ const checkTfOutput = async function (tf, outputs) {
                 // tf step 2 - remove output to feedbackTf:
                 tf.removeOutput(feedbackTf);
 
+                // adder step 1 - remove feedbackTf input:
+                firstAdder.removeInput(feedbackTf);
+
                 // remove feedbackTf from tfs:
                 // this._internalRemoveFromTfs(feedbackTf);
                 feedbackTf.isBlock()
                   ? getBlock(feedbackTf).removeFromBlocks(feedbackTf)
                   : this._internalRemoveFromTfs(feedbackTf);
-
-                // adder step 1 - remove feedbackTf input:
-                firstAdder.removeInput(feedbackTf);
 
                 // adder step 2 - remove adder from adders, since it has no input or only one input left:
                 const previousBlock = firstAdder.getInput()[0];
@@ -218,14 +218,14 @@ const checkTfOutput = async function (tf, outputs) {
                 // tf step 2 - remove output to feedbackTf:
                 tf.removeOutput(feedbackTf);
 
+                // adder step 1 - remove feedbackTf input:
+                firstAdder.removeInput(feedbackTf);
+
                 // remove feedbackTf from tfs:
                 // this._internalRemoveFromTfs(feedbackTf);
                 feedbackTf.isBlock()
                   ? getBlock(feedbackTf).removeFromBlocks(feedbackTf)
                   : this._internalRemoveFromTfs(feedbackTf);
-
-                // adder step 1 - remove feedbackTf input:
-                firstAdder.removeInput(feedbackTf);
               }
             } else {
               //case: has only one input
@@ -235,14 +235,14 @@ const checkTfOutput = async function (tf, outputs) {
               // tf step 2 - remove output to feedbackTf:
               tf.removeOutput(feedbackTf);
 
+              // adder step 1 - remove feedbackTf input:
+              firstAdder.removeInput(feedbackTf);
+
               // remove feedbackTf from tfs:
               // this._internalRemoveFromTfs(feedbackTf);
               feedbackTf.isBlock()
                 ? getBlock(feedbackTf).removeFromBlocks(feedbackTf)
                 : this._internalRemoveFromTfs(feedbackTf);
-
-              // adder step 1 - remove feedbackTf input:
-              firstAdder.removeInput(feedbackTf);
 
               // tf step 2 - remove output to adder:
               tf.setInput(null);

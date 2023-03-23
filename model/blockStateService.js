@@ -16,7 +16,14 @@ import {
 } from "./elementService.js";
 import { resetCanvas } from "../view/services/core/canvasService.js";
 import { resetElementRenderingService } from "../view/services/core/elementRenderingService.js";
-import { resetLineRenderingService } from "../view/services/core/lineRenderingService.js";
+import {
+  getLineViewsNumber,
+  resetLineRenderingService,
+} from "../view/services/core/lineRenderingService.js";
+
+const optimizeTopologyButton = document.getElementById(
+  "optimize-topology-button"
+);
 
 /**
  * Clear current block state
@@ -54,6 +61,8 @@ export const setBlockState = function (state) {
       getElementFromElementId(x[1])
     );
   });
+
+  optimizeTopologyButton.disabled = getLineViewsNumber() === 0 ? true : false;
 };
 
 /**

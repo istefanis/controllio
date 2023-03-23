@@ -14,10 +14,22 @@ import {
   enableLineDrawingStyle,
 } from "./canvasService.js";
 
+const optimizeTopologyButton = document.getElementById(
+  "optimize-topology-button"
+);
+
+/**
+ * Array storing all the lineViews
+ */
 let lineViews = [];
+
+export const getLineViewsNumber = () => lineViews.length;
 
 export const registerLineView = function (lineView) {
   lineViews.push(lineView);
+  if (lineViews.length === 1) {
+    optimizeTopologyButton.disabled = false;
+  }
 };
 
 export const resetLineRenderingService = function () {
@@ -39,6 +51,12 @@ export const removeLineRender = function (element1Id, element2Id) {
   lineViews = lineViews.filter(
     (x) => !x.isLineConnectingElements(element1Id, element2Id)
   );
+
+  //disable optimize topology button if there are no lines left
+  if (lineViews.length === 0) {
+    optimizeTopologyButton.disabled = true;
+  }
+
   renderAllLines();
 };
 

@@ -44,6 +44,13 @@ export const setElementIdForElement = function (elementId, element) {
 };
 
 /**
+ * Remove element
+ */
+export const removeElementWithElementId = function (elementId) {
+  elementsMap.delete(elementId);
+};
+
+/**
  * Reset the elementMap and elementId
  */
 export const resetElementService = () => {
@@ -54,7 +61,7 @@ export const resetElementService = () => {
 /**
  * Delete element from block
  */
-export const deleteElement = function (element) {
+export const deleteElement = function (element, doNotStoreNewState) {
   disableHistoricalStateStorage();
   const block = element.getBlock();
   if (element.hasInput()) {
@@ -89,5 +96,7 @@ export const deleteElement = function (element) {
   }
 
   enableHistoricalStateStorage();
-  block.storeNewHistoricalState();
+  if (!doNotStoreNewState) {
+    block.storeNewHistoricalState();
+  }
 };
