@@ -138,7 +138,7 @@ text.axis-label {
 }
 
 #characteristic-numbers-container {
-  width: 100%;
+  /* width: 100%; */
   margin: -10px 0 10px 40px;
   display: flex;
   flex-direction: column;
@@ -147,7 +147,7 @@ text.axis-label {
 
 #characteristic-numbers-grid {
   display: grid;
-  grid-template-columns: 2fr 5fr;
+  grid-template-columns: 2fr 7fr;
   /* font-size: 11px; */
 }
 

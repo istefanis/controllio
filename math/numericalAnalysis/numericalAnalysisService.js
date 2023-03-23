@@ -105,6 +105,32 @@ export const halfIntervalMethod = function (f, a, b) {
 };
 
 //
+// Approximate root localization
+//
+
+/**
+ * Locates intervals in which a curve's roots are to be found
+ *
+ * @param curvePoints a curve as an array of points (with each point represented as an array [x, f(x)] itself)
+ *
+ * @returns an array containing the intervals (with each interval represented as an array itself)
+ */
+export const findCurveRootIntervals = function (curvePoints) {
+  const rootIntervals = [];
+
+  let intervalStart = curvePoints[0];
+
+  for (let i = 1; i < curvePoints.length; i++) {
+    if (Math.sign(intervalStart[1]) * Math.sign(curvePoints[i][1]) <= 0) {
+      rootIntervals.push([intervalStart[0], curvePoints[i][0]]);
+    }
+    intervalStart = curvePoints[i];
+  }
+
+  return rootIntervals;
+};
+
+//
 // Complex root-finding method for polynomials
 //
 

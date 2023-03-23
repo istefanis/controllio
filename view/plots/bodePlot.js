@@ -80,6 +80,7 @@ export default class BodePlot {
 
     computeAndDisplayCharacteristicNumbers(
       this.#magnitude,
+      this.#magnitudeCurvePoints,
       this.#phaseCurvePoints,
       this.#wMin,
       this.#wMax,
