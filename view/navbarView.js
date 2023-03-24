@@ -37,6 +37,7 @@ import {
 import { isLocalStorageEnabled } from "../util/ioService.js";
 import { getSimplifiedBlockValue } from "../model/elements/block.js";
 import { displayTf } from "../util/prettyPrintingService.js";
+import { sleep } from "../util/commons.js";
 
 const navbar = document.getElementById("navbar");
 
@@ -193,10 +194,16 @@ nextButton.addEventListener("click", function () {
 const optimizeTopologyButton = document.getElementById(
   "optimize-topology-button"
 );
+const optimizeTopologyIcon = document.getElementById("optimize-topology-icon");
 
 optimizeTopologyButton.addEventListener("click", async function (e) {
   e.stopPropagation();
+  optimizeTopologyIcon.classList.remove("bi-bounding-box-circles");
+  optimizeTopologyIcon.classList.add("loading-spinner");
+  await sleep(0); //needed for rendering the updated CSS before the computation below
   await optimizeTopology();
+  optimizeTopologyIcon.classList.remove("loading-spinner");
+  optimizeTopologyIcon.classList.add("bi-bounding-box-circles");
 });
 
 //
