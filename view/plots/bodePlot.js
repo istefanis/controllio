@@ -59,13 +59,15 @@ export default class BodePlot {
     this.#plotContainerDomElement = plotContainerDomElement;
     //create the two plot DOM elements inside the container
     const markup = `
-      <div class="bode-subplot" id="plot1"></div>
-      <div class="bode-subplot" id="plot2"></div>
+      <div class="bode-subplot" id="bode-plot1"></div>
+      <div class="bode-subplot" id="bode-plot2"></div>
     `;
     plotContainerDomElement.insertAdjacentHTML("afterbegin", markup);
 
-    this.#magnitudePlotDomElement = document.getElementById("plot1");
-    this.#phasePlotDomElement = document.getElementById("plot2");
+    this.#magnitudePlotDomElement =
+      plotContainerDomElement.querySelector("#bode-plot1");
+    this.#phasePlotDomElement =
+      plotContainerDomElement.querySelector("#bode-plot2");
     this.#numeratorTermsArray = numeratorTermsArray;
     this.#denominatorTermsArray = denominatorTermsArray;
     this.#zeros = zeros;
@@ -79,6 +81,9 @@ export default class BodePlot {
     this.createBodePlot();
 
     computeAndDisplayCharacteristicNumbers(
+      plotContainerDomElement.parentNode.querySelector(
+        "#characteristic-numbers-grid"
+      ),
       this.#magnitude,
       this.#magnitudeCurvePoints,
       this.#phaseCurvePoints,

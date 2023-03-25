@@ -22,10 +22,16 @@
   background-color: #fff;
   border-radius: 4px;
   z-index: 400;
+  /* transition: width 0.25s; */
+}
+
+.element-analysis-window-maximized {
+  width: 740px;
 }
 
 .element-analysis-window-header {
   height: 30px;
+  padding-right: 7px;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -39,18 +45,23 @@
   user-select: none;
 }
 
-.element-analysis-window-close-button {
+.element-analysis-window-header-button {
   width: 25px;
   height: 25px;
-  margin: 0 5px 0 0;
   background-color: var(--color-grey-240);
   border: 1px solid var(--color-grey-200);
   border-radius: 4px;
   cursor: pointer;
 }
 
-.element-analysis-window-close-button:hover {
+.element-analysis-window-header-button:hover {
   background-color: #fff;
+}
+
+/* to rotate the icon */
+#element-analysis-window-minimize-button,
+#element-analysis-window-maximize-button {
+  transform: rotate(90deg);
 }
 
 .element-analysis-window-contents {
@@ -84,6 +95,16 @@
   width: 60px;
   flex-shrink: 0;
   align-self: center;
+}
+
+.multiple-plots-container {
+  display: flex;
+  flex-direction: row;
+}
+
+.multiple-plots-container > section {
+  flex-grow: 1;
+  max-width: 50%;
 }
 
 .element-analysis-window-tab-contents {

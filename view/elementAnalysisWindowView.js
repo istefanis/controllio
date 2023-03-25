@@ -20,6 +20,7 @@ import {
   makeElementHidden,
   makeElementExpanded,
   makeElementUnexpanded,
+  isMobileDevice,
 } from "../util/uiService.js";
 import { polynomialTermsArrayToStringWithoutCoeffs } from "../util/prettyPrintingService.js";
 import BodePlot from "./plots/bodePlot.js";
@@ -34,24 +35,39 @@ import { enableHistoricalStateStorage } from "../model/blockStateService.js";
 //
 // Select DOM elements
 //
+const deleteButton = document.getElementById("delete-button");
+
 const elementAnalysisWindow = document.querySelector(
   ".element-analysis-window"
 );
-const elementAnalysisWindowCloseButton = document.querySelector(
-  ".element-analysis-window-close-button"
+const elementAnalysisWindowMinimizeButton = elementAnalysisWindow.querySelector(
+  "#element-analysis-window-minimize-button"
 );
-const elementAnalysisWindowContents = document.querySelector(
+const elementAnalysisWindowMaximizeButton = elementAnalysisWindow.querySelector(
+  "#element-analysis-window-maximize-button"
+);
+const elementAnalysisWindowCloseButton = elementAnalysisWindow.querySelector(
+  "#element-analysis-window-close-button"
+);
+const elementAnalysisWindowContents = elementAnalysisWindow.querySelector(
   ".element-analysis-window-contents"
 );
 
-const updateElementNumeratorInput = document.getElementById(
-  "update-element-numerator-input"
+const updateElementNumeratorInput = elementAnalysisWindow.querySelector(
+  "#update-element-numerator-input"
 );
-const updateElementDenominatorInput = document.getElementById(
-  "update-element-denominator-input"
+const updateElementDenominatorInput = elementAnalysisWindow.querySelector(
+  "#update-element-denominator-input"
 );
-const updateElementValueButton = document.querySelector(
+const updateElementValueButton = elementAnalysisWindow.querySelector(
   ".update-element-value-button"
+);
+
+const singlePlotContainer = elementAnalysisWindow.querySelector(
+  ".single-plot-container"
+);
+const multiplePlotsContainer = elementAnalysisWindow.querySelector(
+  ".multiple-plots-container"
 );
 
 const tabButtonsContainer = elementAnalysisWindowContents.querySelector(
@@ -64,11 +80,13 @@ const tabcontent = Array.from(
   elementAnalysisWindowContents.getElementsByClassName("tab-content")
 );
 
-const deleteButton = document.getElementById("delete-button");
-
-const plotContainerTab1 = document.getElementById("plot-container-tab-1");
-const plotContainerTab2 = document.getElementById("plot-container-tab-2");
-// const plotContainerTab3 = document.getElementById("plot-container-tab-3");
+let plotContainerTab1 = singlePlotContainer.querySelector(
+  "#plot-container-tab-1"
+);
+let plotContainerTab2 = singlePlotContainer.querySelector(
+  "#plot-container-tab-2"
+);
+// let plotContainerTab3;
 
 let expandedDomElement;
 let numeratorTermsArray;
@@ -79,6 +97,8 @@ let activeTab;
 
 let bodeObserver;
 let nyquistObserver;
+
+let isWindowMaximized = false;
 
 export const openOrUpdateElementAnalysisWindow = function (domElement) {
   deleteButton.disabled = false;
@@ -137,8 +157,10 @@ export const closeElementAnalysisWindow = function () {
 };
 
 const populateElementAnalysisWindow = function (element, updateExistingWindow) {
-  addElementAnalysisWindowEventListeners();
-
+  displayMinimizeMaximizeButtons();
+  if (!updateExistingWindow) {
+    addElementAnalysisWindowEventListeners();
+  }
   const tfValue = element.getValue();
   numeratorTermsArray = getTermsArray(getNumerator(tfValue));
   denominatorTermsArray = getTermsArray(getDenominator(tfValue));
@@ -156,18 +178,14 @@ const populateElementAnalysisWindow = function (element, updateExistingWindow) {
   zeros = findComplexRootsOfPolynomial(numeratorTermsArray);
   poles = findComplexRootsOfPolynomial(denominatorTermsArray);
 
-  if (!updateExistingWindow) {
-    //set first tab as active by default
-    document
-      .getElementById(`element-analysis-window-tab-button-1`)
-      .classList.add("active");
-    activeTab = 1;
+  if (!isWindowMaximized) {
+    populateActiveTab();
+  } else {
+    populateAllTabs();
   }
-
-  populateActiveTab();
 };
 
-const updateElementValueCallback = function (e) {
+const updateElementValueButtonCallback = function (e) {
   e.preventDefault();
 
   //parse updated value:
@@ -222,18 +240,39 @@ const updateElementValueCallback = function (e) {
       poles = findComplexRootsOfPolynomial(denominatorTermsArray);
     }
 
-    //update plot
-    populateActiveTab();
+    //update plot(s)
+    if (!isWindowMaximized) {
+      populateActiveTab();
+    } else {
+      populateAllTabs();
+    }
   }
 };
 
 const populateActiveTab = function () {
-  document.getElementById(
-    `element-analysis-window-tab-content-${activeTab}`
-  ).style.display = "block";
+  if (!activeTab) {
+    //set first tab as active by default
+    activeTab = 1;
+  }
+  document
+    .getElementById(`element-analysis-window-tab-button-${activeTab}`)
+    .classList.add("active");
 
   disconnectObservers();
   resetPlotContainersMarkup();
+
+  //set plot container tabs
+  plotContainerTab1 = singlePlotContainer.querySelector(
+    "#plot-container-tab-1"
+  );
+  plotContainerTab2 = singlePlotContainer.querySelector(
+    "#plot-container-tab-2"
+  );
+
+  //display active tab contents
+  singlePlotContainer.querySelector(
+    `#element-analysis-window-tab-content-${activeTab}`
+  ).style.display = "block";
 
   if (activeTab === 1) {
     bodeObserver = new BodePlot(
@@ -254,17 +293,61 @@ const populateActiveTab = function () {
   }
 };
 
+const populateAllTabs = function () {
+  disconnectObservers();
+  resetPlotContainersMarkup();
+
+  //set plot container tabs
+  plotContainerTab1 = multiplePlotsContainer.querySelector(
+    "#plot-container-tab-1"
+  );
+  plotContainerTab2 = multiplePlotsContainer.querySelector(
+    "#plot-container-tab-2"
+  );
+
+  //display all tab contents
+  multiplePlotsContainer.querySelector(
+    `#element-analysis-window-tab-content-1`
+  ).style.display = "block";
+  multiplePlotsContainer.querySelector(
+    `#element-analysis-window-tab-content-2`
+  ).style.display = "block";
+
+  bodeObserver = new BodePlot(
+    plotContainerTab1,
+    numeratorTermsArray,
+    denominatorTermsArray,
+    zeros,
+    poles
+  );
+  nyquistObserver = new NyquistPlot(
+    plotContainerTab2,
+    numeratorTermsArray,
+    denominatorTermsArray,
+    zeros,
+    poles
+  );
+};
+
 /**
  * Add event listeners, when the element analysis window has been opened
  */
 const addElementAnalysisWindowEventListeners = function () {
+  elementAnalysisWindowMinimizeButton.addEventListener(
+    "click",
+    toggleMinimizeMaximizeWindow
+  );
+  elementAnalysisWindowMaximizeButton.addEventListener(
+    "click",
+    toggleMinimizeMaximizeWindow
+  );
   elementAnalysisWindowCloseButton.addEventListener(
     "click",
     closeElementAnalysisWindow
   );
   updateElementValueButton.addEventListener(
     "click",
-    updateElementValueCallback
+    updateElementValueButtonCallback
   );
   tabButtonsContainer.addEventListener("click", tabButtonsCallback);
 };
@@ -273,14 +356,21 @@ const addElementAnalysisWindowEventListeners = function () {
  * Remove event listeners, after the element analysis window has been closed
  */
 const removeElementAnalysisWindowEventListeners = function () {
-  //remove event listeners
+  elementAnalysisWindowMinimizeButton.removeEventListener(
+    "click",
+    toggleMinimizeMaximizeWindow
+  );
+  elementAnalysisWindowMaximizeButton.removeEventListener(
+    "click",
+    toggleMinimizeMaximizeWindow
+  );
   elementAnalysisWindowCloseButton.removeEventListener(
     "click",
     closeElementAnalysisWindow
   );
   updateElementValueButton.removeEventListener(
     "click",
-    updateElementValueCallback
+    updateElementValueButtonCallback
   );
   tabButtonsContainer.removeEventListener("click", tabButtonsCallback);
 };
@@ -310,5 +400,40 @@ const disconnectObservers = function () {
   }
   if (nyquistObserver) {
     nyquistObserver.disconnect();
+  }
+};
+
+//
+// Minimize & maximize window
+//
+const displayMinimizeMaximizeButtons = function () {
+  if (!isMobileDevice) {
+    if (isWindowMaximized) {
+      elementAnalysisWindowMinimizeButton.classList.remove("hidden");
+      elementAnalysisWindowMaximizeButton.classList.add("hidden");
+      singlePlotContainer.classList.add("hidden");
+      multiplePlotsContainer.classList.remove("hidden");
+    } else {
+      elementAnalysisWindowMinimizeButton.classList.add("hidden");
+      elementAnalysisWindowMaximizeButton.classList.remove("hidden");
+      singlePlotContainer.classList.remove("hidden");
+      multiplePlotsContainer.classList.add("hidden");
+    }
+  }
+};
+
+const toggleMinimizeMaximizeWindow = function () {
+  if (!isMobileDevice) {
+    isWindowMaximized = !isWindowMaximized;
+    elementAnalysisWindow.classList.toggle("element-analysis-window-maximized");
+    elementAnalysisWindowMinimizeButton.classList.toggle("hidden");
+    elementAnalysisWindowMaximizeButton.classList.toggle("hidden");
+    singlePlotContainer.classList.toggle("hidden");
+    multiplePlotsContainer.classList.toggle("hidden");
+    if (!isWindowMaximized) {
+      populateActiveTab();
+    } else {
+      populateAllTabs();
+    }
   }
 };

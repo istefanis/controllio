@@ -48,11 +48,12 @@ export default class NyquistPlot {
     this.#plotContainerDomElement = plotContainerDomElement;
     //create the plot DOM element inside the container
     const markup = `
-      <div class="nyquist-plot" id="plot1"></div>
+      <div class="nyquist-plot" id="nyquist-plot"></div>
     `;
     plotContainerDomElement.insertAdjacentHTML("afterbegin", markup);
 
-    this.#nyquistPlotDomElement = document.getElementById("plot1");
+    this.#nyquistPlotDomElement =
+      plotContainerDomElement.querySelector("#nyquist-plot");
     this.#numeratorTermsArray = numeratorTermsArray;
     this.#denominatorTermsArray = denominatorTermsArray;
     this.#zeros = zeros;
@@ -272,7 +273,10 @@ export default class NyquistPlot {
   }
 
   insertZerosAndPolesMarkup() {
-    const zerosAndPolesGrid = document.getElementById("zeros-and-poles-grid");
+    const zerosAndPolesGrid =
+      this.#plotContainerDomElement.parentNode.querySelector(
+        "#zeros-and-poles-grid"
+      );
     if (this.#zeros.concat(this.#poles).length > 10) {
       makeElementFontSizeSmaller(zerosAndPolesGrid);
     } else {

@@ -203,7 +203,26 @@ Controllio · Open source web drafting table for studying control systems
     <section class="element-analysis-window hidden">
       <div class="element-analysis-window-header">
         <p>Transfer function</p>
-        <button class="element-analysis-window-close-button">&times;</button>
+        <div>
+          <button
+            class="element-analysis-window-header-button hidden"
+            id="element-analysis-window-minimize-button"
+          >
+            <i class="bi-arrows-collapse"></i>
+          </button>
+          <button
+            class="element-analysis-window-header-button hidden"
+            id="element-analysis-window-maximize-button"
+          >
+            <i class="bi-arrows-expand"></i>
+          </button>
+          <button
+            class="element-analysis-window-header-button"
+            id="element-analysis-window-close-button"
+          >
+            &times;
+          </button>
+        </div>
       </div>
       <div class="element-analysis-window-contents">
         <form class="modify-element-value">
@@ -211,7 +230,7 @@ Controllio · Open source web drafting table for studying control systems
             <p>Numer:</p>
             <input
               type="text"
-              placeholder="4"
+              placeholder="[1, 2, 3]"
               id="update-element-numerator-input"
               class="update-element-value-input"
             />
@@ -229,56 +248,111 @@ Controllio · Open source web drafting table for studying control systems
             Update value
           </button>
         </form>
-        <div class="element-analysis-window-tab-buttons tab-buttons-container">
-          <button
-            class="tab-button"
-            id="element-analysis-window-tab-button-1"
-            data-tab-id="1"
+        <section class="single-plot-container">
+          <div
+            class="element-analysis-window-tab-buttons tab-buttons-container"
           >
-            Bode plot
-          </button>
-          <button
-            class="tab-button"
-            id="element-analysis-window-tab-button-2"
-            data-tab-id="2"
-          >
-            Nyquist plot
-          </button>
-          <!-- <button
-            class="tab-button"
-            id="element-analysis-window-tab-button-3"
-            data-tab-id="3"
-          >
-            Time response
-          </button> -->
-        </div>
-        <div class="element-analysis-window-tab-contents tab-contents">
-          <section
-            class="tab-content"
-            id="element-analysis-window-tab-content-1"
-          >
-            <div class="plot-container" id="plot-container-tab-1"></div>
-            <div id="characteristic-numbers-container">
-              <p id="filter-type"></p>
-              <div id="characteristic-numbers-grid"></div>
+            <button
+              class="tab-button"
+              id="element-analysis-window-tab-button-1"
+              data-tab-id="1"
+            >
+              Bode plot
+            </button>
+            <button
+              class="tab-button"
+              id="element-analysis-window-tab-button-2"
+              data-tab-id="2"
+            >
+              Nyquist plot
+            </button>
+            <!-- <button
+              class="tab-button"
+              id="element-analysis-window-tab-button-3"
+              data-tab-id="3"
+            >
+              Time response
+            </button> -->
+          </div>
+          <div class="element-analysis-window-tab-contents tab-contents">
+            <section
+              class="tab-content"
+              id="element-analysis-window-tab-content-1"
+            >
+              <div class="plot-container" id="plot-container-tab-1"></div>
+              <div id="characteristic-numbers-container">
+                <p id="filter-type"></p>
+                <div id="characteristic-numbers-grid"></div>
+              </div>
+            </section>
+            <section
+              class="tab-content"
+              id="element-analysis-window-tab-content-2"
+            >
+              <div class="plot-container" id="plot-container-tab-2"></div>
+              <div id="zeros-and-poles-container">
+                <div id="zeros-and-poles-grid"></div>
+              </div>
+            </section>
+            <!-- <section
+              class="tab-content"
+              id="element-analysis-window-tab-content-3"
+            >
+              <div class="plot-container" id="plot-container-tab-3"></div>
+            </section> -->
+          </div>
+        </section>
+        <section class="multiple-plots-container hidden">
+          <section>
+            <div
+              class="element-analysis-window-tab-buttons tab-buttons-container"
+            >
+              <button
+                class="tab-button"
+                id="element-analysis-window-tab-button-1"
+                data-tab-id="1"
+              >
+                Bode plot
+              </button>
+            </div>
+            <div class="element-analysis-window-tab-contents tab-contents">
+              <section
+                class="tab-content"
+                id="element-analysis-window-tab-content-1"
+              >
+                <div class="plot-container" id="plot-container-tab-1"></div>
+                <div id="characteristic-numbers-container">
+                  <p id="filter-type"></p>
+                  <div id="characteristic-numbers-grid"></div>
+                </div>
+              </section>
             </div>
           </section>
-          <section
-            class="tab-content"
-            id="element-analysis-window-tab-content-2"
-          >
-            <div class="plot-container" id="plot-container-tab-2"></div>
-            <div id="zeros-and-poles-container">
-              <div id="zeros-and-poles-grid"></div>
+          <section>
+            <div
+              class="element-analysis-window-tab-buttons tab-buttons-container"
+            >
+              <button
+                class="tab-button"
+                id="element-analysis-window-tab-button-2"
+                data-tab-id="2"
+              >
+                Nyquist plot
+              </button>
+            </div>
+            <div class="element-analysis-window-tab-contents tab-contents">
+              <section
+                class="tab-content"
+                id="element-analysis-window-tab-content-2"
+              >
+                <div class="plot-container" id="plot-container-tab-2"></div>
+                <div id="zeros-and-poles-container">
+                  <div id="zeros-and-poles-grid"></div>
+                </div>
+              </section>
             </div>
           </section>
-          <!-- <section
-            class="tab-content"
-            id="element-analysis-window-tab-content-3"
-          >
-            <div class="plot-container" id="plot-container-tab-3"></div>
-          </section> -->
-        </div>
+        </section>
       </div>
     </section>
     <section class="popup-window hidden">

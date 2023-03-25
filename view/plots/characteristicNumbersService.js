@@ -12,6 +12,8 @@ import {
   halfIntervalMethod,
 } from "../../math/numericalAnalysis/numericalAnalysisService.js";
 
+let characteristicNumbersGridDomElement;
+
 //values required for characteristic numbers computations
 let magnitudeAtWMin;
 let magnitudeAtWMax;
@@ -36,6 +38,7 @@ let rollOffText;
 const halfPowerThreshold = Math.sqrt(2) / 2;
 
 export const computeAndDisplayCharacteristicNumbers = function (
+  containerDomElement,
   magnitude,
   magnitudeCurvePoints,
   phaseCurvePoints,
@@ -44,6 +47,8 @@ export const computeAndDisplayCharacteristicNumbers = function (
   minMagnitude,
   maxMagnitude
 ) {
+  characteristicNumbersGridDomElement = containerDomElement;
+
   resetCharacteristicNumbers();
 
   computeValuesRequired(
@@ -234,17 +239,16 @@ const generateRollOffText = function (magnitude, wMin, wMax) {
 };
 
 const insertCharacteristicNumbersMarkup = function () {
-  const filterType = document.getElementById("filter-type");
+  const filterType =
+    characteristicNumbersGridDomElement.parentNode.querySelector(
+      "#filter-type"
+    );
   filterType.innerText = filterTypeText;
-
-  const characteristicNumbersGrid = document.getElementById(
-    "characteristic-numbers-grid"
-  );
   const markup = `
     <p>Bandwidth</p><p>= ${bandwidthText !== "" ? bandwidthText : "N/A"}</p>
     <p>Threshold</p><p>= ${thresholdText !== "" ? thresholdText : "N/A"}</p>
     <p>Roll-off</p><p>= ${rollOffText !== "" ? rollOffText : "N/A"}</p>
   `;
-  characteristicNumbersGrid.innerHTML = "";
-  characteristicNumbersGrid.insertAdjacentHTML("afterbegin", markup);
+  characteristicNumbersGridDomElement.innerHTML = "";
+  characteristicNumbersGridDomElement.insertAdjacentHTML("afterbegin", markup);
 };
