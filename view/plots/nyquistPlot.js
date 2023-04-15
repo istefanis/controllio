@@ -7,9 +7,9 @@
  */
 
 import {
-  polynomialWiSubstitutionImagTermsArray,
-  polynomialWiSubstitutionRealTermsArray,
-} from "../../math/complex/complexNumbersService.js";
+  polynomialEvaluatedWithWiImagTermsArray,
+  polynomialEvaluatedWithWiRealTermsArray,
+} from "../../math/complexAnalysis/complexAnalysisService.js";
 import { functionFromPolynomialTermsArray } from "../../util/commons.js";
 import { logMessages } from "../../util/loggingService.js";
 import {
@@ -338,15 +338,15 @@ const computeNyquistRealAndImagWFunctions = function (
     [
       "[CP-91] Nyquist plot s=w*i substitution - " +
         "numerator: " +
-        `[${polynomialWiSubstitutionRealTermsArray(
+        `[${polynomialEvaluatedWithWiRealTermsArray(
           numeratorTermsArray
-        )}]+i*[${polynomialWiSubstitutionImagTermsArray(
+        )}]+i*[${polynomialEvaluatedWithWiImagTermsArray(
           numeratorTermsArray
         )}], ` +
         "denominator: " +
-        `[${polynomialWiSubstitutionRealTermsArray(
+        `[${polynomialEvaluatedWithWiRealTermsArray(
           denominatorTermsArray
-        )}]+i*[${polynomialWiSubstitutionImagTermsArray(
+        )}]+i*[${polynomialEvaluatedWithWiImagTermsArray(
           denominatorTermsArray
         )}]`,
     ],
@@ -357,17 +357,17 @@ const computeNyquistRealAndImagWFunctions = function (
   // define magnitude & phase functions
   //
   const numReal = functionFromPolynomialTermsArray(
-    polynomialWiSubstitutionRealTermsArray(numeratorTermsArray)
+    polynomialEvaluatedWithWiRealTermsArray(numeratorTermsArray)
   );
   const numImag = functionFromPolynomialTermsArray(
-    polynomialWiSubstitutionImagTermsArray(numeratorTermsArray)
+    polynomialEvaluatedWithWiImagTermsArray(numeratorTermsArray)
   );
 
   const denReal = functionFromPolynomialTermsArray(
-    polynomialWiSubstitutionRealTermsArray(denominatorTermsArray)
+    polynomialEvaluatedWithWiRealTermsArray(denominatorTermsArray)
   );
   const denImag = functionFromPolynomialTermsArray(
-    polynomialWiSubstitutionImagTermsArray(denominatorTermsArray)
+    polynomialEvaluatedWithWiImagTermsArray(denominatorTermsArray)
   );
 
   const real = (w) =>

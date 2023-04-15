@@ -3,7 +3,7 @@
  */
 
 /*
- * Math / Complex / ComplexNumbersService
+ * Math / ComplexAnalysis / ComplexAnalysisService
  */
 
 import { Complex } from "../../assets/lib/Complex/Complex.js";
@@ -34,7 +34,7 @@ import { isEven, isOdd } from "../../util/commons.js";
  *
  *   5,  4,   3,   2,   1,  0  (term order)
  */
-export const polynomialWiSubstitutionRealTermsArray = function (termsArray) {
+export const polynomialEvaluatedWithWiRealTermsArray = function (termsArray) {
   const length = termsArray.length;
   return termsArray.map((t, i) => {
     if (isOdd(length - i - 1)) {
@@ -72,7 +72,7 @@ export const polynomialWiSubstitutionRealTermsArray = function (termsArray) {
  *
  *   5,  4,   3,   2,   1,  0  (term order)
  */
-export const polynomialWiSubstitutionImagTermsArray = function (termsArray) {
+export const polynomialEvaluatedWithWiImagTermsArray = function (termsArray) {
   const length = termsArray.length;
   return termsArray.map((t, i) => {
     if (isOdd(length - i - 1) && isOdd((length - i - 1 - 1) / 2)) {

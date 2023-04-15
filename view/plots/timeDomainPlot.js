@@ -6,7 +6,7 @@
  * View / Plots / TimeDomainPlot
  */
 
-import { tfEvaluatedWithComplexNumber } from "../../math/complex/complexNumbersService.js";
+import { tfEvaluatedWithComplexNumber } from "../../math/complexAnalysis/complexAnalysisService.js";
 import { TalbotMethod } from "../../math/numericalAnalysis/numericalAnalysisService.js";
 import { logMessages } from "../../util/loggingService.js";
 import { maxCurvePointsAllowed } from "./plotService.js";
