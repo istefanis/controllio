@@ -99,7 +99,10 @@ export default class NyquistPlot {
       //guard clause
       if (i > maxCurvePointsAllowed) {
         computationAborted = true;
-        console.error("Too many curve points - computation aborted");
+        console.error(
+          "computeNyquistPlotCurvePoints()",
+          "Too many curve points - computation aborted"
+        );
         break;
       }
     }
@@ -114,7 +117,10 @@ export default class NyquistPlot {
 
         //guard clause
         if (i > maxCurvePointsAllowed) {
-          console.error("Too many curve points - computation aborted");
+          console.error(
+            "computeNyquistPlotCurvePoints()",
+            "Too many curve points - computation aborted"
+          );
           break;
         }
       }

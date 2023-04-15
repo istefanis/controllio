@@ -23,7 +23,7 @@ export const setLogMode = function (mode) {
     logMode = mode;
     logMessages([`[CP-01] Log mode set to: ${mode}`], "checkpoints");
   } else {
-    console.error("setLogMode() - Unknown log mode");
+    console.error("setLogMode()", "Unknown log mode");
   }
 };
 

@@ -164,7 +164,10 @@ export default class BodePlot {
 
       //guard clause
       if (i > maxCurvePointsAllowed) {
-        console.error("Too many curve points - computation aborted");
+        console.error(
+          "computeBodePlotCurvePoints()",
+          "Too many curve points - computation aborted"
+        );
         break;
       }
     }

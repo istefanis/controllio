@@ -25,6 +25,7 @@ export const maxUtilizedCanvasHeight = 960;
 export let isTouchScreenDevice = navigator.maxTouchPoints > 0;
 export let isMobileDevice =
   window.innerWidth < 1024 && window.innerHeight < 1024;
+export let isLargeScreenDevice = window.innerWidth >= 1920;
 
 /**
  * Check whether a selection 'bounding client rectangle'
