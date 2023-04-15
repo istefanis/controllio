@@ -12,3 +12,5 @@ The app uses:
 - the durand-kerner & next-pow-2 libraries, licensed under the MIT License, available at https://github.com/scijs/durand-kerner and https://github.com/mikolalysenko/next-pow-2 respectively, which are included modified in the 'assets' directory
 
 - the Complex libray, licensed under the MIT License, available at https://github.com/arian/Complex, which is included modified in the 'assets' directory
+
+- the Tablot numerical method, whose two implementations originally developed in Python are licensed under the MIT License, available at https://code.activestate.com/recipes/576934/ and https://code.activestate.com/recipes/576938/ respectively (their licences are included in the 'assets' directory)

@@ -7,7 +7,7 @@
  */
 
 /*
- * Reference for algorithms:
+ * Reference for real root-finding methods:
  *
  * Structure and Interpretation of Computer Programs second edition.
  * The MIT Press with the McGraw-Hill Book Company, 1996
@@ -16,6 +16,19 @@
  * noted below as 'SICP'
  */
 
+/*
+ * Reference for Talbot method for Laplace inversion:
+ *
+ * Implementation originally developed in Python by F.D. Nieuwveldt and D. Kadelka. See:
+ * https://code.activestate.com/recipes/576934/
+ * https://code.activestate.com/recipes/576938/
+ *
+ * Reference:
+ * L.N. Trefethen, J.A.C. Weideman, and T. Schmelzer. Talbot quadratures and rational
+ * approximations. BIT. Numerical Mathematics, 46(3):653 670, 2006.
+ */
+
+import { Complex } from "../../assets/lib/Complex/Complex.js";
 import findRoots from "../../assets/lib/durand-kerner/roots.js";
 import {
   roundDecimal,
@@ -95,7 +108,7 @@ export const halfIntervalMethod = function (f, a, b) {
     if (maxLoopCounter > maxLoops / 3 || a >= b) {
       return false;
     } else {
-      // console.error("Values are not of opposite sign", a, b, f(a), f(b));
+      // console.error("halfIntervalMethod()", "Values are not of opposite sign", a, b, f(a), f(b));
       maxLoopCounter++;
       // console.log(maxLoopCounter);
       // console.log(1.05 * a, 0.95 * b);
@@ -164,4 +177,68 @@ export const findComplexRootsOfPolynomial = function (termsArray) {
   return complexRoots.sort(function (x1, x2) {
     return x1[0] - x2[0];
   });
+};
+
+//
+// Laplace inversion
+//
+
+/**
+ * Using an implementation of the Talbot numerical method for Laplace inversion,
+ * after taking as input the s-domain Laplace transform function F(s),
+ * compute the t-domain function value f(t) at time t
+ *
+ * It uses the 'Complex' library
+ */
+export const TalbotMethod = function (F, t, N) {
+  if (t <= 0) {
+    console.error("TalbotMethod()", "t must be positive");
+    return;
+  }
+
+  const h = (2 * Math.PI) / N;
+  const shift = 0; //contour should be shifted if positive real poles exist
+
+  //parameters by Weideman
+  const c1 = 0.5017;
+  const c2 = 0.6407;
+  const c3 = 0.6122;
+  const c4 = 0.2645;
+
+  //evaluation at theta
+  const loop = (k, ans) => {
+    if (k > N) {
+      return new Complex(h, 0)
+        .divide(new Complex(0, 2 * Math.PI))
+        .multiply(ans);
+    } else {
+      const theta = -Math.PI + (k + 0.5) * h;
+
+      const z = new Complex.from(shift).add(
+        new Complex(N / t, 0).multiply(
+          new Complex((c1 * theta) / Math.tan(c2 * theta) - c3, c4 * theta)
+        )
+      );
+
+      const dz_dtheta = new Complex(N / t, 0).multiply(
+        new Complex(
+          (-c1 * c2 * theta) / Math.pow(Math.sin(c2 * theta), 2) +
+            c1 / Math.tan(c2 * theta),
+          c4
+        )
+      );
+
+      return loop(
+        k + 1,
+        ans.add(
+          new Complex.from(z)
+            .multiply(t)
+            .exp()
+            .multiply(F(z))
+            .multiply(dz_dtheta)
+        )
+      );
+    }
+  };
+  return loop(0, new Complex(0, 0)).real;
 };

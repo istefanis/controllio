@@ -6,6 +6,7 @@
  * Math / Complex / ComplexNumbersService
  */
 
+import { Complex } from "../../assets/lib/Complex/Complex.js";
 import { isEven, isOdd } from "../../util/commons.js";
 
 /**
@@ -82,4 +83,29 @@ export const polynomialWiSubstitutionImagTermsArray = function (termsArray) {
       return 0;
     }
   });
+};
+
+//
+// Methods using the 'Complex' library
+//
+
+export const tfEvaluatedWithComplexNumber = function (
+  numTermsArray,
+  denTermsArray
+) {
+  return (complex) =>
+    polynomialEvaluatedWithComplexNumber(numTermsArray, complex).divide(
+      polynomialEvaluatedWithComplexNumber(denTermsArray, complex)
+    );
+};
+
+const polynomialEvaluatedWithComplexNumber = function (termsArray, complex) {
+  const length = termsArray.length;
+  return termsArray
+    .map((term, i) =>
+      new Complex.from(term).multiply(
+        new Complex.from(complex).pow(length - i - 1)
+      )
+    )
+    .reduce((acc, x) => acc.add(x), new Complex(0, 0));
 };
