@@ -266,13 +266,13 @@ Controllio · Open source web drafting table for studying control systems
             >
               Nyquist plot
             </button>
-            <!-- <button
+            <button
               class="tab-button"
               id="element-analysis-window-tab-button-3"
               data-tab-id="3"
             >
-              Time response
-            </button> -->
+              Time domain
+            </button>
           </div>
           <div class="element-analysis-window-tab-contents tab-contents">
             <section
@@ -294,12 +294,37 @@ Controllio · Open source web drafting table for studying control systems
                 <div id="zeros-and-poles-grid"></div>
               </div>
             </section>
-            <!-- <section
+            <section
               class="tab-content"
               id="element-analysis-window-tab-content-3"
             >
               <div class="plot-container" id="plot-container-tab-3"></div>
-            </section> -->
+              <div class="input-signal-radio-buttons">
+                <div>
+                  <label>
+                    <input
+                      type="radio"
+                      name="input-signal"
+                      value="impulse"
+                      id="input-signal-impulse"
+                      checked
+                    />
+                    <p>Impulse</p>
+                  </label>
+                </div>
+                <div>
+                  <label>
+                    <input
+                      type="radio"
+                      name="input-signal"
+                      value="step"
+                      id="input-signal-step"
+                    />
+                    <p>Step</p>
+                  </label>
+                </div>
+              </div>
+            </section>
           </div>
         </section>
         <section class="multiple-plots-container hidden">
@@ -348,6 +373,52 @@ Controllio · Open source web drafting table for studying control systems
                 <div class="plot-container" id="plot-container-tab-2"></div>
                 <div id="zeros-and-poles-container">
                   <div id="zeros-and-poles-grid"></div>
+                </div>
+              </section>
+            </div>
+          </section>
+          <section>
+            <div
+              class="element-analysis-window-tab-buttons tab-buttons-container"
+            >
+              <button
+                class="tab-button"
+                id="element-analysis-window-tab-button-3"
+                data-tab-id="3"
+              >
+                Time domain
+              </button>
+            </div>
+            <div class="element-analysis-window-tab-contents tab-contents">
+              <section
+                class="tab-content"
+                id="element-analysis-window-tab-content-3"
+              >
+                <div class="plot-container" id="plot-container-tab-3"></div>
+                <div class="input-signal-radio-buttons">
+                  <div>
+                    <label>
+                      <input
+                        type="radio"
+                        name="input-signal"
+                        value="impulse"
+                        id="input-signal-impulse"
+                        checked
+                      />
+                      <p>Impulse</p>
+                    </label>
+                  </div>
+                  <div>
+                    <label
+                      ><input
+                        type="radio"
+                        name="input-signal"
+                        value="step"
+                        id="input-signal-step"
+                      />
+                      <p>Step</p>
+                    </label>
+                  </div>
                 </div>
               </section>
             </div>

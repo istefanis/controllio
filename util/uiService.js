@@ -24,7 +24,7 @@ export const maxUtilizedCanvasHeight = 960;
 //
 export let isTouchScreenDevice = navigator.maxTouchPoints > 0;
 export let isMobileDevice =
-  window.innerWidth < 1024 && window.innerHeight < 1024;
+  window.innerWidth < 1024 && window.innerHeight < 1280; //width is more important in determining what should be displayed
 export let isLargeScreenDevice = window.innerWidth >= 1920;
 
 /**

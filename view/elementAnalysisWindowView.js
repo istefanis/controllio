@@ -21,10 +21,12 @@ import {
   makeElementExpanded,
   makeElementUnexpanded,
   isMobileDevice,
+  isLargeScreenDevice,
 } from "../util/uiService.js";
 import { polynomialTermsArrayToStringWithoutCoeffs } from "../util/prettyPrintingService.js";
 import BodePlot from "./plots/bodePlot.js";
 import NyquistPlot from "./plots/nyquistPlot.js";
+import TimeDomainPlot from "./plots/timeDomainPlot.js";
 import { findComplexRootsOfPolynomial } from "../math/numericalAnalysis/numericalAnalysisService.js";
 import {
   resetActiveElements,
@@ -86,7 +88,9 @@ let plotContainerTab1 = singlePlotContainer.querySelector(
 let plotContainerTab2 = singlePlotContainer.querySelector(
   "#plot-container-tab-2"
 );
-// let plotContainerTab3;
+let plotContainerTab3 = singlePlotContainer.querySelector(
+  "#plot-container-tab-3"
+);
 
 let expandedDomElement;
 let numeratorTermsArray;
@@ -97,6 +101,10 @@ let activeTab;
 
 let bodeObserver;
 let nyquistObserver;
+let timeDomainObserver;
+
+let timeDomainInputSignalRadioButtons;
+let timeDomainInputSignal;
 
 let isWindowMaximized = false;
 
@@ -268,6 +276,9 @@ const populateActiveTab = function () {
   plotContainerTab2 = singlePlotContainer.querySelector(
     "#plot-container-tab-2"
   );
+  plotContainerTab3 = singlePlotContainer.querySelector(
+    "#plot-container-tab-3"
+  );
 
   //display active tab contents
   singlePlotContainer.querySelector(
@@ -290,6 +301,16 @@ const populateActiveTab = function () {
       zeros,
       poles
     );
+  } else if (activeTab === 3) {
+    timeDomainObserver = new TimeDomainPlot(
+      plotContainerTab3,
+      numeratorTermsArray,
+      timeDomainInputSignal === "step"
+        ? [...denominatorTermsArray, 0]
+        : denominatorTermsArray,
+      zeros,
+      poles
+    );
   }
 };
 
@@ -304,6 +325,9 @@ const populateAllTabs = function () {
   plotContainerTab2 = multiplePlotsContainer.querySelector(
     "#plot-container-tab-2"
   );
+  plotContainerTab3 = multiplePlotsContainer.querySelector(
+    "#plot-container-tab-3"
+  );
 
   //display all tab contents
   multiplePlotsContainer.querySelector(
@@ -311,6 +335,9 @@ const populateAllTabs = function () {
   ).style.display = "block";
   multiplePlotsContainer.querySelector(
     `#element-analysis-window-tab-content-2`
+  ).style.display = "block";
+  multiplePlotsContainer.querySelector(
+    `#element-analysis-window-tab-content-3`
   ).style.display = "block";
 
   bodeObserver = new BodePlot(
@@ -324,6 +351,32 @@ const populateAllTabs = function () {
     plotContainerTab2,
     numeratorTermsArray,
     denominatorTermsArray,
+    zeros,
+    poles
+  );
+  timeDomainObserver = new TimeDomainPlot(
+    plotContainerTab3,
+    numeratorTermsArray,
+    timeDomainInputSignal === "step"
+      ? [...denominatorTermsArray, 0]
+      : denominatorTermsArray,
+    zeros,
+    poles
+  );
+};
+
+const updateOnlyTimeDomainTab = function () {
+  if (timeDomainObserver && timeDomainObserver.disconnect) {
+    timeDomainObserver.disconnect();
+  }
+  plotContainerTab3.innerHTML = "";
+
+  timeDomainObserver = new TimeDomainPlot(
+    plotContainerTab3,
+    numeratorTermsArray,
+    timeDomainInputSignal === "step"
+      ? [...denominatorTermsArray, 0]
+      : denominatorTermsArray,
     zeros,
     poles
   );
@@ -350,6 +403,10 @@ const addElementAnalysisWindowEventListeners = function () {
     updateElementValueButtonCallback
   );
   tabButtonsContainer.addEventListener("click", tabButtonsCallback);
+
+  timeDomainInputSignalRadioButtons.forEach((x) =>
+    x.addEventListener("change", changeTimeDomainInputSignalCallback)
+  );
 };
 
 /**
@@ -373,6 +430,10 @@ const removeElementAnalysisWindowEventListeners = function () {
     updateElementValueButtonCallback
   );
   tabButtonsContainer.removeEventListener("click", tabButtonsCallback);
+
+  timeDomainInputSignalRadioButtons.forEach((x) =>
+    x.removeEventListener("change", changeTimeDomainInputSignalCallback)
+  );
 };
 
 const tabButtonsCallback = function (e) {
@@ -388,18 +449,33 @@ const tabButtonsCallback = function (e) {
   }
 };
 
+const changeTimeDomainInputSignalCallback = function () {
+  if (this.checked) {
+    timeDomainInputSignal = this.value;
+    if (!isWindowMaximized) {
+      populateActiveTab();
+    } else {
+      updateOnlyTimeDomainTab();
+      // populateAllTabs();
+    }
+  }
+};
+
 const resetPlotContainersMarkup = function () {
   plotContainerTab1.innerHTML = "";
   plotContainerTab2.innerHTML = "";
-  // plotContainerTab3.innerHTML = "";
+  plotContainerTab3.innerHTML = "";
 };
 
 const disconnectObservers = function () {
-  if (bodeObserver) {
+  if (bodeObserver && bodeObserver.disconnect) {
     bodeObserver.disconnect();
   }
-  if (nyquistObserver) {
+  if (nyquistObserver && nyquistObserver.disconnect) {
     nyquistObserver.disconnect();
+  }
+  if (timeDomainObserver && timeDomainObserver.disconnect) {
+    timeDomainObserver.disconnect();
   }
 };
 
@@ -423,17 +499,62 @@ const displayMinimizeMaximizeButtons = function () {
 };
 
 const toggleMinimizeMaximizeWindow = function () {
-  if (!isMobileDevice) {
-    isWindowMaximized = !isWindowMaximized;
-    elementAnalysisWindow.classList.toggle("element-analysis-window-maximized");
-    elementAnalysisWindowMinimizeButton.classList.toggle("hidden");
-    elementAnalysisWindowMaximizeButton.classList.toggle("hidden");
-    singlePlotContainer.classList.toggle("hidden");
-    multiplePlotsContainer.classList.toggle("hidden");
-    if (!isWindowMaximized) {
-      populateActiveTab();
-    } else {
-      populateAllTabs();
+  isWindowMaximized = !isWindowMaximized;
+  elementAnalysisWindow.classList.toggle("element-analysis-window-maximized");
+  elementAnalysisWindowMinimizeButton.classList.toggle("hidden");
+  elementAnalysisWindowMaximizeButton.classList.toggle("hidden");
+  singlePlotContainer.classList.toggle("hidden");
+  multiplePlotsContainer.classList.toggle("hidden");
+
+  //the event listeners must also be adjusted accordingly
+  timeDomainInputSignalRadioButtons.forEach((x) =>
+    x.removeEventListener("change", changeTimeDomainInputSignalCallback)
+  );
+  //determine the radio button elements
+  timeDomainInputSignalRadioButtons = isWindowMaximized
+    ? multiplePlotsContainer.querySelectorAll('input[name="input-signal"]')
+    : singlePlotContainer.querySelectorAll('input[name="input-signal"]');
+  timeDomainInputSignalRadioButtons.forEach((x) =>
+    x.addEventListener("change", changeTimeDomainInputSignalCallback)
+  );
+
+  timeDomainInputSignalRadioButtons.forEach((x) => {
+    if (x.value === timeDomainInputSignal) {
+      x.checked = "checked";
     }
+  });
+
+  if (!isWindowMaximized) {
+    populateActiveTab();
+  } else {
+    populateAllTabs();
   }
 };
+
+const setMaximizedWindowAsDefault = function () {
+  isWindowMaximized = true;
+  elementAnalysisWindow.classList.add("element-analysis-window-maximized");
+  elementAnalysisWindowMinimizeButton.classList.remove("hidden");
+  elementAnalysisWindowMaximizeButton.classList.add("hidden");
+  singlePlotContainer.classList.add("hidden");
+  multiplePlotsContainer.classList.remove("hidden");
+};
+
+//
+// Init
+//
+const init = function () {
+  if (isLargeScreenDevice) {
+    setMaximizedWindowAsDefault();
+  }
+
+  //determine the radio button elements
+  timeDomainInputSignalRadioButtons = isWindowMaximized
+    ? multiplePlotsContainer.querySelectorAll('input[name="input-signal"]')
+    : singlePlotContainer.querySelectorAll('input[name="input-signal"]');
+
+  timeDomainInputSignalRadioButtons[0].checked = "checked";
+  timeDomainInputSignal = timeDomainInputSignalRadioButtons[0].value;
+};
+
+init();
