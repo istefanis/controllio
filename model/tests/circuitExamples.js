@@ -100,7 +100,7 @@ export const circuit1 = (block1) => {
     new Ratio(new Polynomial("s", [2]), new Polynomial("s", [1, 1])),
     block1
   );
-  const tf2 = tf([1, 2, 5], [8], block1);
+  const tf2 = tf([10, 2, 5], [8, -1, 1], block1);
   const tf2p = tf([1], [8], block1);
   const tf3 = tf([1, 2, 5], [8], block1);
   const tf4 = tf([1], [4], block1);

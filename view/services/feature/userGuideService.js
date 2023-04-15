@@ -35,14 +35,20 @@ const init = function () {
   <div class="popup-window-tab-contents tab-contents">  
     <section class="tab-content" id="popup-window-tab-content-1">
       <h3>General</h3>
-      <p>Controllio is an open-source web app, which lets Control Systems engineers design & study LTI (linear time-invariant) dynamical systems - from PID controllers to complex multipart systems.</p>
-      <p>It can perform tasks such as:</p>
+      <p>Controllio is an open-source web app which lets Control Systems engineers design & experiment with LTI (linear time-invariant) dynamical systems online.</p>
+      <p>So far, functionality has been implemented for:</p>
       <ul>
         <li>the analytical computation of the overall transfer function (tf) of a system modeled by interconnected elements in the s-domain</li>
-        <li>the generation of its Bode and Nyquist plot</li>
+        <li>the generation of its Bode and Nyquist plots</li>
+        <li>the numerical computation of its time response plot</li>
+        <li>the numerical computation of its zeros/poles & some characteristic numbers, ex. bandwidth</li>
       </ul>
       <h3>Motivation</h3>
-      <p>The motivation behind Controllio is to provide a fast web-based app for experimenting with control systems using either a desktop or a mobile device, which is also open-source and written in a widely-used programming language.</p>
+      <p>The motivation behind Controllio is to create an open-source drafting table for studying control systems, which:</p>
+      <ul>
+        <li>runs on the browser without any installation, is fast and mobile-friendly</li>
+        <li>is written in a widely-used programming language (vanilla Javascript), and can be easily extended</li>
+      </ul>
       <h3>License</h3>
       <p>Controllio is distributed under the MIT License, included in the 'LICENCE.TXT' file.</p>
     </section>
@@ -64,9 +70,10 @@ const init = function () {
       <h3>Ready-made tfs</h3>
       <h4>Simple components</h4>
       <ul>
-        <li>Integrator</li>
+        <li>Integrator / step</li>
+        <li>Exponential decay</li>
         <li>Sine</li>
-        <li>Phase delay circuit</li>
+        <li>Phase delay</li>
       </ul>
       <h4>Controllers</h4>
       <ul>

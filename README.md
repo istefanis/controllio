@@ -8,14 +8,16 @@ So far, functionality has been implemented for:
 
 - the analytical computation of the overall transfer function (tf) of a system modeled by interconnected elements in the s-domain
 - the generation of its Bode and Nyquist plots
+- the numerical computation of its time response plot
+- the numerical computation of its zeros/poles & some characteristic numbers, ex. bandwidth
 
 _Predefined circuits are also included, ex. PI, PD and PID controllers_
 
 ## Motivation
 
-The motivation behind Controllio is to provide a fast web-based open-source drafting table for studying control systems, which:
+The motivation behind Controllio is to create an open-source drafting table for studying control systems, which:
 
-- runs on the browser without any installation, and is mobile-friendly
+- runs on the browser without any installation, is fast and mobile-friendly
 - is written in a widely-used programming language (vanilla Javascript), and can be easily extended
 
 ## Try it out
@@ -24,7 +26,7 @@ The app is deployed here: https://istefanis.github.io/controllio
 
 ## User Guide
 
-It is included in the web app
+A user guide is included in the web app
 
 ## License
 

@@ -66,12 +66,13 @@ export const openNewReadyMadeTfPopupWindow = async function (
 // Init
 //
 const init = function () {
-  readyMadeTfsArray.push(["Integrator", [1], [1, 0]]);
-  readyMadeTfsArray.push(["Sine", [1], [1, 0, 0]]);
+  readyMadeTfsArray.push(["Integrator / step", [1], [1, 0]]);
+  readyMadeTfsArray.push(["Exponential decay", [1], [1, 0.2]]);
+  readyMadeTfsArray.push(["Sine", [1], [1, 0, 1]]);
   readyMadeTfsArray.push(["Phase delay", [5, 1], [8, 1]]);
-  readyMadeTfsArray.push(["PI Controller", ["kp", "ki"], [1, 0]]);
-  readyMadeTfsArray.push(["PD Controller", ["kd", "kp"], [1]]);
-  readyMadeTfsArray.push(["PID Controller", ["kd", "kp", "ki"], [1, 0]]);
+  readyMadeTfsArray.push(["PI controller", ["kp", "ki"], [1, 0]]);
+  readyMadeTfsArray.push(["PD controller", ["kd", "kp"], [1]]);
+  readyMadeTfsArray.push(["PID controller", ["kd", "kp", "ki"], [1, 0]]);
 };
 
 init();
