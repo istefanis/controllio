@@ -92,7 +92,7 @@ export class VariableStep {
       // console.log(curveSlope, this.#lastCurveSlope);
       // logMessages(
       //   [
-      //     `[CP-84] Log step re-enabled at w=${roundDecimal(
+      //     `[CP-82] Log step re-enabled at w=${roundDecimal(
       //       w,
       //       5
       //     )} and curve slope=${roundDecimal(curveSlope, 3)}`,
@@ -111,7 +111,7 @@ export class VariableStep {
       // console.log(curveSlope, this.#lastCurveSlope);
       // logMessages(
       //   [
-      //     `[CP-82] Fixed step ${
+      //     `[CP-80] Fixed step ${
       //       this.#smallFixedStep
       //     } enabled at w=${roundDecimal(w, 5)} and curve slope=${roundDecimal(
       //       curveSlope,
@@ -131,7 +131,7 @@ export class VariableStep {
     ) {
       // logMessages(
       //   [
-      //     `[CP-83] Fixed step ${
+      //     `[CP-81] Fixed step ${
       //       this.#tinyFixedStep
       //     } enabled at w=${roundDecimal(w, 5)} and curve slope=${roundDecimal(
       //       curveSlope,
@@ -155,6 +155,11 @@ export class VariableStep {
 export class PhaseUnwrapper {
   #phaseAdjustmentTotal = 0; //in degrees
   #newAdjustment = 0;
+  #expectedSteepPhaseShiftsMap;
+
+  constructor(expectedSteepPhaseShiftsMap) {
+    this.#expectedSteepPhaseShiftsMap = expectedSteepPhaseShiftsMap;
+  }
 
   unwrapPhaseValue(newPhaseValue, lastPhaseValue, w) {
     newPhaseValue += this.#phaseAdjustmentTotal;
@@ -163,17 +168,38 @@ export class PhaseUnwrapper {
     if (diff > 300) {
       // console.log("case1", newPhaseValue, lastPhaseValue);
       logMessages(
-        [`[CP-85] Phase unwarp adjustment by -360, at w=${roundDecimal(w, 5)}`],
+        [`[CP-83] Phase unwarp adjustment by -360, at w=${roundDecimal(w, 5)}`],
         "checkpoints"
       );
       this.#newAdjustment = -360;
     } else if (diff < -300) {
       // console.log("case2", newPhaseValue, lastPhaseValue);
       logMessages(
-        [`[CP-86] Phase unwarp adjustment by +360, at w=${roundDecimal(w, 5)}`],
+        [`[CP-84] Phase unwarp adjustment by +360, at w=${roundDecimal(w, 5)}`],
         "checkpoints"
       );
       this.#newAdjustment = 360;
+    } else if (
+      (diff > 70 || diff < -70) &&
+      [...this.#expectedSteepPhaseShiftsMap].filter(
+        (x) => Math.abs(x[0] - w) < 0.05
+      ).length === 1
+    ) {
+      // console.log("case3", newPhaseValue, lastPhaseValue);
+      const expectedSteepPhaseShift = [
+        ...this.#expectedSteepPhaseShiftsMap,
+      ].filter((x) => Math.abs(x[0] - w) < 0.05)[0][1];
+      logMessages(
+        [
+          `[CP-85] Steep phase shift by ${
+            expectedSteepPhaseShift > 0 ? "+" : ""
+          }${expectedSteepPhaseShift} at w=${roundDecimal(w, 5)}`,
+        ],
+        "checkpoints"
+      );
+      this.#newAdjustment = expectedSteepPhaseShift;
+      diff = this.#newAdjustment;
+      return lastPhaseValue + diff;
     }
     diff += this.#newAdjustment;
     this.#phaseAdjustmentTotal += this.#newAdjustment;

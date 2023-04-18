@@ -111,6 +111,29 @@ export default class BodePlot {
     this.#magnitude = magnitude;
     this.#phase = phase;
 
+    //compute expected steep phase shifts due to polynomial zeros & poles at y-axis
+    const expectedSteepPhaseShiftsMap = new Map();
+    const zerosAtYAxis = this.#zeros.filter((x) => x[0] === 0 && x[1] !== 0);
+    const polesAtYAxis = this.#poles.filter((x) => x[0] === 0 && x[1] !== 0);
+
+    zerosAtYAxis.forEach((x) => {
+      const value = expectedSteepPhaseShiftsMap.get(Math.abs(x[1]));
+      expectedSteepPhaseShiftsMap.set(Math.abs(x[1]), value ? value + 90 : 90);
+    });
+    polesAtYAxis.forEach((x) => {
+      const value = expectedSteepPhaseShiftsMap.get(Math.abs(x[1]));
+      expectedSteepPhaseShiftsMap.set(Math.abs(x[1]), value ? value - 90 : -90);
+    });
+
+    if (expectedSteepPhaseShiftsMap.size > 0)
+      logMessages(
+        [
+          "[CP-86] Expected steep phase shifts: " +
+            [...expectedSteepPhaseShiftsMap.entries()].map((x) => `[${x}]`),
+        ],
+        "checkpoints"
+      );
+
     //
     // curve points numerical computation loop
     //
@@ -120,7 +143,7 @@ export default class BodePlot {
     let lastPhaseValue = (180 / Math.PI) * phase(this.#wMin);
 
     const variableStep = new VariableStep();
-    const phaseUnwrapper = new PhaseUnwrapper();
+    const phaseUnwrapper = new PhaseUnwrapper(expectedSteepPhaseShiftsMap);
 
     let lastW = this.#wMin;
     let magnitudeCurveSlope = 0;
@@ -352,7 +375,7 @@ const computeBodeMagnitudeAndPhaseWFunctions = function (
 ) {
   logMessages(
     [
-      "[CP-81] Bode plot s=w*i substitution - " +
+      "[CP-79] Bode plot s=w*i substitution - " +
         "numerator: " +
         `[${polynomialEvaluatedWithWiRealTermsArray(
           numeratorTermsArray
