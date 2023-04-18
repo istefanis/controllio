@@ -13,6 +13,8 @@ import {
 } from "../../../model/blockStateService.js";
 import {
   elementsWithinDistance,
+  isLargeScreenDevice,
+  isMobileDevice,
   marginAroundElements,
   maxUtilizedCanvasHeight,
   maxUtilizedCanvasWidth,
@@ -25,9 +27,12 @@ import {
   renderAllLines,
 } from "../core/lineRenderingService.js";
 import { logMessages } from "../../../util/loggingService.js";
+import { sleep } from "../../../util/commons.js";
 
 let maxLoopsOverAllElements;
 let maxTriesPerElementInEachLoop;
+let canvas;
+let navbarHeight;
 
 export const optimizeTopology = async function () {
   logMessages(["[CP-101] Optimize topology started"], "checkpoints");
@@ -38,10 +43,12 @@ export const optimizeTopology = async function () {
   //(it will delete all existing elements)
   resetCanvas();
   renderAllLines();
+  canvas = getCanvas();
+  navbarHeight = getNavbarHeight();
 
   for (let i = 1; i <= maxLoopsOverAllElements; i++) {
     for (let j = 0; j < domElements.length; j++) {
-      await optimizeElementPosition(
+      await optimizeElementPositionStochastic(
         domElements[j],
         maxTriesPerElementInEachLoop
       );
@@ -53,47 +60,26 @@ export const optimizeTopology = async function () {
   logMessages(["[CP-102] Optimize topology finished"], "checkpoints");
 };
 
-const optimizeElementPosition = async function (domElement, maxSteps) {
+/**
+ * The optimization of an element's position is pursued via a stochastic process,
+ * during which each new candidate position is evaluated against the current one
+ */
+const optimizeElementPositionStochastic = async function (
+  domElement,
+  maxSteps
+) {
   const elementId = +domElement.dataset.elementId;
-
-  let totalLineLengths = getTotalLengthsOfLinesConnectedToElement(elementId);
-  // console.log(totalLineLengths);
 
   //store current position
   const tfBoundingRect = domElement.getBoundingClientRect();
   let left = tfBoundingRect.left;
   let top = tfBoundingRect.top;
-
-  const computeOverlapppingElementsNumber = () =>
-    domElements.filter((x) =>
-      x !== domElement
-        ? elementsWithinDistance(
-            x.getBoundingClientRect(),
-            domElement.getBoundingClientRect(),
-            marginAroundElements * 3
-          )
-        : false
-    ).length;
-
-  const revertPosition = () => {
-    //revert position
-    domElement.style.left = left + "px";
-    domElement.style.top = top + "px";
-  };
+  let totalLineLengths = getTotalLengthsOfLinesConnectedToElement(elementId);
+  // console.log(totalLineLengths);
 
   let step = 1;
 
-  resetCanvas();
-  const canvas = getCanvas();
-  const navbarHeight = getNavbarHeight();
-
   const assignHelper = async () => {
-    //enable in order to display the process
-    // await sleep(1);
-
-    //compute overlapping elements number (old position)
-    const oldOverlapppingElementsNumber = computeOverlapppingElementsNumber();
-
     //assign a new position to the element
     const newLeft =
       marginAroundElements +
@@ -112,44 +98,37 @@ const optimizeElementPosition = async function (domElement, maxSteps) {
     domElement.style.top = newTop + "px";
 
     //compute overlapping elements number (new position)
-    const overlapppingElementsNumber = computeOverlapppingElementsNumber();
+    const newOverlappingElementsNumber =
+      computeOverlappingElementsNumber(domElement);
 
     step++;
 
-    //accept new position, if it leads to fewer element overlaps
-    if (overlapppingElementsNumber < oldOverlapppingElementsNumber) {
-      renderAllLines();
-      totalLineLengths = getTotalLengthsOfLinesConnectedToElement(elementId);
-      left = newLeft;
-      top = newTop;
-      if (step < maxSteps) await assignHelper();
-    }
-
-    if (overlapppingElementsNumber > 0) {
-      revertPosition();
-      if (step < maxSteps) await assignHelper();
-    }
-
-    //new lines must be rendered here, in order for their lengths to be computed
-    renderAllLines();
-
-    const currentTotalLineLengths =
-      getTotalLengthsOfLinesConnectedToElement(elementId);
-    if (currentTotalLineLengths === totalLineLengths) {
-    } else if (currentTotalLineLengths > totalLineLengths) {
-      revertPosition();
+    //reject new position, if it leads to element overlaps
+    if (newOverlappingElementsNumber > 0) {
+      revertPosition(domElement, left, top);
     } else {
-      // console.log(
-      //   "Improved position: " +
-      //     currentTotalLineLengths +
-      //     ", step:" +
-      //     step +
-      //     ", elementId:" +
-      //     elementId
-      // );
-      totalLineLengths = currentTotalLineLengths;
-      left = newLeft;
-      top = newTop;
+      //new lines must be rendered here, in order for their lengths to be computed
+      renderAllLines();
+
+      const newTotalLineLengths =
+        getTotalLengthsOfLinesConnectedToElement(elementId);
+
+      //reject new position, if it leads to greater total line lengths
+      if (newTotalLineLengths > totalLineLengths) {
+        revertPosition(domElement, left, top);
+        renderAllLines();
+      } else {
+        //accept new position
+        left = newLeft;
+        top = newTop;
+        totalLineLengths = newTotalLineLengths;
+        // console.log(
+        //   `Improved position: ${newTotalLineLengths}, step: ${step}, elementId: ${elementId}`
+        // );
+
+        //enable in order to display the process
+        await sleep(20);
+      }
     }
 
     if (step < maxSteps) await assignHelper();
@@ -159,11 +138,32 @@ const optimizeElementPosition = async function (domElement, maxSteps) {
 };
 
 //
+// Helper functions
+//
+
+const computeOverlappingElementsNumber = (domElement) =>
+  domElements.filter((x) =>
+    x !== domElement
+      ? elementsWithinDistance(
+          x.getBoundingClientRect(),
+          domElement.getBoundingClientRect(),
+          marginAroundElements *
+            (isLargeScreenDevice ? 4.5 : !isMobileDevice ? 3 : 1.75)
+        )
+      : false
+  ).length;
+
+const revertPosition = (domElement, left, top) => {
+  domElement.style.left = left + "px";
+  domElement.style.top = top + "px";
+};
+
+//
 // Init
 //
 const init = function () {
-  maxLoopsOverAllElements = 100;
-  maxTriesPerElementInEachLoop = 10;
+  maxLoopsOverAllElements = 125;
+  maxTriesPerElementInEachLoop = 15;
 };
 
 init();
