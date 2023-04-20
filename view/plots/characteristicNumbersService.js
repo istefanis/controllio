@@ -191,11 +191,15 @@ const generateBandwidthAndThresholdText = function (wMin) {
 
   if (bandwidthFunction(wMin) > 0) {
     bandwidthTextPrefix = "(0, ";
-    bandwidthTextSuffix = isOdd(wCutoffRoots) ? "] [rad/s]" : ", ∞) [rad/s]";
+    bandwidthTextSuffix = isOdd(wCutoffRoots.length)
+      ? "] [rad/s]"
+      : ", ∞) [rad/s]";
     z++;
   } else {
     bandwidthTextPrefix = "[";
-    bandwidthTextSuffix = isOdd(wCutoffRoots) ? ", ∞) [rad/s]" : "] [rad/s]";
+    bandwidthTextSuffix = isOdd(wCutoffRoots.length)
+      ? ", ∞) [rad/s]"
+      : "] [rad/s]";
   }
   bandwidthText =
     bandwidthTextPrefix +
