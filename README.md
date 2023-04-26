@@ -2,7 +2,7 @@
 
 ![app](https://github.com/istefanis/controllio/blob/main/assets/img/app.png)
 
-A web app which lets Control Systems engineers design & experiment with LTI (linear time-invariant) dynamical systems online.
+Controllio is a web app which lets Control Systems engineers design & experiment with LTI (linear time-invariant) dynamical systems online.
 
 So far, functionality has been implemented for:
 
@@ -11,22 +11,44 @@ So far, functionality has been implemented for:
 - the numerical computation of its time response plot
 - the numerical computation of its zeros/poles & some characteristic numbers, ex. bandwidth
 
-_Predefined circuits are also included, ex. PI, PD and PID controllers_
+> _This is a web GUI tool. For a command-line one, check the [lti-freq-domain-toolbox](https://github.com/istefanis/lti-freq-domain-toolbox)_
 
 ## Motivation
 
-The motivation behind Controllio is to create an open-source drafting table for studying control systems, which:
+The motivation behind Controllio is to create an open-source tool for studying Control Systems, which:
 
 - runs on the browser without any installation, is fast and mobile-friendly
 - is written in a widely-used programming language (vanilla Javascript), and can be easily extended
 
+## Technical
+
+### Circuit simplification algorithms
+
+- A set of 6 simplication algorithms to compute analytically its overall transfer function
+
+### Numerical algorithms
+
+- Polynomial complex roots: Weierstrass / Durand-Kerner
+- Laplace inversion: Talbot
+
+### Ready-made components
+
+- Utilities: integrator / step, exponential decay, sine, phase delay
+- Controllers: PI, PD, PID
+
 ## Try it out
 
-The app is deployed here: https://istefanis.github.io/controllio
+### Online
+
+- The app is deployed here: https://istefanis.github.io/controllio
+
+### Locally
+
+- Download the repo, and just load the app using a development server
 
 ## User Guide
 
-A user guide is included in the web app
+A User Guide is included in the web app, and can be launched from the main menu
 
 ## License
 
