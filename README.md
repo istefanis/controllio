@@ -20,16 +20,24 @@ The motivation behind Controllio is to create an open-source tool for studying C
 - runs on the browser without any installation, is fast and mobile-friendly
 - is written in a widely-used programming language (vanilla Javascript), and can be easily extended
 
-## Technical
+## Technical details
 
-### Circuit simplification algorithms
+### Circuit simplification
 
 - A set of 6 simplication algorithms to compute analytically its overall transfer function
+
+![circuit simplification](https://github.com/istefanis/controllio/blob/main/assets/img/circuit-simplification.gif)
 
 ### Numerical algorithms
 
 - Polynomial complex roots: Weierstrass / Durand-Kerner
 - Laplace inversion: Talbot
+
+### Topology optimization
+
+- A stochastic algorithm to simplify the circuit's topology
+
+![topology optimization](https://github.com/istefanis/controllio/blob/main/assets/img/topology-optimization.gif)
 
 ### Ready-made components
 
