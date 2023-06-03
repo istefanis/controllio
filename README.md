@@ -48,7 +48,7 @@ The motivation behind Controllio is to create an open-source tool for studying C
 
 ### Online
 
-- The app is deployed here: https://istefanis.github.io/controllio
+- The app is deployed [here](https://istefanis.github.io/controllio) (make sure that JS is enabled in order to run it - a circuit should appear at startup)
 
 ### Locally
 
