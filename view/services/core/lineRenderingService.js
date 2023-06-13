@@ -7,6 +7,7 @@
  */
 
 import { getElementFromElementId } from "../../../model/elementService.js";
+import { indicativeTfHeight } from "../../../util/uiService.js";
 import { getNavbarHeight } from "../../navbarView.js";
 import {
   getCanvas,
@@ -113,11 +114,28 @@ export const drawLineWithArrow = function (startX, startY, endX, endY) {
 
       const dx = 15;
       const dy = 5;
-      //micro-enhancement, so that some lines do not overlap:
+
+      //enhancements, so that lines do not overlap
+      const canvasMargin = 10; //so that such lines are not drawn outside the canvas
+      const elementMargin = (2 / 3) * indicativeTfHeight; //so that such lines are not drawn over the elements
       if (startY > endY) {
-        midY -= startX > endX + 200 ? ((startX - endX) / 30) * dy : dy;
+        if (Math.abs(startY - endY) < elementMargin) {
+          midY = midY - elementMargin;
+        } else {
+          midY = Math.max(
+            canvasMargin,
+            midY - (startX > endX + 200 ? ((startX - endX) / 30) * dy : dy)
+          );
+        }
       } else {
-        midY += startX > endX + 200 ? ((startX - endX) / 30) * dy : dy;
+        if (Math.abs(startY - endY) < elementMargin) {
+          midY = midY + elementMargin;
+        } else {
+          midY = Math.min(
+            window.innerHeight - navbarHeight - canvasMargin,
+            midY + (startX > endX + 200 ? ((startX - endX) / 30) * dy : dy)
+          );
+        }
       }
       canvasContext.lineTo(startX + dx, startY);
       canvasContext.lineTo(startX + dx, midY);

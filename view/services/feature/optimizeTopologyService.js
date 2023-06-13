@@ -113,8 +113,9 @@ const optimizeElementPositionStochastic = async function (
       const newTotalLineLengths =
         getTotalLengthsOfLinesConnectedToElement(elementId);
 
-      //reject new position, if it leads to greater total line lengths
-      if (newTotalLineLengths > totalLineLengths) {
+      //reject new position, if it leads to greater or equal total line lengths
+      //(equality is also the case of unconnected elements, the position of which is not to be changed)
+      if (newTotalLineLengths >= totalLineLengths) {
         revertPosition(domElement, left, top);
         renderAllLines();
       } else {
