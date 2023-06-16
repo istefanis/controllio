@@ -95,6 +95,7 @@ export const drawLineWithArrow = function (startX, startY, endX, endY) {
     if (endX > startX) {
       if (Math.abs(endY - startY) > 10) {
         //taxicab/'Manhattan' line path (large vertical difference case)
+        // console.log("line1");
         lineAngle = 0;
         const midX = startX + (endX - startX) / 2;
         canvasContext.lineTo(midX, startY);
@@ -103,6 +104,7 @@ export const drawLineWithArrow = function (startX, startY, endX, endY) {
         lineLength = Math.abs(endX - startX) + Math.abs(endY - startY);
       } else {
         //straight line (small vertical difference case)
+        // console.log("line2");
         lineAngle = Math.atan2(endY - startY, endX - startX);
         canvasContext.lineTo(endX, endY);
         lineLength = Math.sqrt((endX - startX) ** 2 + (endY - startY) ** 2);
@@ -119,20 +121,26 @@ export const drawLineWithArrow = function (startX, startY, endX, endY) {
       const canvasMargin = 10; //so that such lines are not drawn outside the canvas
       const elementMargin = (2 / 3) * indicativeTfHeight; //so that such lines are not drawn over the elements
       if (startY > endY) {
-        if (Math.abs(startY - endY) < elementMargin) {
-          midY = midY - elementMargin;
+        if (Math.abs(startY - endY) < 2 * elementMargin) {
+          // console.log("line3");
+          midY = Math.min(midY - elementMargin, endY - elementMargin);
         } else {
+          // console.log("line4");
           midY = Math.max(
             canvasMargin,
+            endY + elementMargin,
             midY - (startX > endX + 200 ? ((startX - endX) / 30) * dy : dy)
           );
         }
       } else {
-        if (Math.abs(startY - endY) < elementMargin) {
-          midY = midY + elementMargin;
+        if (Math.abs(startY - endY) < 2 * elementMargin) {
+          // console.log("line5");
+          midY = Math.max(midY + elementMargin, endY + elementMargin);
         } else {
+          // console.log("line6");
           midY = Math.min(
             window.innerHeight - navbarHeight - canvasMargin,
+            endY - elementMargin,
             midY + (startX > endX + 200 ? ((startX - endX) / 30) * dy : dy)
           );
         }
