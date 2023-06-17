@@ -219,14 +219,37 @@ export let pauseButtonClicked = false;
 const runButtonMarkup = `
   <i class="bi-play"></i>
   <p>Run</p>
+  <div class="tooltip">
+    <h5>Run simplification</h5>
+    <p>
+      Run a set of algorithms to simplify the circuit either
+      completely (by replacing it with an equivalent total tf) or as
+      much as possible
+    </p>
+    <p class="tooltip-expansion">
+      Revert a simplifcation via the Prev button
+    </p>
+  </div>
 `;
 const pauseButtonMarkup = `
   <i class="bi-pause"></i>
   <p>Pause</p>
+  <div class="tooltip">
+    <h5>Pause simplification</h5>
+    <p>
+      Pause the simplification process
+    </p>
+  </div>
 `;
 const resumeButtonMarkup = `
   <i class="bi-play"></i>
   <p>Resume</p>
+  <div class="tooltip">
+    <h5>Resume simplification</h5>
+    <p>
+      Resume the simplification process
+    </p>
+  </div>
 `;
 
 simplifyButton.addEventListener("click", async function (e) {
@@ -235,6 +258,7 @@ simplifyButton.addEventListener("click", async function (e) {
     closeElementAnalysisWindow();
     simplificationStarted = true;
     simplifyButton.innerHTML = pauseButtonMarkup;
+    adjustButtonTooltipsPositions();
     optimizeTopologyButton.disabled = true;
     previousButton.disabled = true;
     nextButton.disabled = true;
@@ -245,6 +269,7 @@ simplifyButton.addEventListener("click", async function (e) {
 
     simplificationStarted = false;
     simplifyButton.innerHTML = runButtonMarkup;
+    adjustButtonTooltipsPositions();
     if (getLineViewsNumber() > 0) {
       optimizeTopologyButton.disabled = false;
     }
@@ -256,12 +281,14 @@ simplifyButton.addEventListener("click", async function (e) {
       if (pauseButtonClicked === false) {
         // console.log("Simplify pause button clicked");
         simplifyButton.innerHTML = resumeButtonMarkup;
+        adjustButtonTooltipsPositions();
         pauseButtonClicked = true;
         pauseButtonDisplayed = false;
       }
     } else {
       // console.log("Simplify resume button clicked");
       simplifyButton.innerHTML = pauseButtonMarkup;
+      adjustButtonTooltipsPositions();
       pauseButtonClicked = false;
       pauseButtonDisplayed = true;
     }

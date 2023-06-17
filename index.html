@@ -49,7 +49,7 @@ Controllio · Open source web drafting table for studying control systems
             <p>Fork</p>
             <div class="tooltip">
               <h5>Fork</h5>
-              <p>View the project's GitHub repository page in a new tab</p>
+              <p>Open the project's GitHub repository page in a new tab</p>
             </div>
           </a>
         </div>
@@ -109,23 +109,42 @@ Controllio · Open source web drafting table for studying control systems
             <i class="bi-bezier2"></i>
             <p>Connection</p>
           </button>
-          <button class="navbar-button" id="ready-made-tf-button">
+          <button
+            class="navbar-button button-with-tooltip"
+            id="ready-made-tf-button"
+          >
             <i class="bi-cart"></i>
             <p>Ready-made</p>
+            <div class="tooltip">
+              <h5>Ready-made tf</h5>
+              <p>
+                Select from a list and then insert to the canvas a predefined
+                transfer function, such as a utility element or a controller
+              </p>
+            </div>
           </button>
           <button class="navbar-button button-with-tooltip" id="delete-button">
             <i class="bi-x-square"></i>
             <p>Delete</p>
             <div class="tooltip">
               <h5>Delete</h5>
-              <p>Delete the selected element, along with all its connections</p>
+              <p>Delete the selected element, along with its connections</p>
               <p class="tooltip-expansion">Shortcut: Delete</p>
             </div>
           </button>
           <!-- to be displayed only for non-mobile devices -->
-          <button class="navbar-button hidden" id="delete-all-button">
+          <button
+            class="navbar-button button-with-tooltip hidden"
+            id="delete-all-button"
+          >
             <i class="bi-trash3"></i>
             <p>Delete all</p>
+            <div class="tooltip">
+              <h5>Delete all</h5>
+              <p>
+                Delete all elements, along with their connections (clear canvas)
+              </p>
+            </div>
           </button>
         </div>
       </section>
@@ -144,15 +163,14 @@ Controllio · Open source web drafting table for studying control systems
             <i class="bi-bounding-box-circles" id="optimize-topology-icon"></i>
             <p>Topology</p>
             <div class="tooltip">
-              <h5>Optimize Topology</h5>
+              <h5>Optimize topology</h5>
               <p>
                 Run a stochastic algorithm to rearrange the elements over the
                 canvas and simplify the circuit's topology
               </p>
               <p class="tooltip-expansion">
-                The algorithm to be run, tries to find alternative positions for
-                the elements, so that the total length of lines connecting them
-                is minimized
+                The algorithm tries to minimize the total length of lines
+                connecting the elements
               </p>
             </div>
           </button>
@@ -163,11 +181,25 @@ Controllio · Open source web drafting table for studying control systems
           <h2>Simplify</h2>
         </header>
         <div class="ribbon-section-contents">
-          <button class="navbar-button" id="simplify-button">
+          <button
+            class="navbar-button button-with-tooltip"
+            id="simplify-button"
+          >
             <i class="bi-play"></i>
             <p>Run</p>
+            <div class="tooltip">
+              <h5>Run simplification</h5>
+              <p>
+                Run a set of algorithms to simplify the circuit either
+                completely (by replacing it with an equivalent total tf) or as
+                much as possible
+              </p>
+              <p class="tooltip-expansion">
+                Revert a simplifcation via the Prev button
+              </p>
+            </div>
           </button>
-          <div class="flex-column-center">
+          <div class="flex-column-center button-with-tooltip">
             <input
               type="range"
               min="1"
@@ -181,6 +213,12 @@ Controllio · Open source web drafting table for studying control systems
               <option value="5" label="speed"></option>
               <option value="10" label="+"></option>
             </datalist>
+            <div class="tooltip">
+              <h5>Simplification speed level</h5>
+              <p>
+                Adjust the speed of the animated circuit simplification process
+              </p>
+            </div>
           </div>
         </div>
       </section>
@@ -190,7 +228,7 @@ Controllio · Open source web drafting table for studying control systems
           <h2>Console log</h2>
         </header>
         <div class="ribbon-section-contents">
-          <div class="flex-column-center">
+          <div class="flex-column-center button-with-tooltip">
             <input
               type="range"
               min="1"
@@ -205,6 +243,44 @@ Controllio · Open source web drafting table for studying control systems
               <option value="3" label="SF"></option>
               <option value="4" label="CP"></option>
             </datalist>
+            <div class="tooltip">
+              <h5>Console log level</h5>
+              <p>
+                Adjust the volume of messages displayed at the browser's
+                developer tools console
+              </p>
+              <div class="tooltip-expansion">
+                <table>
+                  <tr>
+                    <th>Level</th>
+                    <th>Description</th>
+                  </tr>
+                  <tr>
+                    <td>N/A</td>
+                    <td>No messages are displayed</td>
+                  </tr>
+                  <tr>
+                    <td>AL</td>
+                    <td>
+                      Only messages regarding the algorithms run are displayed
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>SF</td>
+                    <td>
+                      Only messages regarding the algorithms run & the
+                      simplifications performed are displayed
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>CP</td>
+                    <td>
+                      Messages from all checkpoints are displayed (default)
+                    </td>
+                  </tr>
+                </table>
+              </div>
+            </div>
           </div>
         </div>
       </section>
@@ -213,9 +289,16 @@ Controllio · Open source web drafting table for studying control systems
           <h2>Help</h2>
         </header>
         <div class="ribbon-section-contents">
-          <button class="navbar-button" id="user-guide-button">
+          <button
+            class="navbar-button button-with-tooltip"
+            id="user-guide-button"
+          >
             <i class="bi-book"></i>
             <p>User Guide</p>
+            <div class="tooltip">
+              <h5>User Guide</h5>
+              <p>Open the app's User Guide</p>
+            </div>
           </button>
         </div>
       </section>

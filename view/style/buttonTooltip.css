@@ -6,6 +6,10 @@
  * View / Style / ButtonTooltip
  */
 
+.button-with-tooltip {
+  position: relative;
+}
+
 .tooltip {
   opacity: 0;
   transition-delay: 0s;
@@ -49,6 +53,10 @@
   border-top: 1px solid var(--color-grey-230);
   margin-top: 10px;
   padding-top: 10px;
+}
+
+.tooltip p {
+  margin: 0;
 }
 
 .tooltip h5 {

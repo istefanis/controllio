@@ -85,7 +85,7 @@ const init = function () {
     </section> 
     <section class="tab-content" id="popup-window-tab-content-4">
       <h3>Simplification of a block</h3>
-      <p>To compute analytically the overall transfer function (tf) of a block of interconnected elements, a simplification of its structure must be performed. The goal is to simplify the block either completely (by replacing it with an equivalent total tf), or as much as it is possible.</p>
+      <p>To compute analytically the overall transfer function (tf) of a block of interconnected elements, a simplification of its structure must be performed. The goal is to simplify the block either completely (by replacing it with an equivalent total tf) or as much as possible.</p>
       <p>This simplification is performed by running a set of <u>simplification algorithms</u> inside the block. Each algorithm may run more than once. During each algorithm run, a simplification may or may not be performed. The 6 algorithms included perform the following operations:</p>
       <ul>
         <li>Removal of unused adders
