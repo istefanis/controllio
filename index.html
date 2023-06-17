@@ -40,13 +40,17 @@ Controllio · Open source web drafting table for studying control systems
         </header>
         <div class="ribbon-section-contents">
           <a
-            class="navbar-button"
+            class="navbar-button button-with-tooltip"
             id="fork-button"
             href="https://github.com/istefanis/controllio"
             target="_blank"
           >
             <i class="bi-github"></i>
             <p>Fork</p>
+            <div class="tooltip">
+              <h5>Fork</h5>
+              <p>View the project's GitHub repository page in a new tab</p>
+            </div>
           </a>
         </div>
       </section>
@@ -109,9 +113,14 @@ Controllio · Open source web drafting table for studying control systems
             <i class="bi-cart"></i>
             <p>Ready-made</p>
           </button>
-          <button class="navbar-button" id="delete-button">
+          <button class="navbar-button button-with-tooltip" id="delete-button">
             <i class="bi-x-square"></i>
             <p>Delete</p>
+            <div class="tooltip">
+              <h5>Delete</h5>
+              <p>Delete the selected element, along with all its connections</p>
+              <p class="tooltip-expansion">Shortcut: Delete</p>
+            </div>
           </button>
           <!-- to be displayed only for non-mobile devices -->
           <button class="navbar-button hidden" id="delete-all-button">
@@ -128,9 +137,24 @@ Controllio · Open source web drafting table for studying control systems
           class="ribbon-section-contents"
           id="optimize-topology-button-container"
         >
-          <button class="navbar-button" id="optimize-topology-button">
+          <button
+            class="navbar-button button-with-tooltip"
+            id="optimize-topology-button"
+          >
             <i class="bi-bounding-box-circles" id="optimize-topology-icon"></i>
             <p>Topology</p>
+            <div class="tooltip">
+              <h5>Optimize Topology</h5>
+              <p>
+                Run a stochastic algorithm to rearrange the elements over the
+                canvas and simplify the circuit's topology
+              </p>
+              <p class="tooltip-expansion">
+                The algorithm to be run, tries to find alternative positions for
+                the elements, so that the total length of lines connecting them
+                is minimized
+              </p>
+            </div>
           </button>
         </div>
       </section>

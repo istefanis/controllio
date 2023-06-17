@@ -46,13 +46,14 @@ export const getNavbarHeight = function () {
 };
 
 //
-// Navbar height change
+// Navbar dimensions change
 //
-const navbarHeightChangeObserver = new ResizeObserver(() => {
+const navbarDimensionsChangeObserver = new ResizeObserver(() => {
   resetCanvas();
   renderAllLines();
+  adjustButtonTooltipsPositions();
 });
-navbarHeightChangeObserver.observe(navbar);
+navbarDimensionsChangeObserver.observe(navbar);
 
 //
 // User guide button
@@ -307,6 +308,33 @@ const displayAndInitLogModeSlider = function () {
 };
 
 //
+// Button tooltips
+//
+const tooltips = Array.from(document.getElementsByClassName("tooltip"));
+
+/**
+ * Adjusts the button tooltip positions according to available window area
+ */
+const adjustButtonTooltipsPositions = () => {
+  tooltips.forEach((x, i) => {
+    const boundRect = x.getBoundingClientRect();
+    const parentBoundRect = x
+      .closest(".button-with-tooltip")
+      ?.getBoundingClientRect();
+    if (boundRect.right > window.innerWidth) {
+      x.style.left = "auto";
+      x.style.right = "0px";
+    } else if (
+      parentBoundRect &&
+      parentBoundRect.left + boundRect.width < window.innerWidth
+    ) {
+      x.style.left = "0px";
+      x.style.right = "auto";
+    }
+  });
+};
+
+//
 // Init
 //
 const init = function () {
@@ -325,6 +353,9 @@ const init = function () {
     displayAndInitLogModeSlider();
     setLogMode("checkpoints");
   }
+
+  //Button tooltips
+  adjustButtonTooltipsPositions();
 
   //Speed slider
   const defaultSpeedSliderValue = 5;

@@ -1,0 +1,57 @@
+/*
+ * Controllio · Open source web drafting table for studying control systems
+ */
+
+/*
+ * View / Style / ButtonTooltip
+ */
+
+.tooltip {
+  opacity: 0;
+  transition-delay: 0s;
+  transition-duration: 0s;
+  transition-timing-function: ease-in;
+
+  position: absolute;
+  width: 250px;
+  left: 0px;
+  top: calc(100% + 5px);
+  padding: 15px;
+
+  background: #ffffff;
+  border: 1px solid var(--color-grey-200);
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
+  text-align: left;
+  z-index: 500;
+  pointer-events: none;
+}
+
+.tooltip-expansion {
+  opacity: 0;
+  max-height: 0;
+  transition-delay: 0s;
+  transition-duration: 0s;
+  transition-timing-function: ease-in;
+}
+
+.button-with-tooltip:hover .tooltip {
+  opacity: 1;
+  transition-delay: 0.5s;
+  transition-duration: 0.25s;
+}
+
+.button-with-tooltip:hover .tooltip-expansion {
+  opacity: 1;
+  max-height: 500px;
+  transition-delay: 2.5s;
+  transition-duration: 0.5s;
+
+  border-top: 1px solid var(--color-grey-230);
+  margin-top: 10px;
+  padding-top: 10px;
+}
+
+.tooltip h5 {
+  font-size: 12px;
+  margin: 0 0 5px 0;
+}
