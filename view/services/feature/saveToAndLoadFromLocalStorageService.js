@@ -108,7 +108,7 @@ export const openLoadFromLocalStoragePopupWindow = async function () {
 const init = function () {
   saveToLocalStorageContentsMarkup = `
     <section class="popup-window-text-content">
-      <p>Save the current state in the browser's local storage. Data there will persist after 
+      <p>Save the current state to the browser's local storage. Data there will persist after 
       the page is reloaded or the browser is closed:</p>
       <div class="flex-row-center">
         <button id="popup-window-regular-button">Save</button>
@@ -119,7 +119,7 @@ const init = function () {
 
   loadFromLocalStorageContentsMarkup1 = `
     <section class="popup-window-text-content">
-      <p>Load a stored state, and replace the current:</p>
+      <p>Load a saved state, and replace the current:</p>
     </section>`;
 
   loadFromLocalStorageContentsMarkup2 = `

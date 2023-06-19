@@ -59,13 +59,30 @@ Controllio · Open source web drafting table for studying control systems
           <h2>File</h2>
         </header>
         <div class="ribbon-section-contents">
-          <button class="navbar-button" id="export-file-button">
+          <button
+            class="navbar-button button-with-tooltip"
+            id="export-file-button"
+          >
             <i class="bi-download"></i>
             <p>Export</p>
+            <div class="tooltip">
+              <h5>Export file</h5>
+              <p>Export the current state as a .json file</p>
+            </div>
           </button>
-          <button class="navbar-button" id="import-file-button">
+          <button
+            class="navbar-button button-with-tooltip"
+            id="import-file-button"
+          >
             <i class="bi-upload"></i>
             <p>Import</p>
+            <div class="tooltip">
+              <h5>Import file</h5>
+              <p>
+                Import the state contained in a .json file, and replace the
+                current
+              </p>
+            </div>
           </button>
         </div>
       </section>
@@ -74,21 +91,51 @@ Controllio · Open source web drafting table for studying control systems
           <h2>State</h2>
         </header>
         <div class="ribbon-section-contents">
-          <button class="navbar-button" id="previous-button">
+          <button
+            class="navbar-button button-with-tooltip"
+            id="previous-button"
+          >
             <i class="bi-skip-start"></i>
             <p>Prev</p>
+            <div class="tooltip">
+              <h5>Previous state</h5>
+              <p>Go back to the previous state</p>
+              <p class="tooltip-expansion">Shortcut: Ctrl + Z</p>
+            </div>
           </button>
-          <button class="navbar-button" id="next-button">
+          <button class="navbar-button button-with-tooltip" id="next-button">
             <i class="bi-skip-end"></i>
             <p>Next</p>
+            <div class="tooltip">
+              <h5>Next state</h5>
+              <p>Go forward to the next state</p>
+              <p class="tooltip-expansion">Shortcut: Ctrl + Y</p>
+            </div>
           </button>
-          <button class="navbar-button hidden" id="save-button">
+          <button
+            class="navbar-button button-with-tooltip hidden"
+            id="save-button"
+          >
             <i class="bi-save"></i>
             <p>Save</p>
+            <div class="tooltip">
+              <h5>Save state</h5>
+              <p>Save the current state to the browser's local storage</p>
+            </div>
           </button>
-          <button class="navbar-button hidden" id="load-button">
+          <button
+            class="navbar-button button-with-tooltip hidden"
+            id="load-button"
+          >
             <i class="bi-arrow-counterclockwise"></i>
             <p>Load</p>
+            <div class="tooltip">
+              <h5>Load state</h5>
+              <p>
+                Load a saved state from the browser's local storage, and replace
+                the current
+              </p>
+            </div>
           </button>
         </div>
       </section>
@@ -97,17 +144,53 @@ Controllio · Open source web drafting table for studying control systems
           <h2>Design</h2>
         </header>
         <div class="ribbon-section-contents">
-          <button class="navbar-button" id="tf-button">
+          <button class="navbar-button button-with-tooltip" id="tf-button">
             <i class="bi-card-text"></i>
             <p>Tf</p>
+            <div class="tooltip">
+              <h5>Transfer function</h5>
+              <p>Create a new tf element</p>
+              <p class="tooltip-expansion">
+                If using a non-touch device, after clicking this button, move
+                your pointer over the canvas, and then click again to position
+                the tf
+              </p>
+              <p class="tooltip-expansion">
+                Finally, adjust the tf coefficients via the window that opens
+              </p>
+            </div>
           </button>
-          <button class="navbar-button" id="adder-button">
+          <button class="navbar-button button-with-tooltip" id="adder-button">
             <i class="bi-plus-circle"></i>
             <p>Adder</p>
+            <div class="tooltip">
+              <h5>Adder</h5>
+              <p>Create a new adder element</p>
+              <p class="tooltip-expansion">
+                If using a non-touch device, after clicking this button, move
+                your pointer over the canvas, and then click again to position
+                the adder
+              </p>
+            </div>
           </button>
-          <button class="navbar-button" id="connection-button">
+          <button
+            class="navbar-button button-with-tooltip"
+            id="connection-button"
+          >
             <i class="bi-bezier2"></i>
             <p>Connection</p>
+            <div class="tooltip">
+              <h5>Connection</h5>
+              <p>Create a new connection between two elements</p>
+              <p class="tooltip-expansion">
+                After clicking this button, first click on the starting element,
+                and then on the ending element
+              </p>
+              <p class="tooltip-expansion">
+                The connection will not be created if it already exists. Also,
+                the ending element may be adjusted without affecting the result
+              </p>
+            </div>
           </button>
           <button
             class="navbar-button button-with-tooltip"
@@ -116,10 +199,14 @@ Controllio · Open source web drafting table for studying control systems
             <i class="bi-cart"></i>
             <p>Ready-made</p>
             <div class="tooltip">
-              <h5>Ready-made tf</h5>
+              <h5>Ready-made transfer function</h5>
               <p>
                 Select from a list and then insert to the canvas a predefined
-                transfer function, such as a utility element or a controller
+                tf, such as a utility element or a controller
+              </p>
+              <p class="tooltip-expansion">
+                If using a non-touch device, after selecting the tf, move your
+                pointer over the canvas, and then click again to position it
               </p>
             </div>
           </button>
@@ -128,7 +215,7 @@ Controllio · Open source web drafting table for studying control systems
             <p>Delete</p>
             <div class="tooltip">
               <h5>Delete</h5>
-              <p>Delete the selected element, along with its connections</p>
+              <p>Delete the selected elements, along with their connections</p>
               <p class="tooltip-expansion">Shortcut: Delete</p>
             </div>
           </button>
@@ -195,7 +282,7 @@ Controllio · Open source web drafting table for studying control systems
                 much as possible
               </p>
               <p class="tooltip-expansion">
-                Revert a simplifcation via the Prev button
+                Revert a simplification via the 'Previous state' button
               </p>
             </div>
           </button>
