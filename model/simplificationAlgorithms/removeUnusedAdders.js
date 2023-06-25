@@ -48,10 +48,10 @@ export const removeUnusedAdders = async function (adders) {
         }
         // remove adder - it has no inputs
         else if (
-          (!A[0].hasInput() && this._tfs.length === 1) ||
-          (!A[0].hasInput() &&
-            A[0].hasSingleOutput() &&
-            A[0].getOutputs()[0].hasSingleConnection())
+          // (!A[0].hasInput() && this._tfs.length === 1) ||
+          !A[0].hasInput() &&
+          A[0].hasSingleOutput() &&
+          A[0].getOutputs()[0].hasSingleConnection()
         ) {
           await animateRemoveElement(A[0].getElementId());
           A[0]
@@ -74,10 +74,10 @@ export const removeUnusedAdders = async function (adders) {
         }
         // remove adder - it has no outputs
         else if (
-          (!A[0].hasOutputs() && this._tfs.length === 1) ||
-          (!A[0].hasOutputs() &&
-            A[0].hasSingleInput() &&
-            A[0].getInput()[0].hasSingleConnection())
+          // (!A[0].hasOutputs() && this._tfs.length === 1) ||
+          !A[0].hasOutputs() &&
+          A[0].hasSingleInput() &&
+          A[0].getInput()[0].hasSingleConnection()
         ) {
           await animateRemoveElement(A[0].getElementId());
           A[0].getInput().forEach((x) => x.removeOutput(A[0]));

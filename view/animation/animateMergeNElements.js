@@ -68,8 +68,13 @@ export const animateMergeNElements = async function (...elementIds) {
   // - the animation speed selected, so that the animation looks smooth
   let step = 1;
   const distanceToBeCovered = Math.sqrt(
-    (centroidPointX - positions[0].middleX) ** 2 +
-      (centroidPointY - positions[0].middleY) ** 2
+    elementsDom
+      .map(
+        (_, i) =>
+          (centroidPointX - positions[i].middleX) ** 2 +
+          (centroidPointY - positions[i].middleY) ** 2
+      )
+      .reduce((acc, x) => acc + x, 0) / elementIds.length
   );
   let totalSteps = Math.ceil(
     Math.sqrt(distanceToBeCovered) * animationSpeedCoeff * 1.5

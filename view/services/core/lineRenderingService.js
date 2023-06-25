@@ -92,7 +92,10 @@ export const drawLineWithArrow = function (startX, startY, endX, endY) {
     lineLength =
       dx + Math.sqrt((endX - startX - 2 * dx) ** 2 + (endY - startY) ** 2) + dx;
   } else {
-    if (endX > startX) {
+    const dx = 15;
+    const dy = 5;
+
+    if (endX > startX + 2 * dx) {
       if (Math.abs(endY - startY) > 10) {
         //taxicab/'Manhattan' line path (large vertical difference case)
         // console.log("line1");
@@ -113,9 +116,6 @@ export const drawLineWithArrow = function (startX, startY, endX, endY) {
       //taxicab/'Manhattan' line path (large vertical difference case)
       lineAngle = 0;
       let midY = startY + (endY - startY) / 2;
-
-      const dx = 15;
-      const dy = 5;
 
       //enhancements, so that lines do not overlap
       const canvasMargin = 10; //so that such lines are not drawn outside the canvas
