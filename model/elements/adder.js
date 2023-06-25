@@ -19,6 +19,7 @@ import { removeLineRender } from "../../view/services/core/lineRenderingService.
  * Implementation assumption: Each adder has multiple inputs and multiple outputs
  */
 export class Adder {
+  #adderView;
   #elementId = null;
 
   #value;
@@ -46,7 +47,9 @@ export class Adder {
     return this;
   }
 
-  #render = (position) => new AdderView(this, position);
+  #render = (position) => {
+    this.#adderView = new AdderView(this, position);
+  };
 
   #internalAddInput = (i) => this.#inputsArray.unshift(i);
   #internalRemoveInput = (i) => {
@@ -64,6 +67,7 @@ export class Adder {
   //
   getElementId = () => this.#elementId;
   render = () => this.#render();
+  getPosition = () => this.#adderView.getPosition();
 
   getValue = () => this.#value;
 

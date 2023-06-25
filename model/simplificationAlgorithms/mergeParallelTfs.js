@@ -10,10 +10,15 @@ import {
   add,
   simplify,
 } from "../../math/computerAlgebra/algebraicOperations.js";
+import { Polynomial } from "../../math/computerAlgebra/dataTypes/polynomials.js";
+import { Ratio } from "../../math/computerAlgebra/dataTypes/ratios.js";
 import { logMessages } from "../../util/loggingService.js";
 import { updateSimplificationsDoneCounters } from "../../util/metricsService.js";
 import { printElementValues } from "../../util/prettyPrintingService.js";
+import { animateCreateElement } from "../../view/animation/animateCreateElement.js";
 import { animateMergeNElements } from "../../view/animation/animateMergeNElements.js";
+import { connectWithoutChecks } from "../elementConnectionService.js";
+import { Tf } from "../elements/tf.js";
 
 /**
  * Algorithm #3: "Merge parallel tfs"
@@ -37,96 +42,210 @@ export const mergeParallelTfs = async function (adders) {
 const checkAdder = async function (adder, adders) {
   const inputs = adder.getInput();
   if (inputs.length === 0) {
-    logMessages(["[CP-31] no inputs for this adder"], "checkpoints");
+    logMessages(["[CP-30] no inputs for this adder"], "checkpoints");
   } else {
+    // console.log("checkAdder", inputs.length);
     await checkAdderInputs.call(this, adder, inputs);
   }
   await mergeParallelTfs.call(this, this._getRemainingElements(adders));
 };
 
-const checkAdderInputs = async function (adder, inputs) {
-  if (inputs.length === 0) return;
+const checkAdderInputs = async function (adder, remainingReferenceInputs) {
+  // console.log("checkAdderInputs-1", remainingReferenceInputs.length);
+  if (remainingReferenceInputs.length === 0) return;
 
-  const input1 = inputs[0];
-  if (!input1.isAdder() && input1.hasSingleOutput()) {
-    logMessages(["[CP-32] check input1"], "checkpoints");
-    await checkInput1.call(this, adder, input1, inputs.slice(1));
+  const referenceInput = remainingReferenceInputs[0];
+  if (!referenceInput.isAdder() && referenceInput.hasSingleOutput()) {
+    logMessages(["[CP-31] check referenceInput"], "checkpoints");
+    // console.log("checkAdderInputs-2", remainingReferenceInputs.length);
+    await checkReferenceInputSchemas.call(
+      this,
+      adder,
+      referenceInput,
+      adder.getInput().filter((x) => x !== referenceInput),
+      remainingReferenceInputs
+    );
   } else {
     logMessages(
-      ["[CP-33] no single output: " + input1.getValue()],
+      ["[CP-32] no single output: " + referenceInput.getValue()],
       "checkpoints"
     );
-    await checkAdderInputs.call(this, adder, inputs.slice(1));
+    await checkAdderInputs.call(this, adder, remainingReferenceInputs.slice(1));
   }
 };
 
-const checkInput1 = async function (adder, input1, inputs) {
-  if (inputs.length === 0) return;
+/**
+ * Having one input as a reference,
+ * check consecutively the schema formed with each of its sibling inputs,
+ * and when finished, call its parent function with the reference input removed
+ */
+const checkReferenceInputSchemas = async function (
+  adder,
+  referenceInput,
+  remainingSiblingInputs,
+  remainingReferenceInputs
+) {
+  if (remainingSiblingInputs.length === 0) return;
 
-  if (input1.hasInput()) {
-    if (input1.getInput().isAdder()) {
-      const adder1 = input1.getInput();
-      let input2 = inputs[0];
+  if (referenceInput.hasInput()) {
+    if (referenceInput.getInput().isAdder()) {
+      const adder1 = referenceInput.getInput();
+      let siblingInput = remainingSiblingInputs[0];
 
-      if (input2.hasSingleOutput()) {
-        if (input2.hasInput()) {
-          if (input2.getInput().isAdder()) {
-            const adder2 = input2.getInput();
+      //if one of the two schema branches is a bare connection, create an identity tf there,
+      //so as to merge the two tfs afterwards
+      if (siblingInput.isAdder()) {
+        const adder2 = siblingInput;
 
-            //check if both tf/block elements that are inputs to 'adder' (input1 & input2
-            //respectively) have themselves the same adder input (which is adder1=adder2)
-            if (adder1 === adder2) {
-              await animateMergeNElements(
-                input1.getElementId(),
-                input2.getElementId()
-              );
+        if (adder1 === adder2) {
+          logMessages(["[CP-33] Identity tf to be created"], "checkpoints");
 
-              input2.setValue(
-                simplify(add(input1.getValue(), input2.getValue()))
-              );
+          const position = adder.getPosition();
+          const position1 = adder1.getPosition();
 
-              adder1.removeOutput(input1);
-              adder.removeInput(input1);
-
-              //this._internalRemoveFromTfs(input1);
-              input1.isBlock()
-                ? getBlock(input1).removeFromBlocks(input1)
-                : this._internalRemoveFromTfs(input1);
-
-              updateSimplificationsDoneCounters();
-              logMessages(
-                [
-                  "[SF-31] SIMPLIFICATION DONE - MERGE PARALLEL TFS - tfs now: " +
-                    printElementValues(this._tfs) +
-                    ", adders now: " +
-                    printElementValues(this._adders),
-                ],
-                "simplifications"
-              );
-
-              await checkAdderInputs.call(this, adder, inputs);
-            } else {
-              logMessages(["[CP-34] adder1 === adder2"], "checkpoints");
-              await checkInput1.call(this, adder, input1, inputs.slice(1));
+          const identityTf = new Tf(
+            new Ratio(new Polynomial("s", [1]), new Polynomial("s", [1])),
+            this,
+            {
+              left: (position.left + position1.left) / 2,
+              top: (position.top + position1.top) / 2,
             }
-          } else {
-            logMessages(["[CP-35] input2.getInput().isAdder()"], "checkpoints");
-            await checkInput1.call(this, adder, input1, inputs.slice(1));
-          }
+          );
+
+          connectWithoutChecks(adder1, identityTf);
+          connectWithoutChecks(identityTf, adder);
+
+          adder1.removeOutput(adder);
+          adder.removeInput(adder1);
+
+          await animateCreateElement(identityTf.getElementId());
+
+          //call the procedure again to perform the simplification, replacing the input modified
+          await checkReferenceInputSchemas.call(
+            this,
+            adder,
+            referenceInput,
+            remainingSiblingInputs.map((x) =>
+              x === siblingInput ? identityTf : x
+            ),
+            remainingReferenceInputs.map((x) =>
+              x === siblingInput ? identityTf : x
+            )
+          );
         } else {
-          logMessages(["[CP-36] input2.hasInput()"], "checkpoints");
-          await checkInput1.call(this, adder, input1, inputs.slice(1));
+          logMessages(["[CP-34] adder1 === adder2"], "checkpoints");
+          await checkReferenceInputSchemas.call(
+            this,
+            adder,
+            referenceInput,
+            remainingSiblingInputs.slice(1),
+            remainingReferenceInputs
+          );
         }
       } else {
-        logMessages(["[CP-37] input2.hasSingleOutput()"], "checkpoints");
-        await checkInput1.call(this, adder, input1, inputs.slice(1));
+        if (siblingInput.hasSingleOutput()) {
+          if (siblingInput.hasInput()) {
+            if (siblingInput.getInput().isAdder()) {
+              const adder2 = siblingInput.getInput();
+
+              //check if both tf/block elements that are inputs to 'adder' (referenceInput & siblingInput
+              //respectively) have themselves the same adder input (which is adder1 = adder2)
+              if (adder1 === adder2) {
+                await animateMergeNElements(
+                  referenceInput.getElementId(),
+                  siblingInput.getElementId()
+                );
+
+                siblingInput.setValue(
+                  simplify(
+                    add(referenceInput.getValue(), siblingInput.getValue())
+                  )
+                );
+
+                adder1.removeOutput(referenceInput);
+                adder.removeInput(referenceInput);
+
+                //this._internalRemoveFromTfs(referenceInput);
+                referenceInput.isBlock()
+                  ? getBlock(referenceInput).removeFromBlocks(referenceInput)
+                  : this._internalRemoveFromTfs(referenceInput);
+
+                updateSimplificationsDoneCounters();
+                logMessages(
+                  [
+                    "[SF-31] SIMPLIFICATION DONE - MERGE PARALLEL TFS - tfs now: " +
+                      printElementValues(this._tfs) +
+                      ", adders now: " +
+                      printElementValues(this._adders),
+                  ],
+                  "simplifications"
+                );
+
+                await checkAdderInputs.call(
+                  this,
+                  adder,
+                  remainingReferenceInputs.filter((x) => x !== referenceInput)
+                );
+              } else {
+                logMessages(["[CP-35] adder1 === adder2"], "checkpoints");
+                await checkReferenceInputSchemas.call(
+                  this,
+                  adder,
+                  referenceInput,
+                  remainingSiblingInputs.slice(1),
+                  remainingReferenceInputs
+                );
+              }
+            } else {
+              logMessages(
+                ["[CP-36] siblingInput.getInput().isAdder()"],
+                "checkpoints"
+              );
+              await checkReferenceInputSchemas.call(
+                this,
+                adder,
+                referenceInput,
+                remainingSiblingInputs.slice(1),
+                remainingReferenceInputs
+              );
+            }
+          } else {
+            logMessages(["[CP-37] siblingInput.hasInput()"], "checkpoints");
+            await checkReferenceInputSchemas.call(
+              this,
+              adder,
+              referenceInput,
+              remainingSiblingInputs.slice(1),
+              remainingReferenceInputs
+            );
+          }
+        } else {
+          logMessages(
+            ["[CP-38] siblingInput.hasSingleOutput()"],
+            "checkpoints"
+          );
+          await checkReferenceInputSchemas.call(
+            this,
+            adder,
+            referenceInput,
+            remainingSiblingInputs.slice(1),
+            remainingReferenceInputs
+          );
+        }
       }
     } else {
-      logMessages(["[CP-38] input1.getInput().isAdder()"], "checkpoints");
-      await checkAdderInputs.call(this, adder, inputs.slice(1));
+      logMessages(
+        ["[CP-39] referenceInput.getInput().isAdder()"],
+        "checkpoints"
+      );
+      await checkAdderInputs.call(
+        this,
+        adder,
+        remainingReferenceInputs.slice(1)
+      );
     }
   } else {
-    logMessages(["[CP-39] input1.hasInput()"], "checkpoints");
-    await checkAdderInputs.call(this, adder, inputs.slice(1));
+    logMessages(["[CP-40] referenceInput.hasInput()"], "checkpoints");
+    await checkAdderInputs.call(this, adder, remainingReferenceInputs.slice(1));
   }
 };

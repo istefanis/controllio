@@ -49,4 +49,8 @@ export default class AdderView {
       generateNewAdderPosition(this.#domElement);
     }
   }
+
+  getPosition() {
+    return this.#domElement.getBoundingClientRect();
+  }
 }
