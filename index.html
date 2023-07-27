@@ -7,6 +7,13 @@ Controllio · Open source web drafting table for studying control systems
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Controllio is a web app which lets control systems engineers design & experiment with LTI dynamical systems online"
+    />
+    <title>
+      Controllio · Open source web drafting table for studying control systems
+    </title>
     <link rel="shortcut icon" type="image/png" href="assets/img/favicon.png" />
 
     <!-- icons -->
@@ -20,6 +27,7 @@ Controllio · Open source web drafting table for studying control systems
 
     <!-- plots lib -->
     <script
+      defer
       src="https://cdnjs.cloudflare.com/ajax/libs/function-plot/1.23.2/function-plot.js"
       integrity="sha512-Mt2z8Bi3iT3BwXeGZ42UC3Fa7AriMjH2rA3tuWrVRNK7Pg09xnSyCEs4Q2fSdTebQ88RuNrTo78YCLV03///Dw=="
       crossorigin="anonymous"
@@ -28,9 +36,6 @@ Controllio · Open source web drafting table for studying control systems
 
     <link rel="stylesheet" href="view/style/main.css" />
     <script type="module" src="script.js"></script>
-    <title>
-      Controllio · Open source web drafting table for studying control systems
-    </title>
   </head>
   <body>
     <nav id="navbar">
@@ -297,7 +302,7 @@ Controllio · Open source web drafting table for studying control systems
             />
             <datalist id="speed-slider-markers">
               <option value="1" label="-"></option>
-              <option value="5" label="speed"></option>
+              <label for="speed-slider">speed</label>
               <option value="10" label="+"></option>
             </datalist>
             <div class="tooltip">

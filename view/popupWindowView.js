@@ -37,6 +37,7 @@ export const openPopupWindow = function (
   //display popup window
   pageOverlay.classList.remove("hidden");
   popupWindow.classList.remove("hidden");
+  popupWindowCloseButton.focus();
 
   //option 1: popup window with tabs
   const tabButtonsContainer = popupWindowContents.querySelector(

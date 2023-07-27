@@ -140,6 +140,8 @@ export const openOrUpdateElementAnalysisWindow = function (domElement) {
   } else {
     makeElementHidden(elementAnalysisWindow);
   }
+
+  elementAnalysisWindowCloseButton.focus();
 };
 
 export const closeElementAnalysisWindow = function () {

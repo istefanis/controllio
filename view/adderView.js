@@ -26,7 +26,7 @@ export default class AdderView {
   render(position) {
     //insert DOM element
     const markup = `
-      <div class="element adder" id="element${this.#domElementId}">
+      <div class="element adder" id="element${this.#domElementId}" tabindex="0">
         <p>+</p>
       </div>
     `;

@@ -50,7 +50,7 @@ export default class TfView {
     );
 
     const markup = `
-      <div class="element tf" id="element${this.#domElementId}"> 
+      <div class="element tf" id="element${this.#domElementId}" tabindex="0"> 
         <p>${numMarkup}</p>
         <p>${h2}</p>
         <p>${denMarkup}</p>
