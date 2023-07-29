@@ -177,3 +177,17 @@ body,
     transform: rotate(360deg);
   }
 }
+
+/* JS disabled notification */
+
+.js-disabled-notification {
+  background-color: #000;
+  color: #fff;
+}
+
+.js-disabled-notification h2 {
+  margin: 0;
+  padding: 1rem;
+  text-align: center;
+  font-size: 14px;
+}

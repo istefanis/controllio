@@ -6,11 +6,13 @@
  * Script
  */
 
-// import first to initialize required components
+// Import these first to initialize required components
 import * as computerAlgebraService from "./math/computerAlgebra/computerAlgebraService.js";
 import * as gridView from "./view/mainView.js";
 
 import { Block } from "./model/elements/block.js";
+
+// Import few circuit examples
 import {
   mergeFeedbackLoopTest1,
   splitTfIntoSingleOutputTfsTest1,
@@ -20,10 +22,26 @@ import {
 } from "./model/tests/circuitExamples.js";
 
 //
-// Top block definition (elements are stored there)
+// Top block definition (the circuit elements are stored inside this block)
 //
 let topBlock;
 export const getTopBlock = () => topBlock;
 
-// circuit example
-topBlock = circuit1(new Block());
+//
+// Check that external JS libraries have been loaded
+//
+if (!window.functionPlot) {
+  // Display 'JS libraries not loaded' notification
+  const jsLibrariesNotLoadedNotificationMarkup = `
+    <section class="js-disabled-notification">
+      <h2>Please enable the loading of external JavaScript libraries in your browser to run Controllio!</h2>
+    </section>
+  `;
+  document.body.insertAdjacentHTML(
+    "afterbegin",
+    jsLibrariesNotLoadedNotificationMarkup
+  );
+} else {
+  // Display one of the circuit examples
+  topBlock = circuit1(new Block());
+}
