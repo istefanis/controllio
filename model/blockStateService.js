@@ -20,6 +20,7 @@ import {
   getLineViewsNumber,
   resetLineRenderingService,
 } from "../view/services/core/lineRenderingService.js";
+import { getNavbarHeight } from "../view/navbarView.js";
 
 const optimizeTopologyButton = document.getElementById(
   "optimize-topology-button"
@@ -71,6 +72,10 @@ export const setBlockState = function (state) {
 export const getBlockState = function () {
   const currentState = {};
 
+  //element positions must be transformed into a navbar height agnostic format
+  //before being stored in the object returned
+  const navbarHeight = getNavbarHeight();
+
   //store blocks
   currentState.blocks = [];
   this._blocks.forEach((x) => {
@@ -80,7 +85,7 @@ export const getBlockState = function () {
 
     currentState.blocks[x.getElementId()] = {
       value: x.getValue(),
-      position: { left: boundRect.left, top: boundRect.top },
+      position: { left: boundRect.left, top: boundRect.top - navbarHeight },
     };
   });
 
@@ -93,7 +98,7 @@ export const getBlockState = function () {
 
     currentState.tfs.push({
       value: x.getValue(),
-      position: { left: boundRect.left, top: boundRect.top },
+      position: { left: boundRect.left, top: boundRect.top - navbarHeight },
       elementId: x.getElementId(),
     });
   });
@@ -107,7 +112,7 @@ export const getBlockState = function () {
 
     currentState.adders.push({
       value: x.getValue(),
-      position: { left: boundRect.left, top: boundRect.top },
+      position: { left: boundRect.left, top: boundRect.top - navbarHeight },
       elementId: x.getElementId(),
     });
   });

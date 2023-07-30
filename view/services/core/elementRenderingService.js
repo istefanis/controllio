@@ -107,7 +107,21 @@ export const generateNewTfPosition = (domTfElement) =>
 export const generateNewAdderPosition = (domAdderElement) =>
   generateNewElementPosition(domAdderElement, adderWidth, adderHeight);
 
+/**
+ * Set an element's position to the one passed as input, as long as the element
+ * fits inside the canvas dimensions; otherwise, generate a new position
+ * @param {*} domElement
+ * @param {*} position passed in a navbar height agnostic format
+ */
 export const setNewElementPosition = (domElement, position) => {
-  domElement.style.left = position.left + "px";
-  domElement.style.top = position.top + "px";
+  const boundRect = domElement.getBoundingClientRect();
+  if (
+    position.left + boundRect.width <= canvas.width - marginAroundElements &&
+    position.top + boundRect.height <= canvas.height - marginAroundElements
+  ) {
+    domElement.style.left = position.left + "px";
+    domElement.style.top = position.top + getNavbarHeight() + "px";
+  } else {
+    generateNewElementPosition(domElement, boundRect.width, boundRect.height);
+  }
 };

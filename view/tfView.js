@@ -16,6 +16,7 @@ import {
   computePaddedTfStrings,
   removeSupTagsFromMarkup,
 } from "../util/prettyPrintingService.js";
+import { getNavbarHeight } from "./navbarView.js";
 import {
   generateNewTfPosition,
   registerDomElement,
@@ -110,7 +111,10 @@ export default class TfView {
 
     setNewElementPosition(this.#domElement, {
       left: newTfBoundingRect.left - (newWidth - this.#width) / 2,
-      top: newTfBoundingRect.top - (newHeight - this.#height) / 2,
+      top:
+        newTfBoundingRect.top -
+        (newHeight - this.#height) / 2 -
+        getNavbarHeight(),
     });
 
     this.#width = newWidth;
