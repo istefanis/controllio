@@ -33,6 +33,7 @@ import {
   resetExpandedElements,
 } from "./services/core/elementSelectingAndDraggingService.js";
 import { enableHistoricalStateStorage } from "../model/blockStateService.js";
+import { renderAllLines } from "./services/core/lineRenderingService.js";
 
 //
 // Select DOM elements
@@ -249,6 +250,9 @@ const updateElementValueButtonCallback = function (e) {
       zeros = findComplexRootsOfPolynomial(numeratorTermsArray);
       poles = findComplexRootsOfPolynomial(denominatorTermsArray);
     }
+
+    //re-render lines, because DOM element dimensions may have been changed
+    renderAllLines();
 
     //update plot(s)
     if (!isWindowMaximized) {
