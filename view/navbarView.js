@@ -56,15 +56,6 @@ const navbarDimensionsChangeObserver = new ResizeObserver(() => {
 navbarDimensionsChangeObserver.observe(navbar);
 
 //
-// User guide button
-//
-const userGuideButton = document.getElementById("user-guide-button");
-
-userGuideButton.addEventListener("click", async function () {
-  await openUserGuidePopupWindow();
-});
-
-//
 // Export file button
 //
 const exportFileButton = document.getElementById("export-file-button");
@@ -78,6 +69,23 @@ exportFileButton.addEventListener("click", async function () {
 const importFileButton = document.getElementById("import-file-button");
 importFileButton.addEventListener("click", async function () {
   await openImportFilePopupWindow();
+});
+
+//
+// Previous button
+//
+const previousButton = document.getElementById("previous-button");
+previousButton.addEventListener("click", function () {
+  getTopBlock().loadPreviousHistoricalState();
+});
+
+//
+// Next button
+//
+const nextButton = document.getElementById("next-button");
+nextButton.disabled = true;
+nextButton.addEventListener("click", function () {
+  getTopBlock().loadNextHistoricalState();
 });
 
 //
@@ -170,23 +178,6 @@ const deleteAllButton = document.getElementById("delete-all-button");
 deleteAllButton.addEventListener("click", function (e) {
   closeElementAnalysisWindow();
   getTopBlock().clearState();
-});
-
-//
-// Previous button
-//
-const previousButton = document.getElementById("previous-button");
-previousButton.addEventListener("click", function () {
-  getTopBlock().loadPreviousHistoricalState();
-});
-
-//
-// Next button
-//
-const nextButton = document.getElementById("next-button");
-nextButton.disabled = true;
-nextButton.addEventListener("click", function () {
-  getTopBlock().loadNextHistoricalState();
 });
 
 //
@@ -333,6 +324,15 @@ const displayAndInitLogModeSlider = function () {
   });
   logModeSlider.value = 4;
 };
+
+//
+// User guide button
+//
+const userGuideButton = document.getElementById("user-guide-button");
+
+userGuideButton.addEventListener("click", async function () {
+  await openUserGuidePopupWindow();
+});
 
 //
 // Button tooltips
