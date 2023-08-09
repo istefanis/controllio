@@ -30,8 +30,8 @@ The motivation behind Controllio is to create an open-source tool for studying C
 
 ### Numerical algorithms
 
-- Polynomial complex roots: Weierstrass / Durand-Kerner
-- Laplace inversion: Talbot
+- Polynomial complex roots: Weierstrass / Durand-Kerner algorithm
+- Laplace inversion: Talbot algorithm
 
 ### Topology optimization
 
@@ -57,6 +57,28 @@ The motivation behind Controllio is to create an open-source tool for studying C
 ## User Guide
 
 A User Guide is included in the web app, and can be launched from the main menu
+
+## Code Structure
+
+The project uses a simplified variation of the MVC pattern, organizing code into _model_ and _view_ parts:
+
+- `\model\` contains all code modeling the circuit elements, state & functionality:
+  - the definitions of the main circuit elements (_tf_, _adder_, _block_), as JS classes
+  - the circuit/block simplification algorithms' logic
+  - the services related to the circuit state & core functionality (ex. _elementConnectionService_)
+- `\view\` contains all code related to the visual part of the app & its UI:
+  - the views of the main circuit elements (ex. _tfView_) & all other UI components (ex. _navbarView_)
+  - the core rendering & UI services (ex. _elementRenderingService_, _elementSelectingAndDraggingService_)
+  - the app features' services (ex. _optimizeTopologyService_)
+  - the animations' rendering code
+  - the plot computations & rendering code
+  - the CSS styles
+
+In addition:
+
+- `\assets\` contains any other resources used (ex. libraries, images)
+- `\math\` contains the math services (ex. _complexAnalysisService_)
+- `\util\` contains any general-purpose utility code & services (ex. _loggingService_)
 
 ## License
 
