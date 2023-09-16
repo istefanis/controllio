@@ -217,11 +217,9 @@ export const displayTf = function (ratio) {
   const l2 = denString.length;
   const maxLength = Math.max(l1, l2);
   if (maxLength > 40) {
-    ["tf:", n, makeRatioLine(20), d].forEach((x) => console.log(x));
+    console.log(["tf:", n, makeRatioLine(20), d].join("\n"));
   } else {
-    console.log(`      ${n}`);
-    console.log(`tf:   ${h}`);
-    console.log(`      ${d}`);
+    console.log([`      ${n}`, `tf:   ${h}`, `      ${d}`].join("\n"));
   }
 };
 

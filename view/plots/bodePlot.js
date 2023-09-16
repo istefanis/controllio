@@ -12,7 +12,10 @@ import {
 } from "../../math/complexAnalysis/complexAnalysisService.js";
 import { functionFromPolynomialTermsArray } from "../../util/commons.js";
 import { logMessages } from "../../util/loggingService.js";
-import { computeAndDisplayCharacteristicNumbers } from "./characteristicNumbersService.js";
+import {
+  computeCharacteristicNumbers,
+  insertCharacteristicNumbersMarkup,
+} from "./characteristicNumbersService.js";
 import {
   VariableStep,
   PhaseUnwrapper,
@@ -56,18 +59,6 @@ export default class BodePlot {
     zeros,
     poles
   ) {
-    this.#plotContainerDomElement = plotContainerDomElement;
-    //create the two plot DOM elements inside the container
-    const markup = `
-      <div class="bode-subplot" id="bode-plot1"></div>
-      <div class="bode-subplot" id="bode-plot2"></div>
-    `;
-    plotContainerDomElement.insertAdjacentHTML("afterbegin", markup);
-
-    this.#magnitudePlotDomElement =
-      plotContainerDomElement.querySelector("#bode-plot1");
-    this.#phasePlotDomElement =
-      plotContainerDomElement.querySelector("#bode-plot2");
     this.#numeratorTermsArray = numeratorTermsArray;
     this.#denominatorTermsArray = denominatorTermsArray;
     this.#zeros = zeros;
@@ -78,12 +69,7 @@ export default class BodePlot {
       this.#denominatorTermsArray
     );
 
-    this.createBodePlot();
-
-    computeAndDisplayCharacteristicNumbers(
-      plotContainerDomElement.parentNode.querySelector(
-        "#characteristic-numbers-grid"
-      ),
+    const characteristicNumbers = computeCharacteristicNumbers(
       this.#magnitude,
       this.#magnitudeCurvePoints,
       this.#phaseCurvePoints,
@@ -93,7 +79,38 @@ export default class BodePlot {
       this.#maxMagnitude
     );
 
-    return this.#bodeObserver;
+    if (!plotContainerDomElement) {
+      // return Bode curve points & characteristics numbers without displaying the plot (ex. for testing)
+      return {
+        magnitudeCurvePoints: this.#magnitudeCurvePoints,
+        phaseCurvePoints: this.#phaseCurvePoints,
+        characteristicNumbers,
+      };
+    } else {
+      this.#plotContainerDomElement = plotContainerDomElement;
+      //create the two plot DOM elements inside the container
+      const markup = `
+        <div class="bode-subplot" id="bode-plot1"></div>
+        <div class="bode-subplot" id="bode-plot2"></div>
+      `;
+      plotContainerDomElement.insertAdjacentHTML("afterbegin", markup);
+
+      this.#magnitudePlotDomElement =
+        plotContainerDomElement.querySelector("#bode-plot1");
+      this.#phasePlotDomElement =
+        plotContainerDomElement.querySelector("#bode-plot2");
+
+      this.createBodePlot();
+
+      insertCharacteristicNumbersMarkup(
+        plotContainerDomElement.parentNode.querySelector(
+          "#characteristic-numbers-grid"
+        ),
+        characteristicNumbers
+      );
+
+      return this.#bodeObserver;
+    }
   }
 
   /**

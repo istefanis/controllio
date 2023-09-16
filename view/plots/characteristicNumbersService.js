@@ -30,15 +30,16 @@ let isLowPassFilter;
 let isHighPassFilter;
 
 //characteristic numbers text values
-let filterTypeText;
-let bandwidthText;
-let thresholdText;
-let rollOffText;
+let characteristicNumbers = {
+  filterTypeText: "",
+  bandwidthText: "",
+  thresholdText: "",
+  rollOffText: "",
+};
 
 const halfPowerThreshold = Math.sqrt(2) / 2;
 
-export const computeAndDisplayCharacteristicNumbers = function (
-  containerDomElement,
+export const computeCharacteristicNumbers = function (
   magnitude,
   magnitudeCurvePoints,
   phaseCurvePoints,
@@ -47,8 +48,6 @@ export const computeAndDisplayCharacteristicNumbers = function (
   minMagnitude,
   maxMagnitude
 ) {
-  characteristicNumbersGridDomElement = containerDomElement;
-
   resetCharacteristicNumbers();
 
   computeValuesRequired(
@@ -63,12 +62,12 @@ export const computeAndDisplayCharacteristicNumbers = function (
   generateBandwidthAndThresholdText(wMin);
   generateRollOffText(magnitude, wMin, wMax);
 
-  // console.log(filterTypeText);
-  // console.log("Bandwidth      = " + bandwidthText);
-  // console.log("Threshold      = " + thresholdText);
-  // console.log("Roll-off       = " + rollOffText);
+  // console.log(characteristicNumbers.filterTypeText);
+  // console.log("Bandwidth      = " + characteristicNumbers.bandwidthText);
+  // console.log("Threshold      = " + characteristicNumbers.thresholdText);
+  // console.log("Roll-off       = " + characteristicNumbers.rollOffText);
 
-  insertCharacteristicNumbersMarkup();
+  return characteristicNumbers;
 };
 
 const resetCharacteristicNumbers = function () {
@@ -79,10 +78,10 @@ const resetCharacteristicNumbers = function () {
   isLowPassFilter = false;
   isHighPassFilter = false;
 
-  filterTypeText = "";
-  bandwidthText = "";
-  thresholdText = "";
-  rollOffText = "";
+  characteristicNumbers.filterTypeText = "";
+  characteristicNumbers.bandwidthText = "";
+  characteristicNumbers.thresholdText = "";
+  characteristicNumbers.rollOffText = "";
 };
 
 const computeValuesRequired = function (
@@ -120,12 +119,12 @@ const computeValuesRequired = function (
 
 const generateFilterTypeText = function (minMagnitude, maxMagnitude) {
   if (minMagnitude > bandwidthThreshold) {
-    filterTypeText = "All-pass filter";
+    characteristicNumbers.filterTypeText = "All-pass filter";
     isAllPassFilter = true;
     return;
   }
   if (maxMagnitude < bandwidthThreshold) {
-    filterTypeText = "No-pass filter";
+    characteristicNumbers.filterTypeText = "No-pass filter";
     isNoPassFilter = true;
     return;
   }
@@ -134,7 +133,7 @@ const generateFilterTypeText = function (minMagnitude, maxMagnitude) {
     magnitudeAtWMax < bandwidthThreshold &&
     maxMagnitude > bandwidthThreshold
   ) {
-    filterTypeText = "Band-pass filter";
+    characteristicNumbers.filterTypeText = "Band-pass filter";
     isBandPassFilter = true;
     return;
   }
@@ -143,7 +142,7 @@ const generateFilterTypeText = function (minMagnitude, maxMagnitude) {
     magnitudeAtWMax > bandwidthThreshold &&
     minMagnitude < bandwidthThreshold
   ) {
-    filterTypeText = "Band-stop filter";
+    characteristicNumbers.filterTypeText = "Band-stop filter";
     isBandStopFilter = true;
     return;
   }
@@ -153,7 +152,7 @@ const generateFilterTypeText = function (minMagnitude, maxMagnitude) {
     magnitudeAtWMax < 3 * bandwidthThreshold &&
     magnitudeAtWMin / magnitudeAtWMax > 1.5
   ) {
-    filterTypeText = "Low-pass filter";
+    characteristicNumbers.filterTypeText = "Low-pass filter";
     isLowPassFilter = true;
     return;
   }
@@ -163,22 +162,24 @@ const generateFilterTypeText = function (minMagnitude, maxMagnitude) {
     magnitudeAtWMin < 3 * bandwidthThreshold &&
     magnitudeAtWMax / magnitudeAtWMin > 1.5
   ) {
-    filterTypeText = "High-pass filter";
+    characteristicNumbers.filterTypeText = "High-pass filter";
     isHighPassFilter = true;
     return;
   }
-  if (filterTypeText !== "") {
-    console.log(filterTypeText);
+  if (characteristicNumbers.filterTypeText !== "") {
+    console.log(characteristicNumbers.filterTypeText);
   }
 };
 
 const generateBandwidthAndThresholdText = function (wMin) {
-  thresholdText = `${roundDecimal(bandwidthThreshold, 3)}${
-    bandwidthThreshold === halfPowerThreshold ? " = -3 [dB]" : ""
-  }`;
+  characteristicNumbers.thresholdText = `${roundDecimal(
+    bandwidthThreshold,
+    3
+  )}${bandwidthThreshold === halfPowerThreshold ? " = -3 [dB]" : ""}`;
 
   if (wCutoffRoots.length === 0) {
-    bandwidthText = bandwidthFunction(1) > 0 ? "(0, ∞) [rad/s]" : "N/A";
+    characteristicNumbers.bandwidthText =
+      bandwidthFunction(1) > 0 ? "(0, ∞) [rad/s]" : "N/A";
     return;
   }
 
@@ -201,7 +202,7 @@ const generateBandwidthAndThresholdText = function (wMin) {
       ? ", ∞) [rad/s]"
       : "] [rad/s]";
   }
-  bandwidthText =
+  characteristicNumbers.bandwidthText =
     bandwidthTextPrefix +
     wCutoffRoots
       .map(
@@ -230,7 +231,7 @@ const generateRollOffText = function (magnitude, wMin, wMax) {
       Math.log(magnitude(100) / magnitudeAtWMax) / Math.log(100 / wMax),
       3
     );
-    rollOffText =
+    characteristicNumbers.rollOffText =
       (rollOffLow === 0
         ? "0 (low)"
         : `${roundDecimal(20 * rollOffLow, 3)} [dB/dec] (low)`) +
@@ -242,16 +243,31 @@ const generateRollOffText = function (magnitude, wMin, wMax) {
   }
 };
 
-const insertCharacteristicNumbersMarkup = function () {
+export const insertCharacteristicNumbersMarkup = function (
+  characteristicNumbersGridDomElement,
+  characteristicNumbers
+) {
   const filterType =
     characteristicNumbersGridDomElement.parentNode.querySelector(
       "#filter-type"
     );
-  filterType.innerText = filterTypeText;
+  filterType.innerText = characteristicNumbers.filterTypeText;
   const markup = `
-    <p>Bandwidth</p><p>= ${bandwidthText !== "" ? bandwidthText : "N/A"}</p>
-    <p>Threshold</p><p>= ${thresholdText !== "" ? thresholdText : "N/A"}</p>
-    <p>Roll-off</p><p>= ${rollOffText !== "" ? rollOffText : "N/A"}</p>
+    <p>Bandwidth</p><p>= ${
+      characteristicNumbers.bandwidthText !== ""
+        ? characteristicNumbers.bandwidthText
+        : "N/A"
+    }</p>
+    <p>Threshold</p><p>= ${
+      characteristicNumbers.thresholdText !== ""
+        ? characteristicNumbers.thresholdText
+        : "N/A"
+    }</p>
+    <p>Roll-off</p><p>= ${
+      characteristicNumbers.rollOffText !== ""
+        ? characteristicNumbers.rollOffText
+        : "N/A"
+    }</p>
   `;
   characteristicNumbersGridDomElement.innerHTML = "";
   characteristicNumbersGridDomElement.insertAdjacentHTML("afterbegin", markup);
