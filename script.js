@@ -19,7 +19,8 @@ import {
   mergeSerialAddersTest1,
   mergeParallelTfsTest1,
   circuit1,
-} from "./model/tests/circuitExamples.js";
+} from "./test/simplificationAlgorithmsTests.js";
+import { runAllTests } from "./test/testService.js";
 
 //
 // Top block definition (the circuit elements are stored inside this block)
@@ -42,6 +43,9 @@ if (!window.functionPlot) {
     jsLibrariesNotLoadedNotificationMarkup
   );
 } else {
+  // Run all tests (optional)
+  // runAllTests();
+
   // Display one of the circuit examples
   topBlock = circuit1(new Block());
 }

@@ -78,6 +78,7 @@ In addition:
 
 - `\assets\` contains any other resources used (ex. libraries, images)
 - `\math\` contains the math services (ex. _complexAnalysisService_)
+- `\test\` contains the services' tests (ex. _plotsTests_), which can be executed from the main JS file _script.js_
 - `\util\` contains any general-purpose utility code & services (ex. _loggingService_)
 
 ## License

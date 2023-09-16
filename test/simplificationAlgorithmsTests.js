@@ -3,14 +3,14 @@
  */
 
 /*
- * Model / Tests / Circuit examples
+ * Test / SimplificationAlgorithmsTests
  */
 
-import { Ratio } from "../../math/computerAlgebra/dataTypes/ratios.js";
-import { Polynomial } from "../../math/computerAlgebra/dataTypes/polynomials.js";
-import { adder } from "../elements/adder.js";
-import { tf, Tf } from "../elements/tf.js";
-import { connect } from "../elementConnectionService.js";
+import { Ratio } from "../math/computerAlgebra/dataTypes/ratios.js";
+import { Polynomial } from "../math/computerAlgebra/dataTypes/polynomials.js";
+import { adder } from "../model/elements/adder.js";
+import { tf, Tf } from "../model/elements/tf.js";
+import { connect } from "../model/elementConnectionService.js";
 
 export const mergeFeedbackLoopTest1 = (block1) => {
   const tf1 = new Tf(
