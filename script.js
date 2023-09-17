@@ -44,7 +44,7 @@ if (!window.functionPlot) {
   );
 } else {
   // Run all tests (optional)
-  // runAllTests();
+  // await runAllTests();
 
   // Display one of the circuit examples
   topBlock = circuit1(new Block());

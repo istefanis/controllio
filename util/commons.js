@@ -22,6 +22,15 @@ export const areEqualArrays = (a1, a2) => {
   return JSON.stringify(a1) == JSON.stringify(a2);
 };
 
+export const areEqualArraysRoundDecimal = (a1, a2, digits) => {
+  if (a1.length !== a2.length) return false;
+  const roundingReplacer = (key, val) =>
+    typeof val === "number" ? roundDecimal(val, digits) : val;
+  return (
+    JSON.stringify(a1, roundingReplacer) == JSON.stringify(a2, roundingReplacer)
+  );
+};
+
 export const roundDecimal = function (x, digits) {
   return +x.toFixed(digits);
 };

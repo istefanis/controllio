@@ -290,6 +290,11 @@ simplifyButton.addEventListener("click", async function (e) {
 // Animation Speed slider
 //
 export let animationSpeedCoeff;
+
+export const setAnimationSpeedCoeff = (c) => {
+  animationSpeedCoeff = c;
+};
+
 const animationSpeedSlider = document.getElementById("speed-slider");
 
 animationSpeedSlider.addEventListener("input", function (e) {
