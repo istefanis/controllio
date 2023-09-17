@@ -7,18 +7,24 @@
  */
 
 import { runComputerAlgebraTests } from "../../test/computerAlgebraTests.js";
+import { logMessages, getLogMode, setLogMode } from "../util/loggingService.js";
 import { runPlotsTests } from "./plotsTests.js";
 
 //
 // Tests
 //
 export const runTestsSection = function (description, runTest, tests) {
-  console.log(`${description} tests start`);
+  logMessages([`[TE-01] ${description} tests start`], "tests");
   Object.values(tests).forEach(runTest);
-  console.log(`${description} tests end`);
+  logMessages([`[TE-04] ${description} tests end`], "tests");
 };
 
 export const runAllTests = function () {
+  const logMode = getLogMode();
+  setLogMode("null");
+
   runComputerAlgebraTests();
   runPlotsTests();
+
+  setLogMode(logMode); //revert it to its previous value
 };

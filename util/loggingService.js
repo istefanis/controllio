@@ -20,12 +20,19 @@ const logModes = ["null", "algorithms", "simplifications", "checkpoints"];
  */
 export const setLogMode = function (mode) {
   if (logModes.includes(mode)) {
-    logMode = mode;
-    logMessages([`[CP-01] Log mode set to: ${mode}`], "checkpoints");
+    if (mode === "null") {
+      logMessages([`[CP-01] Log mode set to: ${mode}`], "checkpoints");
+      logMode = mode;
+    } else {
+      logMode = mode;
+      logMessages([`[CP-01] Log mode set to: ${mode}`], "checkpoints");
+    }
   } else {
     console.error("setLogMode()", "Unknown log mode");
   }
 };
+
+export const getLogMode = () => logMode;
 
 export const logMessages = function (messagesArray, attr) {
   const logMessagesHelper = function (character) {
@@ -37,7 +44,11 @@ export const logMessages = function (messagesArray, attr) {
   };
 
   if (logMode === "null") {
-    return;
+    if (attr === "tests") {
+      return logMessagesHelper("-");
+    } else {
+      return;
+    }
   } else if (attr === "algorithms") {
     if (["checkpoints", "simplifications", "algorithms"].includes(logMode)) {
       return logMessagesHelper("=");

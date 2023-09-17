@@ -10,6 +10,7 @@ import {
   findComplexRootsOfPolynomial,
   tolerance,
 } from "../math/numericalAnalysis/numericalAnalysisService.js";
+import { logMessages } from "../util/loggingService.js";
 import BodePlot from "../view/plots/bodePlot.js";
 import { runTestsSection } from "./testService.js";
 
@@ -46,17 +47,21 @@ export const runPlotsTests = function () {
           ? Math.abs(expectedValue - actualValue) < assertionTolerance
           : actualValue === expectedValue;
       });
-      console.log(
+
+      logMessages(
         [
-          `${testCondition ? "✔️ success" : "❌ failure"} - ${
-            test.description
-          }`,
-          ...assertionsEvaluated.map((a, i) =>
-            assertionsEvaluated[i][3]
-              ? `${a[0]} ~= ${assertionsEvaluated[i][2]}`
-              : `${a[0]} === ${assertionsEvaluated[i][2]}`
-          ),
-        ].join(",\n")
+          `[TE-03] ${[
+            `${testCondition ? "✔️ success" : "❌ failure"} - ${
+              test.description
+            }`,
+            ...assertionsEvaluated.map((a, i) =>
+              assertionsEvaluated[i][3]
+                ? `${a[0]} ~= ${assertionsEvaluated[i][2]}`
+                : `${a[0]} === ${assertionsEvaluated[i][2]}`
+            ),
+          ].join(",\n")}`,
+        ],
+        "tests"
       );
     }
   };

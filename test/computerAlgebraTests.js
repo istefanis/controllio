@@ -17,15 +17,21 @@ import { Ratio } from "../math/computerAlgebra/dataTypes/ratios.js";
 import { Polynomial } from "../math/computerAlgebra/dataTypes/polynomials.js";
 import { areEqualArrays } from "../util/commons.js";
 import { runTestsSection } from "./testService.js";
+import { logMessages } from "../util/loggingService.js";
 
 export const runComputerAlgebraTests = function () {
   const runComputerAlgebraTest = (test) => {
     const actualValue = test.assertion[0];
     const expectedValue = test.assertion[1];
     const testCondition = areEqualArrays(actualValue, expectedValue);
-    console.log(
-      testCondition ? "✔️ success -" : "❌ failure -",
-      `${test.description} === ${expectedValue}`
+
+    logMessages(
+      [
+        `[TE-02] ${testCondition ? "✔️ success" : "❌ failure"} - ${
+          test.description
+        } === ${expectedValue}`,
+      ],
+      "tests"
     );
   };
 
