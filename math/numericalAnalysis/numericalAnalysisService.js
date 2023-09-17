@@ -41,7 +41,7 @@ import {
 
 let maxLoopCounter = 0;
 
-const tolerance = 0.0001;
+export const tolerance = 0.0001;
 const maxLoops = 1000;
 
 /**

@@ -233,11 +233,11 @@ const generateRollOffText = function (magnitude, wMin, wMax) {
     );
     characteristicNumbers.rollOffText =
       (rollOffLow === 0
-        ? "0 (low)"
+        ? "0 [dB/dec] (low)"
         : `${roundDecimal(20 * rollOffLow, 3)} [dB/dec] (low)`) +
       ", " +
       (rollOffHigh === 0
-        ? "0 (high)"
+        ? "0 [dB/dec] (high)"
         : `${roundDecimal(20 * rollOffHigh, 3)} [dB/dec] (high)`);
     return;
   }
