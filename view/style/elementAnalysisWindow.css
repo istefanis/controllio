@@ -43,6 +43,7 @@
 .element-analysis-window-header p {
   margin: 0 0 0 10px;
   user-select: none;
+  -webkit-user-select: none;
 }
 
 .element-analysis-window-header-button {
