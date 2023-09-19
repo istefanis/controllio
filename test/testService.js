@@ -6,9 +6,9 @@
  * Test / TestService
  */
 
-import { runComputerAlgebraTests } from "../../test/computerAlgebraTests.js";
 import { sleep } from "../util/commons.js";
 import { logMessages, getLogMode, setLogMode } from "../util/loggingService.js";
+import { runComputerAlgebraTests } from "./computerAlgebraTests.js";
 import { runPlotsTests } from "./plotsTests.js";
 import { runSimplificationAlgorithmsTests } from "./simplificationAlgorithmsTests.js";
 
