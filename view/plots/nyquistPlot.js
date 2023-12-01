@@ -10,6 +10,12 @@ import {
   polynomialEvaluatedWithWiImagTermsArray,
   polynomialEvaluatedWithWiRealTermsArray,
 } from "../../math/complexAnalysis/complexAnalysisService.js";
+import {
+  add,
+  getTermsArray,
+} from "../../math/computerAlgebra/algebraicOperations.js";
+import { Polynomial } from "../../math/computerAlgebra/dataTypes/polynomials.js";
+import { findComplexRootsOfPolynomial } from "../../math/numericalAnalysis/numericalAnalysisService.js";
 import { functionFromPolynomialTermsArray } from "../../util/commons.js";
 import { logMessages } from "../../util/loggingService.js";
 import {
@@ -65,10 +71,11 @@ export default class NyquistPlot {
     );
 
     this.createNyquistPlot();
-    this.insertZerosAndPolesMarkup();
+    this.insertZerosPolesAndStabilityMarkup();
 
     return this.#nyquistObserver;
   }
+
   /**
    * Numerical computation of Nyquist plot curve points
    */
@@ -278,16 +285,22 @@ export default class NyquistPlot {
       .forEach(removeOrFormatAxisTickElement);
   }
 
-  insertZerosAndPolesMarkup() {
-    const zerosAndPolesGrid =
+  insertZerosPolesAndStabilityMarkup() {
+    const zerosPolesAndStabilityGrid =
       this.#plotContainerDomElement.parentNode.querySelector(
-        "#zeros-and-poles-grid"
+        "#zeros-poles-and-stability-grid"
       );
     if (this.#zeros.concat(this.#poles).length > 10) {
-      makeElementFontSizeSmaller(zerosAndPolesGrid);
+      makeElementFontSizeSmaller(zerosPolesAndStabilityGrid);
     } else {
-      makeElementFontSizeNormal(zerosAndPolesGrid);
+      makeElementFontSizeNormal(zerosPolesAndStabilityGrid);
     }
+
+    const stability = computeStability(
+      this.#numeratorTermsArray,
+      this.#denominatorTermsArray
+    );
+
     const markup = `
     <p>Zero${this.#zeros.length === 1 ? "" : "s"}:</p><p> ${
       this.#zeros.length > 0
@@ -315,9 +328,10 @@ export default class NyquistPlot {
             .join(", ")
         : "N/A"
     }</p>
+    ${stability ? "<p>Stable:</p><p>" + stability + "</p>" : ""}
   `;
-    zerosAndPolesGrid.innerHTML = "";
-    zerosAndPolesGrid.insertAdjacentHTML("afterbegin", markup);
+    zerosPolesAndStabilityGrid.innerHTML = "";
+    zerosPolesAndStabilityGrid.insertAdjacentHTML("afterbegin", markup);
   }
 }
 
@@ -379,4 +393,32 @@ const computeNyquistRealAndImagWFunctions = function (
     (denReal(w) ** 2 + denImag(w) ** 2);
 
   return [real, imag];
+};
+
+/**
+ * Numerical computation of the system's stability
+ * via the position of the (complex) zeros of the respective closed loop tf
+ *
+ * @returns either a string with the result or undefined
+ */
+const computeStability = function (numeratorTermsArray, denominatorTermsArray) {
+  const closedLoopTfNumerator = add(
+    new Polynomial("s", numeratorTermsArray),
+    new Polynomial("s", denominatorTermsArray)
+  );
+  const closedLoopTfZeros = findComplexRootsOfPolynomial(
+    getTermsArray(closedLoopTfNumerator)
+  );
+
+  let stability;
+  if (closedLoopTfZeros.length > 0) {
+    if (closedLoopTfZeros.every((x) => x[0] < 0)) {
+      stability = "yes";
+    } else if (closedLoopTfZeros.some((x) => x[0] > 0)) {
+      stability = "no";
+    } else {
+      stability = "marginally";
+    }
+  }
+  return stability;
 };

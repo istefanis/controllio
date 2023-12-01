@@ -10,6 +10,7 @@ So far, functionality has been implemented for:
 - the generation of its Bode and Nyquist plots
 - the numerical computation of its time response plot
 - the numerical computation of its zeros/poles & some characteristic numbers, ex. bandwidth
+- the numerical computation of its stability
 
 > _This is a web GUI tool. For a command-line one, check the [lti-freq-domain-toolbox](https://github.com/istefanis/lti-freq-domain-toolbox)_
 
