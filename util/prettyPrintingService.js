@@ -47,14 +47,16 @@ export const polynomialTermsArrayToMarkup = function (termsArray) {
       ? isSymbol(a[0])
         ? `${a[0]}*`
         : `(${a[0]})*`
-      : a[0] !== 1
+      : Math.abs(a[0]) !== 1
       ? `${a[0]}*`
-      : "";
+      : a[0] === 1
+      ? ""
+      : "-";
     const simpleCoeffAbs = !Number.isFinite(a[0])
       ? isSymbol(a[0])
         ? `${a[0]}*`
         : `(${a[0]})*`
-      : a[0] !== 1
+      : Math.abs(a[0]) !== 1
       ? `${Math.abs(a[0])}*`
       : "";
     const exponent = order > 1 ? `<sup>${order}</sup>` : "";

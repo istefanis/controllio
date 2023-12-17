@@ -29,7 +29,7 @@ const init = function () {
     <button class="tab-button" id="popup-window-tab-button-1" data-tab-id="1">General</button>
     <button class="tab-button" id="popup-window-tab-button-2" data-tab-id="2">System modelling</button>
     <button class="tab-button" id="popup-window-tab-button-3" data-tab-id="3">Ready-made tfs</button>
-    <button class="tab-button" id="popup-window-tab-button-4" data-tab-id="4">Block simpilification</button>
+    <button class="tab-button" id="popup-window-tab-button-4" data-tab-id="4">Block simplification</button>
     <button class="tab-button" id="popup-window-tab-button-5" data-tab-id="5">Logging</button>
   </div> 
   <div class="popup-window-tab-contents tab-contents">  
@@ -42,6 +42,7 @@ const init = function () {
         <li>the generation of its Bode and Nyquist plots</li>
         <li>the numerical computation of its time response plot</li>
         <li>the numerical computation of its zeros/poles & some characteristic numbers, ex. bandwidth</li>
+        <li>the numerical computation of its stability</li>
       </ul>
       <h3>Motivation</h3>
       <p>The motivation behind Controllio is to create an open-source drafting table for studying control systems, which:</p>
@@ -56,13 +57,22 @@ const init = function () {
       <h3>Modelling a dynamical system</h3>
       <p>A linear time-invariant (LTI) dynamical system in the s-domain is represented as a circuit of interconnected elements: transfer functions (tfs) & adders.</p>
       <h3>Elements</h3>
-      <h4>Transfer functions (tf)</h4>
+      <h4>Transfer functions (tfs)</h4>
+      <div class="element element-user-guide tf">
+        <p>10*s<sup>2</sup> + 2*s + 5</p>
+        <p>―――――――――――――――</p>
+        <p>8*s<sup>2</sup> - s + 1</p>
+      </div>
       <p>To define a transfer function, the lists of the coefficients of its numerator and denominator polynomials must be specified.<p>
       <p><u>Implementation assumption</u>: Each tf has only one input (another tf, or adder) and multiple outputs. Multiple inputs can be achieved by adding in front of it an adder.</p>
       <h4>Adders</h4>
+      <div class="element element-user-guide adder"
+        <p>+</p>
+      </div>
       <p>An adder is an element used to add multiple input signals, and provides one or multiple outputs. It can be placed in front of a tf, to provide it with multiple inputs.</p>
       <p><u>Implementation assumption</u>: Each adder has multiple inputs and multiple outputs.</p>
       <h3>Connections</h3>
+      <p style="font-size: 18px">――&#x2192</p>
       <p>Elements (tfs, adders) can be connected serially. Complex connection designs can be achieved by defining all serial connections between elements.</p>
       <p><u>Note</u>: Due to the implementation assumptions above, when adding two elements, an adder may also be auto-generated between them, or the connection target may be automatically adjusted (without affecting the result).</p>
     </section>

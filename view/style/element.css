@@ -38,6 +38,17 @@
   text-align: center;
 }
 
+/* for elements displayed inside the user guide */
+.element-user-guide {
+  position: inherit;
+  width: fit-content;
+  cursor: default;
+}
+.element-user-guide:hover {
+  cursor: default;
+  border-width: 1px;
+}
+
 .tf {
   min-width: 40px;
   min-height: 60px;
