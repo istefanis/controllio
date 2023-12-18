@@ -11,7 +11,7 @@
   top: 100px;
   left: 100px;
 
-  border-radius: 4px;
+  border-radius: calc(4px * var(--zoom-factor));
   touch-action: none;
   user-select: none;
   -webkit-user-select: none;
@@ -25,7 +25,7 @@
   /* font-family: "Courier New", Courier, monospace; */
   font-family: "Roboto Mono", monospace;
 
-  font-size: 12px;
+  font-size: var(--zoomed-12px);
 }
 .element:hover {
   cursor: pointer;
@@ -38,33 +38,13 @@
   text-align: center;
 }
 
-/* for elements displayed inside the user guide */
-.element-user-guide {
-  position: inherit;
-  width: fit-content;
-  cursor: default;
-}
-.element-user-guide:hover {
-  cursor: default;
-  border-width: 1px;
-}
-
 .tf {
-  min-width: 40px;
-  min-height: 60px;
-  padding: 0 10px;
+  min-width: calc(40px * var(--zoom-factor));
+  min-height: calc(60px * var(--zoom-factor));
+  padding: 0 calc(10px * var(--zoom-factor));
 
   background-color: var(--color-blue);
-  border: 1px solid var(--color-blue-darker);
-}
-
-.popup-window-tf {
-  position: inherit;
-  height: 60px;
-}
-
-.popup-window-tf:hover {
-  border-width: 1px;
+  border: var(--zoomed-1px) solid var(--color-blue-darker);
 }
 
 /* applies only for tfs */
@@ -75,34 +55,70 @@
 }
 
 .adder {
-  min-width: 24px;
-  min-height: 24px;
-  border-radius: 12px;
+  min-width: var(--zoomed-24px);
+  min-height: var(--zoomed-24px);
+  border-radius: var(--zoomed-12px);
 
   background: var(--color-white-transparent);
-  border: 1px solid var(--color-grey-80);
+  border: var(--zoomed-1px) solid var(--color-grey-80);
 }
 
 .adder.element-expanded {
   background-color: var(--color-green);
-  border: 2px solid var(--color-green-darker);
+  border: var(--zoomed-2px) solid var(--color-green-darker);
   z-index: 100;
 }
 
 /* placed last, so that they apply for both tfs & adders */
 .element-active {
   background-color: var(--color-green);
-  border: 2px solid var(--color-green-darker);
+  border: var(--zoomed-2px) solid var(--color-green-darker);
   z-index: 50;
 }
 
 .adder.element-active {
   background-color: var(--color-green);
-  border: 2px solid var(--color-green-darker);
+  border: var(--zoomed-2px) solid var(--color-green-darker);
   z-index: 50;
 }
 
 .element-attention {
   background-color: var(--color-red);
-  border: 2px solid var(--color-red-darker);
+  border: var(--zoomed-2px) solid var(--color-red-darker);
+}
+
+/* additional styles for elements displayed inside a popup window (no zooming here) */
+.popup-window-tf {
+  position: inherit;
+  height: 60px;
+  min-width: 40px;
+  min-height: 60px;
+  padding: 0 10px;
+
+  border-radius: 4px;
+  font-size: 12px;
+}
+.popup-window-tf:hover {
+  border-width: 1px;
+}
+
+.popup-window-adder {
+  position: inherit;
+  min-width: 24px;
+  min-height: 24px;
+
+  border-radius: 12px;
+  font-size: 12px;
+}
+.popup-window-adder:hover {
+  border-width: 1px;
+}
+
+/* additional styles for elements displayed inside the user guide (no zooming here) */
+.user-guide-element {
+  width: fit-content;
+  cursor: default;
+}
+.user-guide-element:hover {
+  cursor: default;
 }

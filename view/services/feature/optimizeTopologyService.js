@@ -28,6 +28,10 @@ import {
 } from "../core/lineRenderingService.js";
 import { logMessages } from "../../../util/loggingService.js";
 import { sleep } from "../../../util/commons.js";
+import {
+  disableZoomButtons,
+  enableZoomButtons,
+} from "../core/zoomingService.js";
 
 let maxLoopsOverAllElements;
 let maxTriesPerElementInEachLoop;
@@ -37,6 +41,7 @@ let navbarHeight;
 export const optimizeTopology = async function () {
   logMessages(["[CP-101] Optimize topology started"], "checkpoints");
 
+  disableZoomButtons();
   disableHistoricalStateStorage();
 
   //set the canvas size here, in case the window has been resized meanwhile
@@ -56,6 +61,7 @@ export const optimizeTopology = async function () {
   }
   enableHistoricalStateStorage();
   getTopBlock().storeNewHistoricalState();
+  enableZoomButtons();
 
   logMessages(["[CP-102] Optimize topology finished"], "checkpoints");
 };

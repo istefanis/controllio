@@ -15,8 +15,9 @@ import {
   maxUtilizedCanvasWidth,
   maxUtilizedCanvasHeight,
 } from "../../../util/uiService.js";
-import { getNavbarHeight } from "../../navbarView.js";
+import { zoomFactor } from "./zoomingService.js";
 import { getCanvas, resetCanvas } from "./canvasService.js";
+import { getNavbarHeight } from "../../navbarView.js";
 
 export let domElements = [];
 
@@ -109,19 +110,40 @@ export const generateNewAdderPosition = (domAdderElement) =>
 
 /**
  * Set an element's position to the one passed as input, as long as the element
- * fits inside the canvas dimensions; otherwise, generate a new position
+ * fits inside the canvas dimensions; otherwise, generate a new position.
+ *
+ * Fitting inside canvas checks are skipped if skipChecks === true. or zoomFactor !== 1.
+ *
  * @param {*} domElement
  * @param {*} position passed in a navbar height agnostic format
+ * @param {*} skipChecks if true, skip fitting inside canvas checks
  */
-export const setNewElementPosition = (domElement, position) => {
+export const setNewElementPosition = (domElement, position, skipChecks) => {
   const boundRect = domElement.getBoundingClientRect();
   if (
-    position.left + boundRect.width <= canvas.width - marginAroundElements &&
-    position.top + boundRect.height <= canvas.height - marginAroundElements
+    skipChecks ||
+    zoomFactor !== 1 ||
+    (position.left + boundRect.width <= canvas.width - marginAroundElements &&
+      position.top + boundRect.height <= canvas.height - marginAroundElements)
   ) {
     domElement.style.left = position.left + "px";
     domElement.style.top = position.top + getNavbarHeight() + "px";
   } else {
     generateNewElementPosition(domElement, boundRect.width, boundRect.height);
   }
+};
+
+export const adjustAllElementPositionsAfterZoom = (relativeZoomFactor) => {
+  domElements.forEach((x) => {
+    setNewElementPosition(
+      x,
+      {
+        left: x.getBoundingClientRect().left * relativeZoomFactor,
+        top:
+          (x.getBoundingClientRect().top - getNavbarHeight()) *
+          relativeZoomFactor,
+      },
+      true
+    );
+  });
 };

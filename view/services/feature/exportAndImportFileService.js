@@ -8,6 +8,7 @@
 
 import { getTopBlock } from "../../../script.js";
 import { exportFile, importFile } from "../../../util/ioService.js";
+import { resetZoom } from "../core/zoomingService.js";
 import { closeElementAnalysisWindow } from "../../elementAnalysisWindowView.js";
 import { openPopupWindow } from "../../popupWindowView.js";
 
@@ -40,6 +41,7 @@ export const openImportFilePopupWindow = async function () {
 
         //check format
         if (state.blocks && state.tfs && state.adders && state.connections) {
+          resetZoom();
           closeElementAnalysisWindow();
           getTopBlock().clearState();
           getTopBlock().clearStateHistory();

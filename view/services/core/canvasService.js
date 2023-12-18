@@ -2,6 +2,8 @@
  * Controllio · Open source web drafting table for studying control systems
  */
 
+import { zoomFactor } from "./zoomingService.js";
+
 /*
  * View / Services / Core / CanvasService
  */
@@ -30,7 +32,7 @@ export const resetCanvas = () => {
 export const enableLineDrawingStyle = function () {
   const canvasContext = getCanvasContext();
   canvasContext.strokeStyle = "black";
-  canvasContext.lineWidth = 0.5;
+  canvasContext.lineWidth = Math.max(0.4, 0.5 * zoomFactor);
 };
 
 export const enableSelectionDrawingStyle = function () {

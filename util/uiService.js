@@ -2,22 +2,45 @@
  * Controllio · Open source web drafting table for studying control systems
  */
 
+import { roundDecimal } from "./commons.js";
+
 /*
  * Util / UIService
  */
 
 //
-// Common dimensions
+// UI reference dimensions
 //
-export const indicativeTfWidth = 120;
-export const indicativeTfHeight = 60;
-export const adderWidth = 24;
-export const adderHeight = 24;
+export let indicativeTfWidth = 120;
+export let indicativeTfHeight = 60;
+export let adderWidth = 24;
+export let adderHeight = 24;
 
-export const marginAroundElements = 30;
+export let marginAroundElements = 30;
 
-export const maxUtilizedCanvasWidth = 1440;
-export const maxUtilizedCanvasHeight = 960;
+export let maxUtilizedCanvasWidth = 1440;
+export let maxUtilizedCanvasHeight = 960;
+
+export const scaleReferenceDimensionsAfterZoom = (relativeZoomFactor) => {
+  indicativeTfWidth = roundDecimal(indicativeTfWidth * relativeZoomFactor, 2);
+  indicativeTfHeight = roundDecimal(indicativeTfHeight * relativeZoomFactor, 2);
+  adderWidth = roundDecimal(adderHeight * relativeZoomFactor, 2);
+  adderHeight = roundDecimal(adderHeight * relativeZoomFactor, 2);
+
+  marginAroundElements = roundDecimal(
+    marginAroundElements * relativeZoomFactor,
+    2
+  );
+
+  maxUtilizedCanvasWidth = roundDecimal(
+    maxUtilizedCanvasWidth * relativeZoomFactor,
+    2
+  );
+  maxUtilizedCanvasHeight = roundDecimal(
+    maxUtilizedCanvasHeight * relativeZoomFactor,
+    2
+  );
+};
 
 //
 // Check whether the application runs on a touchscreen or mobile device

@@ -20,6 +20,7 @@ import {
   getLineViewsNumber,
   resetLineRenderingService,
 } from "../view/services/core/lineRenderingService.js";
+import { zoomFactor } from "../view/services/core/zoomingService.js";
 import { getNavbarHeight } from "../view/navbarView.js";
 
 const optimizeTopologyButton = document.getElementById(
@@ -54,8 +55,30 @@ export const clearBlockState = function () {
 export const setBlockState = function (state) {
   clearBlockState.call(this);
 
-  state.tfs.forEach((x) => new Tf(x.value, this, x.position, x.elementId));
-  state.adders.forEach((x) => new Adder(this, x.position, x.elementId));
+  //adjust the element positions to the current zoom factor
+  state.tfs.forEach(
+    (x) =>
+      new Tf(
+        x.value,
+        this,
+        {
+          left: x.position.left * zoomFactor,
+          top: x.position.top * zoomFactor,
+        },
+        x.elementId
+      )
+  );
+  state.adders.forEach(
+    (x) =>
+      new Adder(
+        this,
+        {
+          left: x.position.left * zoomFactor,
+          top: x.position.top * zoomFactor,
+        },
+        x.elementId
+      )
+  );
   state.connections.forEach((x) => {
     connectWithoutChecks(
       getElementFromElementId(x[0]),
@@ -72,7 +95,7 @@ export const setBlockState = function (state) {
 export const getBlockState = function () {
   const currentState = {};
 
-  //element positions must be transformed into a navbar height agnostic format
+  //element positions must be transformed into a navbar height & zoom agnostic format
   //before being stored in the object returned
   const navbarHeight = getNavbarHeight();
 
@@ -85,7 +108,10 @@ export const getBlockState = function () {
 
     currentState.blocks[x.getElementId()] = {
       value: x.getValue(),
-      position: { left: boundRect.left, top: boundRect.top - navbarHeight },
+      position: {
+        left: boundRect.left / zoomFactor,
+        top: (boundRect.top - navbarHeight) / zoomFactor,
+      },
     };
   });
 
@@ -98,7 +124,10 @@ export const getBlockState = function () {
 
     currentState.tfs.push({
       value: x.getValue(),
-      position: { left: boundRect.left, top: boundRect.top - navbarHeight },
+      position: {
+        left: boundRect.left / zoomFactor,
+        top: (boundRect.top - navbarHeight) / zoomFactor,
+      },
       elementId: x.getElementId(),
     });
   });
@@ -112,7 +141,10 @@ export const getBlockState = function () {
 
     currentState.adders.push({
       value: x.getValue(),
-      position: { left: boundRect.left, top: boundRect.top - navbarHeight },
+      position: {
+        left: boundRect.left / zoomFactor,
+        top: (boundRect.top - navbarHeight) / zoomFactor,
+      },
       elementId: x.getElementId(),
     });
   });

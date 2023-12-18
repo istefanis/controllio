@@ -50,12 +50,12 @@ export const openNewReadyMadeTfPopupWindow = async function (
   const result = await openPopupWindow("Ready-made Tfs", contentsMarkup);
 
   if (result !== null) {
-    const [selectedContentId, middleX, middleY, domElementBoundRect] = result;
+    const [selectedContentId, clientX, clientY, domElementBoundRect] = result;
     createNewReadyMadeTf(
       readyMadeTfsArray[selectedContentId][1],
       readyMadeTfsArray[selectedContentId][2],
-      middleX,
-      middleY,
+      clientX,
+      clientY,
       domElementBoundRect.width,
       invokedByTouchEvent
     );

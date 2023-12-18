@@ -38,6 +38,10 @@ import { isLocalStorageEnabled } from "../util/ioService.js";
 import { getSimplifiedBlockValue } from "../model/elements/block.js";
 import { displayTf } from "../util/prettyPrintingService.js";
 import { sleep } from "../util/commons.js";
+import {
+  disableZoomButtons,
+  enableZoomButtons,
+} from "./services/core/zoomingService.js";
 
 const navbar = document.getElementById("navbar");
 
@@ -246,6 +250,7 @@ const resumeButtonMarkup = `
 simplifyButton.addEventListener("click", async function (e) {
   if (simplificationStarted === false) {
     // console.log("Simplify run button clicked");
+    disableZoomButtons();
     closeElementAnalysisWindow();
     simplificationStarted = true;
     simplifyButton.innerHTML = pauseButtonMarkup;
@@ -267,6 +272,7 @@ simplifyButton.addEventListener("click", async function (e) {
     previousButton.disabled = false;
     pauseButtonDisplayed = false;
     pauseButtonClicked = false;
+    enableZoomButtons();
   } else {
     if (pauseButtonDisplayed) {
       if (pauseButtonClicked === false) {

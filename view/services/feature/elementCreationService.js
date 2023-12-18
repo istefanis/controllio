@@ -36,6 +36,7 @@ import {
   setExpandedElement,
   setNewlyCreatedElement,
 } from "../core/elementSelectingAndDraggingService.js";
+import { zoomFactor } from "../core/zoomingService.js";
 import { getTopBlock } from "../../../script.js";
 
 const deleteButton = document.getElementById("delete-button");
@@ -69,7 +70,10 @@ export const createNewTf = function (invokedByTouchEvent) {
     const tf = new Tf(
       new Ratio(new Polynomial("s", [1, 2, 3]), new Polynomial("s", [1, 2, 3])),
       block,
-      position
+      {
+        left: position.left,
+        top: position.top * zoomFactor,
+      }
     );
 
     //retrieve DOM element
@@ -107,8 +111,8 @@ export const createNewTf = function (invokedByTouchEvent) {
 export const createNewReadyMadeTf = function (
   numTermsArray,
   denTermsArray,
-  domElementMiddleX,
-  domElementMiddleY,
+  clientX,
+  clientY,
   domElementWidth,
   invokedByTouchEvent
 ) {
@@ -123,13 +127,13 @@ export const createNewReadyMadeTf = function (
     left: invokedByTouchEvent
       ? newReadyMadeTfButton.getBoundingClientRect().left +
         (Math.random() - 0.5) * 40
-      : domElementMiddleX - domElementWidth / 2,
+      : clientX - (domElementWidth * zoomFactor) / 2,
     top: invokedByTouchEvent
       ? newReadyMadeTfButton.getBoundingClientRect().top +
         indicativeTfHeight +
         (Math.random() - 0.5) * 60 +
         getNavbarHeight() / 2
-      : domElementMiddleY - indicativeTfHeight / 2,
+      : clientY - indicativeTfHeight / 2 - getNavbarHeight(),
   };
   const block = getTopBlock();
 
@@ -140,7 +144,10 @@ export const createNewReadyMadeTf = function (
       new Polynomial("s", denTermsArray)
     ),
     block,
-    position
+    {
+      left: position.left,
+      top: position.top,
+    }
   );
 
   //retrieve DOM element

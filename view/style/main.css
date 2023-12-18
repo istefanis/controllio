@@ -14,9 +14,8 @@
 
 @import url("https://fonts.googleapis.com/css2?family=Roboto&family=Roboto+Mono&display=swap");
 
-/* Colors */
-
 :root {
+  /* Colors */
   --color-white-transparent: rgba(255, 255, 255, 0.3);
 
   --color-blue: rgba(220, 235, 243, 0.7);
@@ -40,6 +39,13 @@
   --color-grey-244: rgb(244, 244, 244);
   --color-grey-248: rgb(248, 248, 248);
   --color-grey-252: rgb(252, 252, 252);
+
+  /* Zooming */
+  --zoom-factor: 1;
+  --zoomed-1px: calc(1px * var(--zoom-factor));
+  --zoomed-2px: calc(2px * var(--zoom-factor));
+  --zoomed-12px: calc(12px * var(--zoom-factor));
+  --zoomed-24px: calc(24px * var(--zoom-factor));
 }
 
 .red {
@@ -75,7 +81,7 @@ body,
       var(--color-grey-240) 0 1px,
       transparent 1px 100%
     );
-  background-size: 24px 24px;
+  background-size: var(--zoomed-24px) var(--zoomed-24px);
 
   overflow: hidden;
   touch-action: none;
@@ -176,6 +182,37 @@ body,
   100% {
     transform: rotate(360deg);
   }
+}
+
+/* Zoom buttons */
+
+.zoom-buttons-container {
+  position: sticky;
+  width: fit-content;
+  left: 10px;
+  bottom: 10px;
+  margin: 10px;
+
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  z-index: 150;
+}
+
+.zoom-button {
+  width: 25px;
+  height: 25px;
+  background-color: #fff;
+  border: 1px solid var(--color-grey-170);
+  border-radius: 4px;
+}
+.zoom-button:hover {
+  background-color: var(--color-grey-220);
+  cursor: pointer;
+}
+.zoom-button:disabled {
+  background-color: #fff;
+  cursor: default;
 }
 
 /* JS disabled notification */

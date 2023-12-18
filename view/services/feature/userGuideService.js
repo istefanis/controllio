@@ -58,7 +58,7 @@ const init = function () {
       <p>A linear time-invariant (LTI) dynamical system in the s-domain is represented as a circuit of interconnected elements: transfer functions (tfs) & adders.</p>
       <h3>Elements</h3>
       <h4>Transfer functions (tfs)</h4>
-      <div class="element element-user-guide tf">
+      <div class="element tf popup-window-tf user-guide-element">
         <p>10*s<sup>2</sup> + 2*s + 5</p>
         <p>―――――――――――――――</p>
         <p>8*s<sup>2</sup> - s + 1</p>
@@ -66,7 +66,7 @@ const init = function () {
       <p>To define a transfer function, the lists of the coefficients of its numerator and denominator polynomials must be specified.<p>
       <p><u>Implementation assumption</u>: Each tf has only one input (another tf, or adder) and multiple outputs. Multiple inputs can be achieved by adding in front of it an adder.</p>
       <h4>Adders</h4>
-      <div class="element element-user-guide adder"
+      <div class="element adder popup-window-adder user-guide-element"
         <p>+</p>
       </div>
       <p>An adder is an element used to add multiple input signals, and provides one or multiple outputs. It can be placed in front of a tf, to provide it with multiple inputs.</p>

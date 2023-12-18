@@ -7,13 +7,14 @@
  */
 
 import { getElementFromElementId } from "../../../model/elementService.js";
-import { indicativeTfHeight } from "../../../util/uiService.js";
-import { getNavbarHeight } from "../../navbarView.js";
+import { marginAroundElements } from "../../../util/uiService.js";
 import {
   getCanvas,
   getCanvasContext,
   enableLineDrawingStyle,
 } from "./canvasService.js";
+import { zoomFactor } from "./zoomingService.js";
+import { getNavbarHeight } from "../../navbarView.js";
 
 const optimizeTopologyButton = document.getElementById(
   "optimize-topology-button"
@@ -84,7 +85,7 @@ export const drawLineWithArrow = function (startX, startY, endX, endY) {
   if (!taxicabManhattanLinesEnabled) {
     //mixed taxicab/'Manhattan' & straight line path
     lineAngle = 0;
-    const dx = 15;
+    const dx = 15 * zoomFactor;
 
     canvasContext.lineTo(startX + dx, startY);
     canvasContext.lineTo(endX - dx, endY);
@@ -92,11 +93,11 @@ export const drawLineWithArrow = function (startX, startY, endX, endY) {
     lineLength =
       dx + Math.sqrt((endX - startX - 2 * dx) ** 2 + (endY - startY) ** 2) + dx;
   } else {
-    const dx = 15;
-    const dy = 5;
+    const dx = 15 * zoomFactor;
+    const dy = 5 * zoomFactor;
 
     if (endX > startX + 2 * dx) {
-      if (Math.abs(endY - startY) > 10) {
+      if (Math.abs(endY - startY) > 10 * zoomFactor) {
         //taxicab/'Manhattan' line path (large vertical difference case)
         // console.log("line1");
         lineAngle = 0;
@@ -118,8 +119,8 @@ export const drawLineWithArrow = function (startX, startY, endX, endY) {
       let midY = startY + (endY - startY) / 2;
 
       //enhancements, so that lines do not overlap
-      const canvasMargin = 10; //so that such lines are not drawn outside the canvas
-      const elementMargin = (2 / 3) * indicativeTfHeight; //so that such lines are not drawn over the elements
+      const canvasMargin = marginAroundElements / 3; //so that such lines are not drawn outside the canvas
+      const elementMargin = 4 * canvasMargin; //so that such lines are not drawn over the elements
       if (startY > endY) {
         if (Math.abs(startY - endY) < 2 * elementMargin) {
           // console.log("line3");
@@ -129,7 +130,10 @@ export const drawLineWithArrow = function (startX, startY, endX, endY) {
           midY = Math.max(
             canvasMargin,
             endY + elementMargin,
-            midY - (startX > endX + 200 ? ((startX - endX) / 30) * dy : dy)
+            midY -
+              (startX > endX + 200 * zoomFactor
+                ? ((startX - endX) / (30 * zoomFactor)) * dy
+                : dy)
           );
         }
       } else {
@@ -141,7 +145,10 @@ export const drawLineWithArrow = function (startX, startY, endX, endY) {
           midY = Math.min(
             window.innerHeight - navbarHeight - canvasMargin,
             endY - elementMargin,
-            midY + (startX > endX + 200 ? ((startX - endX) / 30) * dy : dy)
+            midY +
+              (startX > endX + 200 * zoomFactor
+                ? ((startX - endX) / (30 * zoomFactor)) * dy
+                : dy)
           );
         }
       }
@@ -155,7 +162,7 @@ export const drawLineWithArrow = function (startX, startY, endX, endY) {
   }
 
   //draw arrowhead
-  const arrowheadSideLength = 7;
+  const arrowheadSideLength = 7 * zoomFactor;
   const arrowHead = new Path2D();
   arrowHead.moveTo(endX, endY);
   arrowHead.lineTo(
