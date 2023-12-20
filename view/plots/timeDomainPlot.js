@@ -7,9 +7,12 @@
  */
 
 import { tfEvaluatedWithComplexNumber } from "../../math/complexAnalysis/complexAnalysisService.js";
-import { TalbotMethod } from "../../math/numericalAnalysis/numericalAnalysisService.js";
+import {
+  TalbotMethod,
+  linearInterpolationOfCurvePoints,
+} from "../../math/numericalAnalysis/numericalAnalysisService.js";
 import { logMessages } from "../../util/loggingService.js";
-import { maxCurvePointsAllowed } from "./plotService.js";
+import { maxCurvePointsAllowed, formatTip } from "./plotService.js";
 
 // import functionPlot from "function-plot";
 
@@ -155,7 +158,6 @@ export default class TimeDomainPlot {
     );
 
     //create the two plots
-    const timeResponsePlotDomainLimit = 100;
     const timeResponsePlot = functionPlot({
       target: `#${this.#timeResponsePlotDomElement.id}`,
       width: plotWidth,
@@ -167,26 +169,31 @@ export default class TimeDomainPlot {
       },
       yAxis: {
         label: "f(t)",
-        domain: [
-          maxAbsoluteFunctionValue > timeResponsePlotDomainLimit
-            ? -timeResponsePlotDomainLimit
-            : Math.min(-maxAbsoluteFunctionValue, -10),
-          maxAbsoluteFunctionValue > timeResponsePlotDomainLimit
-            ? timeResponsePlotDomainLimit
-            : Math.max(maxAbsoluteFunctionValue, 10),
-        ],
+        domain: [-maxAbsoluteFunctionValue, maxAbsoluteFunctionValue],
+      },
+      tip: {
+        xLine: true,
+        yLine: true,
       },
       grid: true,
       data: [
         {
-          points: this.#timeResponseCurvePoints,
-          fnType: "points",
           graphType: "polyline",
+          fn: (scope) => {
+            return linearInterpolationOfCurvePoints(
+              this.#timeResponseCurvePoints
+            )(scope.x);
+          },
         },
+        // {
+        //   points: this.#timeResponseCurvePoints,
+        //   fnType: "points",
+        //   color: "red",
+        //   graphType: "scatter",
+        // },
       ],
     });
 
-    const trajectoryPlotDomainLimit = 20;
     const trajectoryPlot = functionPlot({
       target: `#${this.#trajectoryPlotDomElement.id}`,
       width: plotWidth,
@@ -194,17 +201,11 @@ export default class TimeDomainPlot {
       title: "Trajectory",
       xAxis: {
         label: "df(t)/dt",
-        domain: [
-          maxAbsoluteVelocityValue > trajectoryPlotDomainLimit
-            ? -trajectoryPlotDomainLimit
-            : Math.min(-maxAbsoluteVelocityValue, -10),
-          maxAbsoluteVelocityValue > trajectoryPlotDomainLimit
-            ? trajectoryPlotDomainLimit
-            : Math.max(maxAbsoluteVelocityValue, 10),
-        ],
+        domain: [-maxAbsoluteVelocityValue, maxAbsoluteVelocityValue],
       },
       yAxis: {
         label: "f(t)",
+        domain: [-maxAbsoluteFunctionValue, maxAbsoluteFunctionValue],
       },
       grid: true,
       data: [
@@ -231,6 +232,11 @@ export default class TimeDomainPlot {
         //adjust title font size
         x.getElementsByClassName("title")[0].style.fontSize = "11px";
       }
+    );
+
+    //adjust tip's appearance
+    formatTip(
+      this.#timeResponsePlotDomElement.getElementsByClassName("inner-tip")[0]
     );
   }
 }

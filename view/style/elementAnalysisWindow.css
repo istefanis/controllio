@@ -147,10 +147,6 @@
   height: 155px;
 }
 
-.bode-subplot .zoom-and-drag {
-  cursor: crosshair;
-}
-
 .nyquist-plot {
   width: 100%;
   height: 310px;
@@ -159,6 +155,12 @@
 .time-domain-subplot {
   width: 100%;
   height: 180px;
+}
+
+.bode-subplot .zoom-and-drag,
+.nyquist-plot .zoom-and-drag,
+.time-domain-subplot .zoom-and-drag {
+  cursor: crosshair;
 }
 
 text {
