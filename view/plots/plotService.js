@@ -64,87 +64,106 @@ const computeDecimals = (textContent) => {
 };
 
 /**
+ * Adjust the appearance of a plot's tip
+ */
+export const formatTip = (tipElement) => {
+  tipElement.querySelector("text").style.fill = "#000";
+  tipElement.querySelector("circle").style.fill = "#000";
+  tipElement.querySelector("circle").setAttribute("r", "2");
+};
+
+/**
  * A step used in the numerical computation of a curve's points,
- * whose size is adjusted based on the curve's slope value
+ * whose size is adjusted based on w, or the curve's slope & its change
  */
 export class VariableStep {
-  #fixedStepEnabled = false;
-  #fixedStep;
-  #lastCurveSlope = 0;
-
-  #logStepFactor = 0.5;
-  #smallFixedStep = 0.001;
+  //tiny fixed step: for small w, or large curve slopes, or large curve slope changes
+  #tinyFixedStepCurveSlopeThreshold = 500;
+  #tinyFixedStepCurveSlopeChangeThreshold = 2;
   #tinyFixedStep = 0.0005;
-  #smallFixedStepThreshold = 3;
-  #tinyFixedStepThreshold = 100;
-  #curveSlopeChangeThreshold = 0.1;
+
+  //small fixed step: for regular curve slopes, or regular curve slope changes
+  #wSmallFixedStepThreshold = 0.1;
+  #smallFixedStep = 0.005;
+
+  //log step: for large w
+  #wLogStepThreshold = 10;
+  #logStepFactor = 0.1;
+
+  #fixedStepEnabled = true;
+  #fixedStep = this.#tinyFixedStep;
+  #lastCurveSlope = 0;
 
   getAdjustedStepSize(w, curveSlope) {
     // console.log(w, curveSlope);
-    const logStep = this.#logStepFactor * Math.log10(w + 1);
+    const curveSlopeChange = Math.abs(curveSlope - this.#lastCurveSlope);
 
     if (
-      (curveSlope < this.#smallFixedStepThreshold ||
-        Math.abs(this.#lastCurveSlope - curveSlope) <
-          this.#curveSlopeChangeThreshold) &&
-      this.#fixedStepEnabled
+      w < this.#wLogStepThreshold &&
+      curveSlope >= this.#tinyFixedStepCurveSlopeThreshold &&
+      curveSlopeChange >= this.#tinyFixedStepCurveSlopeChangeThreshold &&
+      (!this.#fixedStepEnabled || this.#fixedStep !== this.#tinyFixedStep)
     ) {
       // console.log(curveSlope, this.#lastCurveSlope);
       // logMessages(
       //   [
-      //     `[CP-82] Log step re-enabled at w=${roundDecimal(
-      //       w,
-      //       5
-      //     )} and curve slope=${roundDecimal(curveSlope, 3)}`,
-      //   ],
-      //   "checkpoints"
-      // );
-      this.#fixedStepEnabled = false;
-    } else if (
-      curveSlope >= this.#smallFixedStepThreshold &&
-      curveSlope < this.#tinyFixedStepThreshold &&
-      Math.abs(this.#lastCurveSlope - curveSlope) >
-        this.#curveSlopeChangeThreshold &&
-      (!this.#fixedStepEnabled || this.#fixedStep === this.#tinyFixedStep) &&
-      this.#smallFixedStep < logStep
-    ) {
-      // console.log(curveSlope, this.#lastCurveSlope);
-      // logMessages(
-      //   [
-      //     `[CP-80] Fixed step ${
-      //       this.#smallFixedStep
-      //     } enabled at w=${roundDecimal(w, 5)} and curve slope=${roundDecimal(
-      //       curveSlope,
-      //       3
-      //     )}`,
-      //   ],
-      //   "checkpoints"
-      // );
-      this.#fixedStep = this.#smallFixedStep;
-      this.#fixedStepEnabled = true;
-    } else if (
-      curveSlope >= this.#tinyFixedStepThreshold &&
-      Math.abs(this.#lastCurveSlope - curveSlope) >
-        this.#curveSlopeChangeThreshold &&
-      (!this.#fixedStepEnabled || this.#fixedStep === this.#smallFixedStep) &&
-      this.#tinyFixedStep < logStep
-    ) {
-      // logMessages(
-      //   [
-      //     `[CP-81] Fixed step ${
+      //     `[CP-80] Tiny fixed step ${
       //       this.#tinyFixedStep
-      //     } enabled at w=${roundDecimal(w, 5)} and curve slope=${roundDecimal(
+      //     } enabled at w=${roundDecimal(w, 5)}, curve slope=${roundDecimal(
       //       curveSlope,
       //       3
-      //     )}`,
+      //     )} and curve slope change=${roundDecimal(curveSlopeChange, 3)}`,
       //   ],
       //   "checkpoints"
       // );
       this.#fixedStep = this.#tinyFixedStep;
       this.#fixedStepEnabled = true;
+    } else if (
+      w > this.#wSmallFixedStepThreshold &&
+      w < this.#wLogStepThreshold &&
+      curveSlope < this.#tinyFixedStepCurveSlopeThreshold &&
+      curveSlopeChange < this.#tinyFixedStepCurveSlopeChangeThreshold &&
+      (!this.#fixedStepEnabled || this.#fixedStep === this.#tinyFixedStep)
+    ) {
+      // console.log(curveSlope, this.#lastCurveSlope);
+      // logMessages(
+      //   [
+      //     `[CP-81] Small fixed step ${
+      //       this.#smallFixedStep
+      //     } enabled at w=${roundDecimal(w, 5)}, curve slope=${roundDecimal(
+      //       curveSlope,
+      //       3
+      //     )} and curve slope change=${roundDecimal(curveSlopeChange, 3)}`,
+      //   ],
+      //   "checkpoints"
+      // );
+      this.#fixedStep = this.#smallFixedStep;
+      this.#fixedStepEnabled = true;
+    } else if (w >= this.#wLogStepThreshold && this.#fixedStepEnabled) {
+      // console.log(curveSlope, this.#lastCurveSlope);
+      // logMessages(
+      //   [
+      //     `[CP-82] Log step enabled at w=${roundDecimal(
+      //       w,
+      //       5
+      //     )}, curve slope=${roundDecimal(
+      //       curveSlope,
+      //       3
+      //     )} and curve slope change=${roundDecimal(curveSlopeChange, 3)}`,
+      //   ],
+      //   "checkpoints"
+      // );
+      this.#fixedStepEnabled = false;
     }
+
     this.#lastCurveSlope = curveSlope;
-    return !this.#fixedStepEnabled ? logStep : this.#fixedStep;
+
+    if (this.#fixedStepEnabled) {
+      return this.#fixedStep;
+    } else {
+      //logStep
+      return this.#logStepFactor * Math.log10(w + 1) ** 5;
+    }
   }
 }
 

@@ -118,6 +118,26 @@ export const halfIntervalMethod = function (f, a, b) {
 };
 
 //
+// Linear interpolation
+//
+
+export const linearInterpolationOfCurvePoints = function (curvePoints) {
+  return function (x) {
+    //index:
+    const i = curvePoints.findIndex((p) => p[0] >= x);
+    if (i === 0 || i === -1) {
+      //x < xmin || x > xmax
+      return undefined;
+    } else {
+      //interpolation:
+      const p1 = curvePoints[i - 1];
+      const p2 = curvePoints[i];
+      return p1[1] + (p2[1] - p1[1]) * ((x - p1[0]) / (p2[0] - p1[0]));
+    }
+  };
+};
+
+//
 // Approximate root localization
 //
 

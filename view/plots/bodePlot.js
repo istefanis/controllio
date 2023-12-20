@@ -10,6 +10,7 @@ import {
   polynomialEvaluatedWithWiImagTermsArray,
   polynomialEvaluatedWithWiRealTermsArray,
 } from "../../math/complexAnalysis/complexAnalysisService.js";
+import { linearInterpolationOfCurvePoints } from "../../math/numericalAnalysis/numericalAnalysisService.js";
 import { functionFromPolynomialTermsArray } from "../../util/commons.js";
 import { logMessages } from "../../util/loggingService.js";
 import {
@@ -17,10 +18,11 @@ import {
   insertCharacteristicNumbersMarkup,
 } from "./characteristicNumbersService.js";
 import {
+  maxCurvePointsAllowed,
   VariableStep,
   PhaseUnwrapper,
   removeOrFormatAxisTickElement,
-  maxCurvePointsAllowed,
+  formatTip,
 } from "./plotService.js";
 
 // import functionPlot from "function-plot";
@@ -294,13 +296,26 @@ export default class BodePlot {
           Math.max(this.#maxMagnitude, 1),
         ],
       },
+      tip: {
+        xLine: true,
+        yLine: true,
+      },
       grid: true,
       data: [
         {
-          points: this.#magnitudeCurvePoints,
-          fnType: "points",
           graphType: "polyline",
+          fn: (scope) => {
+            return linearInterpolationOfCurvePoints(this.#magnitudeCurvePoints)(
+              scope.x
+            );
+          },
         },
+        // {
+        //   points: this.#magnitudeCurvePoints,
+        //   color: "red",
+        //   fnType: "points",
+        //   graphType: "scatter",
+        // },
         {
           fn: "0.707",
           color: "red",
@@ -325,13 +340,26 @@ export default class BodePlot {
         // type: "log",
         domain: [minPhase, maxPhase],
       },
+      tip: {
+        xLine: true,
+        yLine: true,
+      },
       grid: true,
       data: [
         {
-          points: this.#phaseCurvePoints,
-          fnType: "points",
           graphType: "polyline",
+          fn: (scope) => {
+            return linearInterpolationOfCurvePoints(this.#phaseCurvePoints)(
+              scope.x
+            );
+          },
         },
+        // {
+        //   points: this.#phaseCurvePoints,
+        //   color: "red",
+        //   fnType: "points",
+        //   graphType: "scatter",
+        // },
       ],
     });
 
@@ -374,6 +402,12 @@ export default class BodePlot {
       .getElementsByClassName("x axis")[0]
       .querySelectorAll("text")
       .forEach(removeOrFormatAxisTickElement);
+
+    //adjust tips' appearance
+    formatTip(
+      this.#magnitudePlotDomElement.getElementsByClassName("inner-tip")[0]
+    );
+    formatTip(this.#phasePlotDomElement.getElementsByClassName("inner-tip")[0]);
   }
 }
 
