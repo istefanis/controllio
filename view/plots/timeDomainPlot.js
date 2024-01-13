@@ -12,11 +12,11 @@ import {
   linearInterpolationOfCurvePoints,
 } from "../../math/numericalAnalysis/numericalAnalysisService.js";
 import { logMessages } from "../../util/loggingService.js";
-import { maxCurvePointsAllowed, formatTip } from "./plotService.js";
-
-// import functionPlot from "function-plot";
-
-const functionPlot = window.functionPlot;
+import {
+  functionPlot,
+  maxCurvePointsAllowed,
+  formatTip,
+} from "./plotService.js";
 
 export default class TimeDomainPlot {
   #timeResponsePlotDomElement;

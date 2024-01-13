@@ -23,13 +23,10 @@ import {
   makeElementFontSizeSmaller,
 } from "../../util/uiService.js";
 import {
+  functionPlot,
   maxCurvePointsAllowed,
   removeOrFormatAxisTickElement,
 } from "./plotService.js";
-
-// import functionPlot from "function-plot";
-
-const functionPlot = window.functionPlot;
 
 export default class NyquistPlot {
   #nyquistPlotDomElement;
@@ -169,10 +166,19 @@ export default class NyquistPlot {
       },
       grid: true,
       data: [
+        // {
+        //   graphType: "polyline",
+        //   fn: (scope) => {
+        //     return linearInterpolationOfCurvePoints(
+        //       this.#curvePoints.filter((x) => x[0] > 0).map((x) => [x[1], x[2]])
+        //     )(scope.x);
+        //   },
+        // },
         {
           points: this.#curvePoints
             .filter((x) => x[0] > 0)
             .map((x) => [x[1], x[2]]),
+          // color: "red",
           fnType: "points",
           graphType: "polyline",
         },
@@ -184,6 +190,15 @@ export default class NyquistPlot {
           graphType: "polyline",
           color: "gray",
         },
+        // {
+        //   graphType: "polyline",
+        //   color: "gray",
+        //   fn: (scope) => {
+        //     return linearInterpolationOfCurvePoints(
+        //       this.#curvePoints.filter((x) => x[0] < 0).map((x) => [x[1], x[2]])
+        //     )(scope.x);
+        //   },
+        // },
         {
           points: this.#zeros,
           fnType: "points",

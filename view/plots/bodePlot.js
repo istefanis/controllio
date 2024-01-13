@@ -18,16 +18,13 @@ import {
   insertCharacteristicNumbersMarkup,
 } from "./characteristicNumbersService.js";
 import {
+  functionPlot,
   maxCurvePointsAllowed,
   VariableStep,
   PhaseUnwrapper,
   removeOrFormatAxisTickElement,
   formatTip,
 } from "./plotService.js";
-
-// import functionPlot from "function-plot";
-
-const functionPlot = window.functionPlot;
 
 export default class BodePlot {
   #magnitudePlotDomElement;

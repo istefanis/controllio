@@ -1,0 +1,46 @@
+{
+  "name": "controllio",
+  "description": "Web app for experimenting with control systems online",
+  "version": "0.5.0-beta.5",
+  "license": "MIT",
+  "author": {
+    "name": "Ioannis Stefanis"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/istefanis/controllio.git"
+  },
+  "homepage": "https://github.com/istefanis/controllio#readme",
+  "bugs": {
+    "url": "https://github.com/istefanis/controllio/issues"
+  },
+  "keywords": [
+    "controller",
+    "dynamical-systems",
+    "control-systems",
+    "control-engineering",
+    "laplace-transform",
+    "frequency-domain",
+    "transfer-functions",
+    "frequency-analysis",
+    "pid-controller",
+    "bode-plot",
+    "frequency-response",
+    "control-design",
+    "nyquist"
+  ],
+  "type": "module",
+  "scripts": {
+    "start": "parcel index.html --no-cache",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "parcel build index.html --no-cache"
+  },
+  "dependencies": {
+    "bootstrap-icons": "^1.11.3",
+    "function-plot": "^1.24.0"
+  },
+  "devDependencies": {
+    "buffer": "^6.0.3",
+    "parcel": "^2.11.0"
+  }
+}

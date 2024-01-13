@@ -9,6 +9,13 @@
 import { isPowerOfTen, roundDecimal } from "../../util/commons.js";
 import { logMessages } from "../../util/loggingService.js";
 
+// to run with NPM uncomment this:
+// import functionPlot from "function-plot";
+// to run with NPM comment this:
+const functionPlot = window.functionPlot;
+
+export { functionPlot };
+
 // to abort computations that take too long
 export const maxCurvePointsAllowed = 250000;
 

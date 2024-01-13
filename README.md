@@ -51,9 +51,23 @@ The motivation behind Controllio is to create an open-source tool for studying C
 
 - The app is deployed [here](https://istefanis.github.io/controllio)
 
-### Locally
+### Locally with CDN (default)
 
-- Download the repo, and just load the app using a development server
+1. Download the repo
+
+2. Load the app using a development server
+
+### Locally with NPM
+
+1. Install [Node.js®](https://nodejs.org) if you don't have it
+
+2. Download the repo
+
+3. Search the codebase for the string `to run with NPM` (4 occurences excluding this one). Follow the respective guideline in each occurence to slightly modify the code, so that it uses NPM dependencies
+
+4. Open your terminal at the main project directory, and run `npm install` to download the dependencies locally
+
+5. Run `npm start` to load the app via [Parcel](https://parceljs.org/) (stop via `Ctrl+C`)
 
 ## User Guide
 

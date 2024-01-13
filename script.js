@@ -6,6 +6,9 @@
  * Script
  */
 
+// to run with NPM uncomment this:
+// import "bootstrap-icons/font/bootstrap-icons.css";
+
 // Import these first to initialize required components
 import * as computerAlgebraService from "./math/computerAlgebra/computerAlgebraService.js";
 import * as gridView from "./view/mainView.js";
@@ -20,6 +23,7 @@ import {
   mergeParallelTfsTest1,
   circuit1,
 } from "./test/simplificationAlgorithmsTests.js";
+import { functionPlot } from "./view/plots/plotService.js";
 import { runAllTests } from "./test/testService.js";
 
 //
@@ -31,7 +35,7 @@ export const getTopBlock = () => topBlock;
 //
 // Check that external JS libraries have been loaded
 //
-if (!window.functionPlot) {
+if (!functionPlot) {
   // Display 'JS libraries not loaded' notification
   const jsLibrariesNotLoadedNotificationMarkup = `
     <section class="js-disabled-notification">
