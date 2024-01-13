@@ -154,14 +154,17 @@ export const runSimplificationAlgorithmsTests = async function () {
 
     logMessages(
       [
-        `[TE-04] ${testCondition ? "✔️ success" : "❌ failure"} - ${
-          test.description
-        } === ${expectedValue}`,
+        `[TE-04] ` +
+          `%c ${testCondition ? "success" : "failure"} ` +
+          `%c - ${test.description} === ${expectedValue}`,
+        `background: ${testCondition ? "#00aa00" : "#dd0000"}; color: #fff`,
+        `background: #fff; color: #000`,
       ],
-      "tests"
+      "tests-css"
     );
 
     testsBlock.clearState();
+    return;
   };
 
   const tests = {

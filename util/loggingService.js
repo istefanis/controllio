@@ -35,31 +35,36 @@ export const setLogMode = function (mode) {
 export const getLogMode = () => logMode;
 
 export const logMessages = function (messagesArray, attr) {
-  const logMessagesHelper = function (character) {
-    messagesArray.forEach((x) => {
-      console.log(x);
-    });
-    // const displayWidth = 40;
-    // return console.log(makeString(displayWidth, character));
+  const logMessagesHelper = function (haveCss) {
+    if (haveCss) {
+      //print with styles
+      console.log(...messagesArray);
+    } else {
+      messagesArray.forEach((x) => {
+        console.log(x);
+      });
+    }
   };
 
   if (logMode === "null") {
-    if (attr === "tests") {
-      return logMessagesHelper("-");
+    if (attr === "tests-css") {
+      return logMessagesHelper(true);
+    } else if (attr === "tests") {
+      return logMessagesHelper();
     } else {
       return;
     }
   } else if (attr === "algorithms") {
     if (["checkpoints", "simplifications", "algorithms"].includes(logMode)) {
-      return logMessagesHelper("=");
+      return logMessagesHelper();
     }
   } else if (attr === "simplifications") {
     if (["checkpoints", "simplifications"].includes(logMode)) {
-      return logMessagesHelper("-");
+      return logMessagesHelper();
     }
   } else if (attr === "checkpoints") {
     if (logMode === "checkpoints") {
-      return logMessagesHelper("-");
+      return logMessagesHelper();
     }
   } else {
     console.error("logMessages()", "Undefined log mode", logMode);

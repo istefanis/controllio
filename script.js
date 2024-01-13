@@ -47,8 +47,20 @@ if (!functionPlot) {
     jsLibrariesNotLoadedNotificationMarkup
   );
 } else {
-  // Run all tests (optional)
+  //
+  // Tests
+  //
+
+  // To run all tests at app start (optional) uncomment this.
+  // Open the browser's console to see the results:
   // await runAllTests();
+
+  // To run all tests manually from the browser's console anytime (optional) uncomment this.
+  // Open the browser's console and execute "runAllTests()":
+  // window.runAllTests = async () => {
+  //   await runAllTests();
+  //   topBlock = circuit1(new Block());
+  // };
 
   // Display one of the circuit examples
   topBlock = circuit1(new Block());

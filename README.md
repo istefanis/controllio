@@ -45,6 +45,10 @@ The motivation behind Controllio is to create an open-source tool for studying C
 - Utilities: integrator / step, exponential decay, sine, phase delay
 - Controllers: PI, PD, PID
 
+## User Guide
+
+A User Guide is included in the web app, and can be launched from the main menu
+
 ## Try it out
 
 ### Online
@@ -69,9 +73,9 @@ The motivation behind Controllio is to create an open-source tool for studying C
 
 5. Run `npm start` to load the app via [Parcel](https://parceljs.org/) (stop via `Ctrl+C`)
 
-## User Guide
+### Tests
 
-A User Guide is included in the web app, and can be launched from the main menu
+- Check the main JS file _script.js_ on how to enable them
 
 ## Code Structure
 
@@ -93,7 +97,7 @@ In addition:
 
 - `\assets\` contains any other resources used (ex. libraries, images)
 - `\math\` contains the math services (ex. _complexAnalysisService_)
-- `\test\` contains the services' tests (ex. _plotsTests_), which can be executed from the main JS file _script.js_
+- `\test\` contains the services' tests (ex. _plotsTests_)
 - `\util\` contains any general-purpose utility code & services (ex. _loggingService_)
 
 ## License

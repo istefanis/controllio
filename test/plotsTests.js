@@ -50,18 +50,23 @@ export const runPlotsTests = function () {
 
       logMessages(
         [
-          `[TE-03] ${[
-            `${testCondition ? "✔️ success" : "❌ failure"} - ${
-              test.description
+          `[TE-03] ` +
+            `%c ${testCondition ? "success" : "failure"} ` +
+            `%c - ${
+              test.description +
+              "\n" +
+              assertionsEvaluated
+                .map((a, i) =>
+                  assertionsEvaluated[i][3]
+                    ? `${a[0]} ~= ${assertionsEvaluated[i][2]}`
+                    : `${a[0]} === ${assertionsEvaluated[i][2]}`
+                )
+                .join(",\n")
             }`,
-            ...assertionsEvaluated.map((a, i) =>
-              assertionsEvaluated[i][3]
-                ? `${a[0]} ~= ${assertionsEvaluated[i][2]}`
-                : `${a[0]} === ${assertionsEvaluated[i][2]}`
-            ),
-          ].join(",\n")}`,
+          `background: ${testCondition ? "#00aa00" : "#dd0000"}; color: #fff`,
+          `background: #fff; color: #000`,
         ],
-        "tests"
+        "tests-css"
       );
     }
   };

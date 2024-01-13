@@ -27,11 +27,13 @@ export const runComputerAlgebraTests = function () {
 
     logMessages(
       [
-        `[TE-02] ${testCondition ? "✔️ success" : "❌ failure"} - ${
-          test.description
-        } === ${expectedValue}`,
+        `[TE-02] ` +
+          `%c ${testCondition ? "success" : "failure"} ` +
+          `%c - ${test.description} === ${expectedValue}`,
+        `background: ${testCondition ? "#00aa00" : "#dd0000"}; color: #fff`,
+        `background: #fff; color: #000`,
       ],
-      "tests"
+      "tests-css"
     );
   };
 
