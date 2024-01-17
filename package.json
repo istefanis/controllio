@@ -32,7 +32,7 @@
   "type": "module",
   "scripts": {
     "start": "parcel index.html --no-cache",
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js --verbose --collectCoverage",
     "build": "parcel build index.html --no-cache"
   },
   "dependencies": {
@@ -41,6 +41,20 @@
   },
   "devDependencies": {
     "buffer": "^6.0.3",
-    "parcel": "^2.11.0"
+    "canvas": "^2.11.2",
+    "jest": "^29.7.0",
+    "jest-canvas-mock": "^2.5.2",
+    "jest-environment-jsdom": "^29.7.0",
+    "parcel": "^2.11.0",
+    "resize-observer-polyfill": "^1.5.1"
+  },
+  "jest": {
+    "testEnvironment": "jsdom",
+    "setupFiles": [
+      "<rootDir>/test/jest/jestSetupFile.js"
+    ],
+    "setupFilesAfterEnv": [
+      "<rootDir>/test/jest/jestSetupFileAfterEnv.js"
+    ]
   }
 }

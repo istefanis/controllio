@@ -67,7 +67,7 @@ A User Guide is included in the web app, and can be launched from the main menu
 
 2. Download the repo
 
-3. Search the codebase for the string `to run with NPM` (4 occurences excluding this one). Follow the respective guideline in each occurence to slightly modify the code, so that it uses NPM dependencies
+3. Search the codebase for the string `to run with NPM` (5 occurences excluding this one). Follow the respective guideline in each occurence to slightly modify the code, so that it uses NPM dependencies
 
 4. Open your terminal at the main project directory, and run `npm install` to download the dependencies locally
 
@@ -75,7 +75,8 @@ A User Guide is included in the web app, and can be launched from the main menu
 
 ### Tests
 
-- Check the main JS file _script.js_ on how to enable them
+- Check the file `\test\testService.js` on how to run them either via [Jest](https://jestjs.io/) (NPM required), or via a simple custom testing service
+- Current test coverage according to Jest: 54% (statements)
 
 ## Code Structure
 
@@ -97,7 +98,7 @@ In addition:
 
 - `\assets\` contains any other resources used (ex. libraries, images)
 - `\math\` contains the math services (ex. _complexAnalysisService_)
-- `\test\` contains the services' tests (ex. _plotsTests_)
+- `\test\` contains the app's tests
 - `\util\` contains any general-purpose utility code & services (ex. _loggingService_)
 
 ## License

@@ -6,43 +6,14 @@
  * Test / TestService
  */
 
-import { sleep } from "../util/commons.js";
-import { logMessages, getLogMode, setLogMode } from "../util/loggingService.js";
-import { runComputerAlgebraTests } from "./computerAlgebraTests.js";
-import { runPlotsTests } from "./plotsTests.js";
-import { runSimplificationAlgorithmsTests } from "./simplificationAlgorithmsTests.js";
-
-//
-// Tests
-//
-export const runTestsSection = function (description, runTest, tests) {
-  logMessages([`[TE-01] ${description} tests start`], "tests");
-  for (let test of Object.values(tests)) {
-    runTest(test);
-  }
-  logMessages([`[TE-05] ${description} tests end`], "tests");
-};
-
-export const runTestsSectionAsync = async function (
-  description,
-  runTest,
-  tests
-) {
-  logMessages([`[TE-01] ${description} tests start`], "tests");
-  for (let test of Object.values(tests)) {
-    await runTest(test);
-  }
-  logMessages([`[TE-05] ${description} tests end`], "tests");
-};
-
-export const runAllTests = async function () {
-  const logMode = getLogMode();
-  setLogMode("null");
-
-  runComputerAlgebraTests();
-  runPlotsTests();
-  await runSimplificationAlgorithmsTests();
-  await sleep(1000);
-
-  setLogMode(logMode); //revert it to its previous value
-};
+/**
+ * Set the preferred test mode value, in terms of the following options:
+ * - "null": run no tests (default)
+ * - "jest": run all tests using the Jest framework, by executing the command 'npm test' from the terminal.
+ *   NPM is required ('npm install' must be executed first if needed), but no code changes must be done (as if deployment was done with CDN)
+ * - "custom-start": run all tests using a simple custom test service at app start. Open the browser's console to see the results
+ * - "custom-manual": run all tests manually using a simple custom test service from the browser's console, by executing there "runAllTests()"
+ */
+const testModes = ["null", "jest", "custom-start", "custom-manual"];
+export let testMode = "null";
+export const getTestMode = () => testMode;

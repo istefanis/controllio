@@ -3,22 +3,24 @@
  */
 
 /*
- * Test / SimplificationAlgorithmsTests
+ * Test / SimplificationAlgorithms.test
  */
 
+// Import this first to initialize required components
+import * as computerAlgebraService from "../math/computerAlgebra/computerAlgebraService.js";
 import { Ratio } from "../math/computerAlgebra/dataTypes/ratios.js";
 import { Polynomial } from "../math/computerAlgebra/dataTypes/polynomials.js";
 import { adder } from "../model/elements/adder.js";
 import { tf, Tf } from "../model/elements/tf.js";
 import { connect } from "../model/elementConnectionService.js";
 import { Block, getSimplifiedBlockValue } from "../model/elements/block.js";
-import { runTestsSectionAsync } from "./testService.js";
 import {
   animationSpeedCoeff,
   setAnimationSpeedCoeff,
 } from "../view/navbarView.js";
 import { areEqualArraysRoundDecimal } from "../util/commons.js";
-import { logMessages } from "../util/loggingService.js";
+import { logMessages, getLogMode, setLogMode } from "../util/loggingService.js";
+import { getTestMode } from "./testService.js";
 
 export const mergeFeedbackLoopTest1 = (block1) => {
   const tf1 = new Tf(
@@ -138,105 +140,149 @@ export const circuit1 = (block1) => {
 let testsBlock = new Block();
 const roundingDigits = 3;
 
-export const runSimplificationAlgorithmsTests = async function () {
-  const runSimplificationAlgorithmsTest = async (test) => {
-    testsBlock.clearState();
-    testsBlock = test.circuit(testsBlock);
-
-    //computation of simplified block value
-    const actualValue = await getSimplifiedBlockValue(testsBlock);
-    const expectedValue = test.assertion;
-    const testCondition = areEqualArraysRoundDecimal(
-      actualValue,
-      expectedValue,
-      roundingDigits
-    );
-
-    logMessages(
+const tests = {
+  test1: {
+    description: "test1: mergeFeedbackLoopTest1",
+    circuit: mergeFeedbackLoopTest1,
+    assertion: [
+      "ratio",
       [
-        `[TE-04] ` +
-          `%c ${testCondition ? "success" : "failure"} ` +
-          `%c - ${test.description} === ${expectedValue}`,
-        `background: ${testCondition ? "#00aa00" : "#dd0000"}; color: #fff`,
-        `background: #fff; color: #000`,
+        ["polynomial", ["s", [1, 0.5, 1, 1.5, 0.5]]],
+        ["polynomial", ["s", [-0.5, 0, -0.5, 0.5, 0.5, 0]]],
       ],
-      "tests-css"
-    );
+    ],
+  },
 
-    testsBlock.clearState();
-    return;
-  };
-
-  const tests = {
-    test1: {
-      description: "test1: mergeFeedbackLoopTest1",
-      circuit: mergeFeedbackLoopTest1,
-      assertion: [
-        "ratio",
-        [
-          ["polynomial", ["s", [1, 0.5, 1, 1.5, 0.5]]],
-          ["polynomial", ["s", [-0.5, 0, -0.5, 0.5, 0.5, 0]]],
-        ],
+  test2: {
+    description: "test2: splitTfIntoSingleOutputTfsTest1",
+    circuit: splitTfIntoSingleOutputTfsTest1,
+    assertion: [
+      "ratio",
+      [
+        ["polynomial", ["s", [1, 2, 1, 1]]],
+        ["polynomial", ["s", [1, 1.5, 1.5, 1.5, 0.5, 0]]],
       ],
-    },
+    ],
+  },
 
-    test2: {
-      description: "test2: splitTfIntoSingleOutputTfsTest1",
-      circuit: splitTfIntoSingleOutputTfsTest1,
-      assertion: [
-        "ratio",
-        [
-          ["polynomial", ["s", [1, 2, 1, 1]]],
-          ["polynomial", ["s", [1, 1.5, 1.5, 1.5, 0.5, 0]]],
-        ],
+  test3: {
+    description: "test3: mergeSerialAddersTest1",
+    circuit: mergeSerialAddersTest1,
+    assertion: [
+      "ratio",
+      [
+        ["polynomial", ["s", [1]]],
+        ["polynomial", ["s", [1, 0, -1]]],
       ],
-    },
+    ],
+  },
 
-    test3: {
-      description: "test3: mergeSerialAddersTest1",
-      circuit: mergeSerialAddersTest1,
-      assertion: [
-        "ratio",
-        [
-          ["polynomial", ["s", [1]]],
-          ["polynomial", ["s", [1, 0, -1]]],
-        ],
+  test4: {
+    description: "test4: mergeParallelTfsTest1",
+    circuit: mergeParallelTfsTest1,
+    assertion: [
+      "ratio",
+      [
+        ["polynomial", ["s", [1, 0.5, 2, 2, 1.5, 2, 1.5, 1]]],
+        ["polynomial", ["s", [1, 0.5, 1, 0.5]]],
       ],
-    },
+    ],
+  },
 
-    test4: {
-      description: "test4: mergeParallelTfsTest1",
-      circuit: mergeParallelTfsTest1,
-      assertion: [
-        "ratio",
-        [
-          ["polynomial", ["s", [1, 0.5, 2, 2, 1.5, 2, 1.5, 1]]],
-          ["polynomial", ["s", [1, 0.5, 1, 0.5]]],
-        ],
+  test5: {
+    description: "test5: circuit1",
+    circuit: circuit1,
+    assertion: [
+      "ratio",
+      [
+        ["polynomial", ["s", [1, 3.166, 7.957, 7.54, 4.05, 2.301]]],
+        ["polynomial", ["s", [-0.821, -2.874, -4.927, -4.517, -1.642]]],
       ],
-    },
+    ],
+  },
+};
 
-    test5: {
-      description: "test5: circuit1",
-      circuit: circuit1,
-      assertion: [
-        "ratio",
-        [
-          ["polynomial", ["s", [1, 3.166, 7.957, 7.54, 4.05, 2.301]]],
-          ["polynomial", ["s", [-0.821, -2.874, -4.927, -4.517, -1.642]]],
-        ],
-      ],
-    },
-  };
+const runSimplificationAlgorithmsJestTest = async (t) => {
+  testsBlock.clearState();
+  testsBlock = t.circuit(testsBlock);
 
+  //computation of simplified block value
+  const actualValue = await getSimplifiedBlockValue(testsBlock);
+  const expectedValue = t.assertion;
+  const testCondition = areEqualArraysRoundDecimal(
+    actualValue,
+    expectedValue,
+    roundingDigits
+  );
+
+  test(`[TE-04] ${t.description} - ${actualValue} ~== ${expectedValue}`, () => {
+    expect(testCondition).toBeTruthy();
+  });
+
+  testsBlock.clearState();
+  return;
+};
+
+const runSimplificationAlgorithmsCustomTest = async (t) => {
+  testsBlock.clearState();
+  testsBlock = t.circuit(testsBlock);
+
+  //computation of simplified block value
+  const actualValue = await getSimplifiedBlockValue(testsBlock);
+  const expectedValue = t.assertion;
+  const testCondition = areEqualArraysRoundDecimal(
+    actualValue,
+    expectedValue,
+    roundingDigits
+  );
+
+  logMessages(
+    [
+      `[TE-04] ` +
+        `%c ${testCondition ? "success" : "failure"} ` +
+        `%c - ${t.description} - ${actualValue} ~== ${expectedValue}`,
+      `background: ${testCondition ? "#00aa00" : "#dd0000"}; color: #fff`,
+      `background: #fff; color: #000`,
+    ],
+    "tests-css"
+  );
+
+  testsBlock.clearState();
+  return;
+};
+
+//run Jest Tests
+const runSimplificationAlgorithmsJestTests = async function () {
+  const logMode = getLogMode();
+  setLogMode("null");
+  for (let test of Object.values(tests)) {
+    await runSimplificationAlgorithmsJestTest(test);
+  }
+  setLogMode(logMode);
+};
+
+//run Custom Tests
+export const runSimplificationAlgorithmsCustomTests = async function () {
   let c = animationSpeedCoeff;
   setAnimationSpeedCoeff(0);
 
-  await runTestsSectionAsync(
-    "Simplification algorithms",
-    runSimplificationAlgorithmsTest,
-    Object.values(tests)
-  );
+  logMessages([`[TE-01] Simplification algorithms tests start`], "tests");
+  for (let test of Object.values(Object.values(tests))) {
+    await runSimplificationAlgorithmsCustomTest(test);
+  }
+  logMessages([`[TE-05] Simplification algorithms tests end`], "tests");
 
   setAnimationSpeedCoeff(c);
 };
+
+//
+// Init
+//
+const init = async function () {
+  if (getTestMode() === "jest") {
+    await runSimplificationAlgorithmsJestTests();
+  }
+};
+
+// to run with NPM comment this (Parcel does not support top-level await):
+await init();
