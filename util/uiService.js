@@ -172,3 +172,12 @@ export const resetActiveElements = function () {
   allElements = Array.from(document.querySelectorAll(".element"));
   allElements.forEach(makeElementInactive);
 };
+
+//
+// Stored here to avoid circular dependencies
+//
+let zoomFactor = 1; //absolute zoom factor
+export const getZoomFactor = () => zoomFactor;
+export const setZoomFactor = (newZoomFactor) => {
+  zoomFactor = newZoomFactor;
+};

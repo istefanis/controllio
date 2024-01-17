@@ -10,13 +10,13 @@ import { getElementFromElementId } from "../../../model/elementService.js";
 import {
   marginAroundElements,
   getNavbarHeight,
+  getZoomFactor,
 } from "../../../util/uiService.js";
 import {
   getCanvas,
   getCanvasContext,
   enableLineDrawingStyle,
 } from "./canvasService.js";
-import { zoomFactor } from "./zoomingService.js";
 
 const optimizeTopologyButton = document.getElementById(
   "optimize-topology-button"
@@ -70,6 +70,8 @@ export const removeLineRender = function (element1Id, element2Id) {
 const taxicabManhattanLinesEnabled = true;
 
 export const drawLineWithArrow = function (startX, startY, endX, endY) {
+  const zoomFactor = getZoomFactor();
+
   //adjustment for navbar height:
   const navbarHeight = getNavbarHeight();
   startY -= navbarHeight;

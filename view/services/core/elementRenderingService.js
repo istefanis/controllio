@@ -15,8 +15,8 @@ import {
   maxUtilizedCanvasWidth,
   maxUtilizedCanvasHeight,
   getNavbarHeight,
+  getZoomFactor,
 } from "../../../util/uiService.js";
-import { zoomFactor } from "./zoomingService.js";
 import { getCanvas, resetCanvas } from "./canvasService.js";
 
 export let domElements = [];
@@ -122,7 +122,7 @@ export const setNewElementPosition = (domElement, position, skipChecks) => {
   const boundRect = domElement.getBoundingClientRect();
   if (
     skipChecks ||
-    zoomFactor !== 1 ||
+    getZoomFactor() !== 1 ||
     (position.left + boundRect.width <= canvas.width - marginAroundElements &&
       position.top + boundRect.height <= canvas.height - marginAroundElements)
   ) {

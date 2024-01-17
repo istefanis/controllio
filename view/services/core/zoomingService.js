@@ -3,7 +3,11 @@
  */
 
 import { roundDecimal } from "../../../util/commons.js";
-import { scaleReferenceDimensionsAfterZoom } from "../../../util/uiService.js";
+import {
+  scaleReferenceDimensionsAfterZoom,
+  getZoomFactor,
+  setZoomFactor,
+} from "../../../util/uiService.js";
 import { adjustAllElementPositionsAfterZoom } from "./elementRenderingService.js";
 import { renderAllLines } from "./lineRenderingService.js";
 
@@ -11,15 +15,17 @@ import { renderAllLines } from "./lineRenderingService.js";
  * View / Services / Core / ZoomingService
  */
 
-export let zoomFactor = 1; //absolute zoom factor
+// the (absolute) zoom factor is stored inside 'util/uiService' to avoid circular dependencies
+
 let minZoomFactor = 0.5;
 let maxZoomFactor = 1.5;
 let zoomFactorIncrementStep = 0.05;
 
 export const resetZoom = () => {
   //compute new relativeZoomFactor
-  const lastZoomFactor = zoomFactor;
-  zoomFactor = 1;
+  const lastZoomFactor = getZoomFactor();
+  const zoomFactor = 1;
+  setZoomFactor(zoomFactor);
   const relativeZoomFactor = roundDecimal(
     1 + (zoomFactor - lastZoomFactor) / lastZoomFactor,
     2
@@ -50,10 +56,14 @@ const scaleElementsAndLinesAfterZoom = (zoomFactor, relativeZoomFactor) => {
 //
 const zoomInButton = document.getElementById("zoom-in-button");
 zoomInButton.addEventListener("mousedown", function (e) {
-  if (zoomFactor + zoomFactorIncrementStep <= maxZoomFactor) {
+  if (getZoomFactor() + zoomFactorIncrementStep <= maxZoomFactor) {
     //compute new zoomFactor & relativeZoomFactor
-    const lastZoomFactor = zoomFactor;
-    zoomFactor = roundDecimal(zoomFactor + zoomFactorIncrementStep, 2);
+    const lastZoomFactor = getZoomFactor();
+    const zoomFactor = roundDecimal(
+      lastZoomFactor + zoomFactorIncrementStep,
+      2
+    );
+    setZoomFactor(zoomFactor);
     const relativeZoomFactor = roundDecimal(
       1 + (zoomFactor - lastZoomFactor) / lastZoomFactor,
       2
@@ -74,10 +84,14 @@ zoomInButton.addEventListener("mousedown", function (e) {
 //
 const zoomOutButton = document.getElementById("zoom-out-button");
 zoomOutButton.addEventListener("mousedown", function (e) {
-  if (zoomFactor - zoomFactorIncrementStep >= minZoomFactor) {
+  if (getZoomFactor() - zoomFactorIncrementStep >= minZoomFactor) {
     //compute new zoomFactor & relativeZoomFactor
-    const lastZoomFactor = zoomFactor;
-    zoomFactor = roundDecimal(zoomFactor - zoomFactorIncrementStep, 2);
+    const lastZoomFactor = getZoomFactor();
+    const zoomFactor = roundDecimal(
+      lastZoomFactor - zoomFactorIncrementStep,
+      2
+    );
+    setZoomFactor(zoomFactor);
     const relativeZoomFactor = roundDecimal(
       1 + (zoomFactor - lastZoomFactor) / lastZoomFactor,
       2
@@ -102,6 +116,7 @@ export const disableZoomButtons = () => {
  * Enable the zoom buttons, if the conditions required are met
  */
 export const enableZoomButtons = () => {
+  const zoomFactor = getZoomFactor();
   if (zoomFactor !== maxZoomFactor) {
     zoomInButton.disabled = false;
   }

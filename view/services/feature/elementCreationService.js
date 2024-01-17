@@ -26,6 +26,7 @@ import {
   makeElementActive,
   resetActiveElements,
   getNavbarHeight,
+  getZoomFactor,
 } from "../../../util/uiService.js";
 import {
   closeElementAnalysisWindow,
@@ -37,7 +38,6 @@ import {
   getNewlyCreatedElement,
   setNewlyCreatedElement,
 } from "../core/elementSelectingAndDraggingService.js";
-import { zoomFactor } from "../core/zoomingService.js";
 
 const deleteButton = document.getElementById("delete-button");
 
@@ -72,7 +72,7 @@ export const createNewTf = function (invokedByTouchEvent) {
       block,
       {
         left: position.left,
-        top: position.top * zoomFactor,
+        top: position.top * getZoomFactor(),
       }
     );
 
@@ -127,7 +127,7 @@ export const createNewReadyMadeTf = function (
     left: invokedByTouchEvent
       ? newReadyMadeTfButton.getBoundingClientRect().left +
         (Math.random() - 0.5) * 40
-      : clientX - (domElementWidth * zoomFactor) / 2,
+      : clientX - (domElementWidth * getZoomFactor()) / 2,
     top: invokedByTouchEvent
       ? newReadyMadeTfButton.getBoundingClientRect().top +
         indicativeTfHeight +

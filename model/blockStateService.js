@@ -14,14 +14,13 @@ import {
   getElementFromElementId,
   resetElementService,
 } from "./elementService.js";
-import { getNavbarHeight } from "../util/uiService.js";
+import { getNavbarHeight, getZoomFactor } from "../util/uiService.js";
 import { resetCanvas } from "../view/services/core/canvasService.js";
 import { resetElementRenderingService } from "../view/services/core/elementRenderingService.js";
 import {
   getLineViewsNumber,
   resetLineRenderingService,
 } from "../view/services/core/lineRenderingService.js";
-import { zoomFactor } from "../view/services/core/zoomingService.js";
 
 const optimizeTopologyButton = document.getElementById(
   "optimize-topology-button"
@@ -53,6 +52,8 @@ export const clearBlockState = function () {
  * Set/override current block state
  */
 export const setBlockState = function (state) {
+  const zoomFactor = getZoomFactor();
+
   clearBlockState.call(this);
 
   //adjust the element positions to the current zoom factor
@@ -93,6 +94,8 @@ export const setBlockState = function (state) {
  * Get current block state
  */
 export const getBlockState = function () {
+  const zoomFactor = getZoomFactor();
+
   const currentState = {};
 
   //element positions must be transformed into a navbar height & zoom agnostic format
