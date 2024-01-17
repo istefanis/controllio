@@ -22,16 +22,14 @@ import {
   makeElementUnexpanded,
   isMobileDevice,
   isLargeScreenDevice,
+  resetActiveElements,
+  moveToGroundLevel,
 } from "../util/uiService.js";
 import { polynomialTermsArrayToStringWithoutCoeffs } from "../util/prettyPrintingService.js";
 import BodePlot from "./plots/bodePlot.js";
 import NyquistPlot from "./plots/nyquistPlot.js";
 import TimeDomainPlot from "./plots/timeDomainPlot.js";
 import { findComplexRootsOfPolynomial } from "../math/numericalAnalysis/numericalAnalysisService.js";
-import {
-  resetActiveElements,
-  resetExpandedElements,
-} from "./services/core/elementSelectingAndDraggingService.js";
 import { enableHistoricalStateStorage } from "../model/blockStateService.js";
 import { renderAllLines } from "./services/core/lineRenderingService.js";
 
@@ -94,6 +92,24 @@ let plotContainerTab3 = singlePlotContainer.querySelector(
 );
 
 let expandedDomElement;
+
+export const setExpandedElement = (element) => {
+  expandedDomElement = element;
+  if (element) {
+    deleteButton.disabled = false;
+  }
+};
+export const getExpandedElement = () => expandedDomElement;
+
+export const resetExpandedElements = () => {
+  if (expandedDomElement) {
+    closeElementAnalysisWindow();
+    moveToGroundLevel(expandedDomElement);
+    setExpandedElement(null);
+    deleteButton.disabled = true;
+  }
+};
+
 let numeratorTermsArray;
 let denominatorTermsArray;
 let zeros = [];

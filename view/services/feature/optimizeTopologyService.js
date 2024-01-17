@@ -6,7 +6,7 @@
  * View / Services / Feature / OptimizeTopologyService
  */
 
-import { getTopBlock } from "../../../script.js";
+import { getTopBlock } from "../../../model/topBlockService.js";
 import {
   disableHistoricalStateStorage,
   enableHistoricalStateStorage,
@@ -18,8 +18,8 @@ import {
   marginAroundElements,
   maxUtilizedCanvasHeight,
   maxUtilizedCanvasWidth,
+  getNavbarHeight,
 } from "../../../util/uiService.js";
-import { getNavbarHeight } from "../../navbarView.js";
 import { getCanvas, resetCanvas } from "../core/canvasService.js";
 import { domElements } from "../core/elementRenderingService.js";
 import {

@@ -17,6 +17,10 @@ import {
   makeElementExpanded,
   makeButtonActive,
   makeButtonInActive,
+  resetActiveElements,
+  getAllElements,
+  getNavbarHeight,
+  makeElementUnexpanded,
 } from "../../../util/uiService.js";
 import {
   getCanvasContext,
@@ -26,6 +30,9 @@ import {
 import {
   openOrUpdateElementAnalysisWindow,
   closeElementAnalysisWindow,
+  setExpandedElement,
+  getExpandedElement,
+  resetExpandedElements,
 } from "../../elementAnalysisWindowView.js";
 import { drawLineWithArrow, renderAllLines } from "./lineRenderingService.js";
 import {
@@ -33,10 +40,9 @@ import {
   getElementFromElementId,
 } from "../../../model/elementService.js";
 import { connect } from "../../../model/elementConnectionService.js";
-import { getNavbarHeight } from "../../navbarView.js";
 import { enableHistoricalStateStorage } from "../../../model/blockStateService.js";
 
-let currentElement; //single selected element
+let currentElement; //single selected DOM element
 let isDraggingActive = false;
 let cursorX = 0;
 let cursorY = 0;
@@ -46,10 +52,8 @@ let translateY = 0;
 let initialCursorX = 0;
 let initialCursorY = 0;
 
-let allElements = [];
 let selectedElements = [];
 
-let expandedElement;
 let anyElementCanBeExpanded = true;
 let elementToBeUnexpanded;
 
@@ -68,39 +72,19 @@ const deleteButton = document.getElementById("delete-button");
 // A. Exports to other modules for interacting with this Service
 //
 
-export const setExpandedElement = (element) => {
-  expandedElement = element;
-  deleteButton.disabled = false;
-};
-
-//there can be elements that are displayed as active, but not counted among selected
-//(newly created tfs in touchscreen devices are such, so that their analysis window
-//can be opened with a single touch)
-export const resetActiveElements = function () {
-  allElements = Array.from(document.querySelectorAll(".element"));
-  allElements.forEach(makeElementInactive);
-};
-
-export const resetExpandedElements = function () {
-  if (expandedElement) {
-    closeElementAnalysisWindow();
-    moveToGroundLevel(expandedElement);
-    expandedElement = null;
-    deleteButton.disabled = true;
-  }
-};
-
 export const resetExpandedOrSelectedElements = function () {
   resetSelectedElements();
   resetExpandedElements();
 };
 
 export const deleteExpandedOrSelectedElements = function () {
-  if (expandedElement) {
-    const element = getElementFromElementId(+expandedElement.dataset.elementId);
+  if (getExpandedElement()) {
+    const element = getElementFromElementId(
+      +getExpandedElement().dataset.elementId
+    );
     closeElementAnalysisWindow();
     deleteElement(element);
-    expandedElement = null;
+    setExpandedElement(null);
     deleteButton.disabled = true;
   } else if (selectedElements.length !== 0) {
     const block = getElementFromElementId(
@@ -119,7 +103,7 @@ export const deleteExpandedOrSelectedElements = function () {
 export const setNewlyCreatedElement = (element) => {
   newlyCreatedElement = element;
   if (element !== null) {
-    expandedElement = element;
+    setExpandedElement(element);
     currentElement = element;
     selectedElements = [];
     isDraggingActive = true;
@@ -199,12 +183,12 @@ export const startSelectionOrDrag = function (e) {
 
     //unexpand element when drag and drop multiple elements starts,
     //or when clicking in empty space
-    if (expandedElement) {
+    if (getExpandedElement()) {
       // console.log("start1-2");
       closeElementAnalysisWindow();
-      moveToGroundLevel(expandedElement);
-      if (currentElement !== expandedElement) {
-        expandedElement = null;
+      moveToGroundLevel(getExpandedElement());
+      if (currentElement !== getExpandedElement()) {
+        setExpandedElement(null);
         deleteButton.disabled = true;
       }
     }
@@ -238,11 +222,11 @@ export const startSelectionOrDrag = function (e) {
 
     //unexpand element when drag and drop single element starts,
     //or when clicking in empty space
-    if (expandedElement) {
+    if (getExpandedElement()) {
       // console.log("start3-2");
-      if (currentElement !== expandedElement) {
-        elementToBeUnexpanded = expandedElement;
-        expandedElement = null;
+      if (currentElement !== getExpandedElement()) {
+        elementToBeUnexpanded = getExpandedElement();
+        setExpandedElement(null);
         deleteButton.disabled = true;
       }
     }
@@ -253,17 +237,16 @@ export const startSelectionOrDrag = function (e) {
 
     // console.log("start4");
     //new selection area case (drag and drop multiple elements - phase 1)
-    allElements = Array.from(document.querySelectorAll(".element"));
     resetActiveElements();
     resetSelectedElements();
     setInitialCursorCoordinates(e);
 
-    if (expandedElement) {
+    if (getExpandedElement()) {
       //unexpand element when new selection area dragging starts
       // console.log("start4-2");
-      moveToGroundLevel(expandedElement);
+      moveToGroundLevel(getExpandedElement());
       closeElementAnalysisWindow();
-      expandedElement = null;
+      setExpandedElement(null);
       deleteButton.disabled = true;
     }
   }
@@ -331,7 +314,7 @@ export const selectionOrDrag = function (e) {
   } else if (currentElement && isDraggingActive) {
     //single element selection case (drag and drop single element)
 
-    if (currentElement !== expandedElement) {
+    if (currentElement !== getExpandedElement()) {
       // console.log("drag3");
       anyElementCanBeExpanded = false;
       if (elementToBeUnexpanded) {
@@ -362,7 +345,7 @@ export const selectionOrDrag = function (e) {
     cursorY = clientY - initialCursorY;
 
     //select elements
-    selectedElements = allElements.filter((x) =>
+    selectedElements = getAllElements().filter((x) =>
       selectionEncompasesElement(
         {
           left: Math.min(initialCursorX, clientX),
@@ -380,7 +363,7 @@ export const selectionOrDrag = function (e) {
     }
 
     //make elements active or inactive
-    allElements.forEach((x) =>
+    getAllElements().forEach((x) =>
       selectedElements.includes(x)
         ? makeElementActive(x)
         : makeElementInactive(x)
@@ -427,7 +410,7 @@ export const endSelectionOrDrag = function (e) {
   } else if (
     currentElement &&
     anyElementCanBeExpanded &&
-    currentElement === expandedElement
+    currentElement === getExpandedElement()
   ) {
     if (newlyCreatedElement) {
       // console.log("end2-1");
@@ -462,12 +445,13 @@ export const endSelectionOrDrag = function (e) {
     elementToBeUnexpanded
   ) {
     // console.log("end3");
-    expandedElement = currentElement;
+    setExpandedElement(currentElement);
     deleteButton.disabled = false;
     moveToGroundLevel(elementToBeUnexpanded);
-    moveΤοForeground(expandedElement);
-    changeCursorStyle("pointer", expandedElement);
-    openOrUpdateElementAnalysisWindow(expandedElement);
+    makeElementUnexpanded(elementToBeUnexpanded);
+    moveΤοForeground(getExpandedElement());
+    changeCursorStyle("pointer", getExpandedElement());
+    openOrUpdateElementAnalysisWindow(getExpandedElement());
     currentElement = null;
     anyElementCanBeExpanded = true;
     elementToBeUnexpanded = null;
@@ -475,12 +459,12 @@ export const endSelectionOrDrag = function (e) {
     //expand new element by clicking on it
   } else if (currentElement && anyElementCanBeExpanded) {
     // console.log("end4");
-    expandedElement = currentElement;
+    setExpandedElement(currentElement);
     deleteButton.disabled = false;
-    makeElementInactive(expandedElement);
-    moveΤοForeground(expandedElement);
-    changeCursorStyle("pointer", expandedElement);
-    openOrUpdateElementAnalysisWindow(expandedElement);
+    makeElementInactive(getExpandedElement());
+    moveΤοForeground(getExpandedElement());
+    changeCursorStyle("pointer", getExpandedElement());
+    openOrUpdateElementAnalysisWindow(getExpandedElement());
     currentElement = null;
     anyElementCanBeExpanded = true;
 

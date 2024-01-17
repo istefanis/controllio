@@ -6,7 +6,7 @@
  * View / Services / Feature / SaveToAndLoadFromLocalStorageService
  */
 
-import { getTopBlock } from "../../../script.js";
+import { getTopBlock } from "../../../model/topBlockService.js";
 import { resetZoom } from "../core/zoomingService.js";
 import { closeElementAnalysisWindow } from "../../elementAnalysisWindowView.js";
 import { openPopupWindow } from "../../popupWindowView.js";

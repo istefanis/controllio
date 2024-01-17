@@ -14,6 +14,7 @@ import {
 } from "../../../model/blockStateService.js";
 import { Adder } from "../../../model/elements/adder.js";
 import { Tf } from "../../../model/elements/tf.js";
+import { getTopBlock } from "../../../model/topBlockService.js";
 import {
   indicativeTfHeight,
   indicativeTfWidth,
@@ -23,21 +24,20 @@ import {
   makeButtonInActive,
   isMobileDevice,
   makeElementActive,
+  resetActiveElements,
+  getNavbarHeight,
 } from "../../../util/uiService.js";
 import {
   closeElementAnalysisWindow,
   openOrUpdateElementAnalysisWindow,
+  setExpandedElement,
 } from "../../elementAnalysisWindowView.js";
-import { getNavbarHeight } from "../../navbarView.js";
 import {
   deleteExpandedOrSelectedElements,
   getNewlyCreatedElement,
-  resetActiveElements,
-  setExpandedElement,
   setNewlyCreatedElement,
 } from "../core/elementSelectingAndDraggingService.js";
 import { zoomFactor } from "../core/zoomingService.js";
-import { getTopBlock } from "../../../script.js";
 
 const deleteButton = document.getElementById("delete-button");
 

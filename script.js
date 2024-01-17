@@ -25,12 +25,10 @@ import {
 } from "./test/simplificationAlgorithmsTests.js";
 import { functionPlot } from "./view/plots/plotService.js";
 import { runAllTests } from "./test/testService.js";
+import { getTopBlock, setTopBlock } from "./model/topBlockService.js";
 
-//
 // Top block definition (the circuit elements are stored inside this block)
-//
-let topBlock;
-export const getTopBlock = () => topBlock;
+let topBlock = getTopBlock();
 
 //
 // Check that external JS libraries have been loaded
@@ -59,9 +57,9 @@ if (!functionPlot) {
   // Open the browser's console and execute "runAllTests()":
   // window.runAllTests = async () => {
   //   await runAllTests();
-  //   topBlock = circuit1(new Block());
+  //   setTopBlock(circuit1(new Block()));
   // };
 
   // Display one of the circuit examples
-  topBlock = circuit1(new Block());
+  setTopBlock(circuit1(new Block()));
 }

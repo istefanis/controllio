@@ -16,7 +16,7 @@ import {
   computePaddedTfStrings,
   removeSupTagsFromMarkup,
 } from "../util/prettyPrintingService.js";
-import { getNavbarHeight } from "./navbarView.js";
+import { getNavbarHeight } from "../util/uiService.js";
 import {
   generateNewTfPosition,
   registerDomElement,

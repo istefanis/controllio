@@ -6,13 +6,17 @@
  * View / Animation / AnimateSplitTfIntoSingleOutputTfs
  */
 
-import { sleep, pauseSimulation } from "../../util/commons.js";
+import { sleep } from "../../util/commons.js";
 import {
   giveElementAttention,
   removeElementAttention,
 } from "../../util/uiService.js";
 import { renderAllLines } from "../services/core/lineRenderingService.js";
-import { animationSpeedCoeff, pauseButtonClicked } from "../navbarView.js";
+import {
+  animationSpeedCoeff,
+  pauseButtonClicked,
+  pauseSimulation,
+} from "../navbarView.js";
 
 export const animateSplitTfIntoSingleOutputTfs = async function (tf1Id, tf2Id) {
   //retrieve DOM elements

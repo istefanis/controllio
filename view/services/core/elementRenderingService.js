@@ -14,10 +14,10 @@ import {
   indicativeTfHeight,
   maxUtilizedCanvasWidth,
   maxUtilizedCanvasHeight,
+  getNavbarHeight,
 } from "../../../util/uiService.js";
 import { zoomFactor } from "./zoomingService.js";
 import { getCanvas, resetCanvas } from "./canvasService.js";
-import { getNavbarHeight } from "../../navbarView.js";
 
 export let domElements = [];
 

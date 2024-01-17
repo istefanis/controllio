@@ -154,3 +154,21 @@ export const moveΤοForeground = function (element) {
 export const moveToGroundLevel = function (element) {
   element.style.zIndex = 0;
 };
+
+export const getNavbarHeight = () =>
+  document.getElementById("navbar").getBoundingClientRect().height;
+
+//
+// All DOM elements of class 'element'
+// (stored here to avoid circular dependencies, since it is used by 'resetActiveElements()')
+//
+let allElements = [];
+export const getAllElements = () => allElements;
+
+//there can be elements that are displayed as active, but not counted among selected
+//(newly created tfs in touchscreen devices are such, so that their analysis window
+//can be opened with a single touch)
+export const resetActiveElements = function () {
+  allElements = Array.from(document.querySelectorAll(".element"));
+  allElements.forEach(makeElementInactive);
+};

@@ -6,8 +6,6 @@
  * Util / Commons
  */
 
-import { pauseButtonClicked } from "../view/navbarView.js";
-
 export const primitiveOperationsSymbols = ["+", "-", "*", "/"];
 
 export const isEven = (x) => !(x % 2);
@@ -64,10 +62,3 @@ export const zeroRootsFromPolynomialTermsArray = function (termsArray) {
 // Await
 //
 export const sleep = (millisec) => new Promise((r) => setTimeout(r, millisec));
-
-export const pauseSimulation = async () => {
-  if (pauseButtonClicked) {
-    await sleep(200);
-    await pauseSimulation();
-  }
-};

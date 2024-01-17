@@ -14,6 +14,7 @@ import {
   getElementFromElementId,
   resetElementService,
 } from "./elementService.js";
+import { getNavbarHeight } from "../util/uiService.js";
 import { resetCanvas } from "../view/services/core/canvasService.js";
 import { resetElementRenderingService } from "../view/services/core/elementRenderingService.js";
 import {
@@ -21,7 +22,6 @@ import {
   resetLineRenderingService,
 } from "../view/services/core/lineRenderingService.js";
 import { zoomFactor } from "../view/services/core/zoomingService.js";
-import { getNavbarHeight } from "../view/navbarView.js";
 
 const optimizeTopologyButton = document.getElementById(
   "optimize-topology-button"

@@ -6,7 +6,7 @@
  * View / Services / Feature / ExportAndImportFileService
  */
 
-import { getTopBlock } from "../../../script.js";
+import { getTopBlock } from "../../../model/topBlockService.js";
 import { exportFile, importFile } from "../../../util/ioService.js";
 import { resetZoom } from "../core/zoomingService.js";
 import { closeElementAnalysisWindow } from "../../elementAnalysisWindowView.js";

@@ -6,7 +6,7 @@
  * View / MainView
  */
 
-import { getTopBlock } from "../script.js";
+import { getTopBlock } from "../model/topBlockService.js";
 import { isTouchScreenDevice } from "../util/uiService.js";
 import { closePopupWindow } from "./popupWindowView.js";
 import {

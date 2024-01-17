@@ -3,18 +3,20 @@
  */
 
 /*
- * View / Services / Core / LineDrawingService
+ * View / Services / Core / LineRenderingService
  */
 
 import { getElementFromElementId } from "../../../model/elementService.js";
-import { marginAroundElements } from "../../../util/uiService.js";
+import {
+  marginAroundElements,
+  getNavbarHeight,
+} from "../../../util/uiService.js";
 import {
   getCanvas,
   getCanvasContext,
   enableLineDrawingStyle,
 } from "./canvasService.js";
 import { zoomFactor } from "./zoomingService.js";
-import { getNavbarHeight } from "../../navbarView.js";
 
 const optimizeTopologyButton = document.getElementById(
   "optimize-topology-button"

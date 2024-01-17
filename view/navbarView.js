@@ -6,7 +6,7 @@
  * View / NavbarView
  */
 
-import { getTopBlock } from "../script.js";
+import { getTopBlock } from "../model/topBlockService.js";
 import { isMobileDevice, isTouchScreenDevice } from "../util/uiService.js";
 import { setLogMode } from "../util/loggingService.js";
 import {
@@ -44,10 +44,6 @@ import {
 } from "./services/core/zoomingService.js";
 
 const navbar = document.getElementById("navbar");
-
-export const getNavbarHeight = function () {
-  return navbar.getBoundingClientRect().height;
-};
 
 //
 // Navbar dimensions change
@@ -210,6 +206,13 @@ const simplifyButton = document.getElementById("simplify-button");
 let simplificationStarted = false;
 let pauseButtonDisplayed = false;
 export let pauseButtonClicked = false;
+
+export const pauseSimulation = async () => {
+  if (pauseButtonClicked) {
+    await sleep(200);
+    await pauseSimulation();
+  }
+};
 
 const runButtonMarkup = `
   <i class="bi-play"></i>
