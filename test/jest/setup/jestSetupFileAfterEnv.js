@@ -3,7 +3,7 @@
  */
 
 /*
- * Test / Jest / JestSetupFileAfterEnv
+ * Test / Jest / Setup / JestSetupFileAfterEnv
  */
 
 import { JSDOM } from "jsdom";

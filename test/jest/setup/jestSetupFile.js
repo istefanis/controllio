@@ -3,7 +3,7 @@
  */
 
 /*
- * Test / Jest / JestSetupFile
+ * Test / Jest / Setup / JestSetupFile
  */
 
 // Import various missing dependencies

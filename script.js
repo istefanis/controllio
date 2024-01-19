@@ -22,10 +22,9 @@ import {
   mergeSerialAddersTest1,
   mergeParallelTfsTest1,
   circuit1,
-} from "./test/simplificationAlgorithms.test.js";
+} from "./test/definitions/circuits.js";
 import { functionPlot } from "./view/plots/plotService.js";
-import { getTestMode } from "./test/testService.js";
-import { runAllCustomTests } from "./test/custom/customTestService.js";
+import { runAllCustomTests } from "./test/custom/service/customTestService.js";
 import { getTopBlock, setTopBlock } from "./model/topBlockService.js";
 
 // Top block definition (the circuit elements are stored inside this block)
@@ -47,18 +46,12 @@ if (!functionPlot) {
   );
 } else {
   //
-  // Tests (select the test mode at: test/testService)
+  // Tests
   //
-  if (getTestMode() === "custom-start") {
-    // Run all custom tests at app start
+  window.runAllTests = async () => {
     await runAllCustomTests();
-  } else if (getTestMode() === "custom-manual") {
-    // Run all custom tests manually from the browser's console, by executing there "runAllTests()"
-    window.runAllTests = async () => {
-      await runAllCustomTests();
-      setTopBlock(circuit1(new Block()));
-    };
-  }
+    setTopBlock(circuit1(new Block()));
+  };
 
   // Display one of the circuit examples
   setTopBlock(circuit1(new Block()));

@@ -298,7 +298,7 @@ simplifyButton.addEventListener("click", async function (e) {
 //
 // Animation Speed slider
 //
-export let animationSpeedCoeff;
+export let animationSpeedCoeff; //a lower value leads to faster animation
 
 export const setAnimationSpeedCoeff = (c) => {
   animationSpeedCoeff = c;

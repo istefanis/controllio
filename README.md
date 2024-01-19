@@ -67,16 +67,29 @@ A User Guide is included in the web app, and can be launched from the main menu
 
 2. Download the repo
 
-3. Search the codebase for the string `to run with NPM` (5 occurences excluding this one). Follow the respective guideline in each occurence to slightly modify the code, so that it uses NPM dependencies
+3. Search the codebase for the string `to run with NPM` (4 occurences excluding this one). Follow the respective guideline in each occurence to slightly modify the code, so that it uses NPM dependencies
 
 4. Open your terminal at the main project directory, and run `npm install` to download the dependencies locally
 
 5. Run `npm start` to load the app via [Parcel](https://parceljs.org/) (stop via `Ctrl+C`)
 
-### Tests
+## Tests
 
-- Check the file `\test\testService.js` on how to run them either via [Jest](https://jestjs.io/) (NPM required), or via a simple custom testing service
-- Current test coverage according to Jest: 54% (statements)
+### Run without a framework (default)
+
+1. Open the browser's console, and run `await runAllTests()`
+
+### Run with Jest
+
+1. Install [Node.js®](https://nodejs.org) if you don't have it
+
+2. If you have previously run the app locally with NPM, make sure all NPM-related code changes (4 occurences) are reverted (see above)
+
+3. Open your terminal at the main project directory, and run `npm install` to download the dependencies locally, if you haven't done it already
+
+4. Run `npm test` to execute the tests via [Jest](https://jestjs.io/)
+
+> _Current test coverage according to Jest: 55% (statements)_
 
 ## Code Structure
 
