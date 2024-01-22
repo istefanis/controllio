@@ -1,5 +1,5 @@
 Controllio
-Copyright (c) 2023 Ioannis Stefanis
+Copyright (c) 2023-2024 Ioannis Stefanis
 
 The app uses:
 
@@ -13,4 +13,4 @@ The app uses:
 
 - the Complex libray, licensed under the MIT License, available at https://github.com/arian/Complex, which is included modified in the 'assets' directory
 
-- the Tablot numerical method, whose two implementations originally developed in Python are licensed under the MIT License, available at https://code.activestate.com/recipes/576934/ and https://code.activestate.com/recipes/576938/ respectively (their licences are included in the 'assets' directory)
+- the Tablot numerical method, whose two implementations originally developed in Python are licensed under the MIT License, available at https://code.activestate.com/recipes/576934/ and https://code.activestate.com/recipes/576938/ respectively (their licenses are included in the 'assets' directory)
