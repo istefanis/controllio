@@ -35,7 +35,6 @@ import {
   openSaveToLocalStoragePopupWindow,
 } from "./services/feature/saveToAndLoadFromLocalStorageService.js";
 import { isLocalStorageEnabled } from "../util/ioService.js";
-import { getSimplifiedBlockValue } from "../model/elements/block.js";
 import { displayTf } from "../util/prettyPrintingService.js";
 import { sleep } from "../util/commons.js";
 import {
@@ -263,7 +262,7 @@ simplifyButton.addEventListener("click", async function (e) {
     nextButton.disabled = true;
     pauseButtonDisplayed = true;
 
-    const simplifiedBlockValue = await getSimplifiedBlockValue(getTopBlock());
+    const simplifiedBlockValue = await getTopBlock().getSimplifiedValue();
     displayTf(simplifiedBlockValue);
 
     simplificationStarted = false;

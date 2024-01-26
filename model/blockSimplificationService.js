@@ -33,8 +33,7 @@ import {
  */
 export const simplifyBlock = async function () {
   const simplifyLoop = async function () {
-    const fullSimplificationAchieved =
-      this._tfs.concat(this._blocks).length === 1 && this._adders.length === 0;
+    const fullSimplificationAchieved = this.isFullySimplified();
 
     const partialSimplificationAchieved =
       algorithmsRunSinceLastSimplification > 9;
@@ -129,10 +128,7 @@ export const simplifyBlock = async function () {
   disableHistoricalStateStorage();
 
   this._blocks.map(async (x) => await x.simplify());
-  if (
-    this._tfs.concat(this._blocks).length === 0 ||
-    (this._tfs.concat(this._blocks).length === 1 && this._adders.length === 0)
-  ) {
+  if (this._tfs.concat(this._blocks).length === 0 || this.isFullySimplified()) {
     this._iAmSimplified = true;
     // console.log(this._blocks);
     this._value = this._tfs.concat(this._blocks)[0].getValue();

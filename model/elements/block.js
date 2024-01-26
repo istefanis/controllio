@@ -165,7 +165,19 @@ export class Block {
   isAdder = () => this._iAmAdder;
 
   isSimplified = () => this._iAmSimplified;
+  isFullySimplified = () =>
+    this._tfs.concat(this._blocks).length === 1 && this._adders.length === 0;
   simplify = async () => await simplifyBlock.call(this);
+  getSimplifiedValue = async () => {
+    await simplifyBlock.call(this);
+    if (!this.isFullySimplified()) {
+      logMessages(
+        ["[CP-104] Block not fully simplified - getSimplifiedValue()"],
+        "checkpoints"
+      );
+    }
+    return this._value;
+  };
 
   hasInput = () => this._input !== null;
   getInput = () => this._input;
@@ -215,19 +227,3 @@ export class Block {
  * Shortcut constructor for blocks
  */
 export const block = (...parentBlock) => new Block(...parentBlock);
-
-export const getSimplifiedBlockValue = async function (block) {
-  // if (block.isSimplified()) {
-  //   // console.log("already simplified");
-  //   return block.getValue();
-  // } else {
-  await block.simplify();
-  if (!block.isSimplified()) {
-    logMessages(
-      ["getSimplifiedBlockValue() - [CP-104] Block not fully simplified"],
-      "checkpoints"
-    );
-  }
-  return block.getValue();
-  // }
-};

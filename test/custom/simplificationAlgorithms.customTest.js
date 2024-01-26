@@ -6,7 +6,7 @@
  * Test / Custom / SimplificationAlgorithms.customTest
  */
 
-import { Block, getSimplifiedBlockValue } from "../../model/elements/block.js";
+import { Block } from "../../model/elements/block.js";
 import {
   animationSpeedCoeff,
   setAnimationSpeedCoeff,
@@ -23,7 +23,7 @@ const runSimplificationAlgorithmsCustomTest = async (t) => {
   testsBlock = t.circuit(testsBlock);
 
   //computation of simplified block value
-  const actualValue = await getSimplifiedBlockValue(testsBlock);
+  const actualValue = await testsBlock.getSimplifiedValue();
   const expectedValue = t.assertion;
   const testCondition = areEqualArraysRoundDecimal(
     actualValue,
