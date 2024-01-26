@@ -6,12 +6,6 @@
  * Model / ElementService
  */
 
-import { removeLineRender } from "../view/services/core/lineRenderingService.js";
-import {
-  disableHistoricalStateStorage,
-  enableHistoricalStateStorage,
-} from "./blockStateService.js";
-
 export const isElement = (element) =>
   element.isBlock() || element.isTf() || element.isAdder();
 
@@ -61,8 +55,7 @@ export const resetElementService = () => {
 /**
  * Delete element from block
  */
-export const deleteElement = function (element, doNotStoreNewState) {
-  disableHistoricalStateStorage();
+export const deleteElement = function (element) {
   const block = element.getBlock();
   if (element.hasInput()) {
     if (element.isAdder()) {
@@ -70,13 +63,11 @@ export const deleteElement = function (element, doNotStoreNewState) {
       inputs.forEach((i) => {
         i.removeOutput(element);
         element.removeInput(i);
-        removeLineRender(i.getElementId(), element.getElementId());
       });
     } else {
       const input = element.getInput();
       input.removeOutput(element);
       element.setInput(null);
-      removeLineRender(input.getElementId(), element.getElementId());
     }
   }
   if (element.hasOutputs()) {
@@ -84,7 +75,6 @@ export const deleteElement = function (element, doNotStoreNewState) {
     outputs.forEach((o) => {
       element.removeOutput(o);
       o.isAdder() ? o.removeInput(element) : o.setInput(null);
-      removeLineRender(element.getElementId(), o.getElementId());
     });
   }
   if (element.isBlock()) {
@@ -93,10 +83,5 @@ export const deleteElement = function (element, doNotStoreNewState) {
     block.removeFromTfs(element);
   } else {
     block.removeFromAdders(element);
-  }
-
-  enableHistoricalStateStorage();
-  if (!doNotStoreNewState) {
-    block.storeNewHistoricalState();
   }
 };

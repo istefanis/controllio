@@ -40,7 +40,10 @@ import {
   getElementFromElementId,
 } from "../../../model/elementService.js";
 import { connect } from "../../../model/elementConnectionService.js";
-import { enableHistoricalStateStorage } from "../../../model/blockStateService.js";
+import {
+  disableHistoricalStateStorage,
+  enableHistoricalStateStorage,
+} from "../../../model/blockStateService.js";
 
 let currentElement; //single selected DOM element
 let isDraggingActive = false;
@@ -79,22 +82,35 @@ export const resetExpandedOrSelectedElements = function () {
 
 export const deleteExpandedOrSelectedElements = function () {
   if (getExpandedElement()) {
+    //single element case
     const element = getElementFromElementId(
       +getExpandedElement().dataset.elementId
     );
     closeElementAnalysisWindow();
+
+    //store only one new block state for all changes
+    const block = element.getBlock();
+    disableHistoricalStateStorage();
     deleteElement(element);
+    enableHistoricalStateStorage();
+    block.storeNewHistoricalState();
+
     setExpandedElement(null);
     deleteButton.disabled = true;
   } else if (selectedElements.length !== 0) {
+    //multiple elements case
+    //store only one new block state for all changes
     const block = getElementFromElementId(
       +selectedElements[0].dataset.elementId
     ).getBlock();
+    disableHistoricalStateStorage();
     selectedElements.forEach((x) => {
       const element = getElementFromElementId(+x.dataset.elementId);
-      deleteElement(element, true);
+      deleteElement(element);
     });
+    enableHistoricalStateStorage();
     block.storeNewHistoricalState();
+
     selectedElements = [];
     deleteButton.disabled = true;
   }
