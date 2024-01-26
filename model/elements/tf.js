@@ -16,9 +16,13 @@ import TfView from "../../view/tfView.js";
 import { removeLineRender } from "../../view/services/core/lineRenderingService.js";
 
 /**
- * Circuit elements (tfs, adders and blocks) are implemented as objects, using the message-passing style
+ * A class implementing a transfer function (tf) circuit element
  *
- * Implementation assumption: Each transfer function (tf) has only one input and multiple outputs. Multiple inputs can be achieved by adding in front of it an adder
+ * Implementation assumption:
+ * Each transfer function (tf) has only one input and multiple outputs.
+ * Multiple inputs can be achieved by adding in front of it an adder
+ *
+ * The class exposes an extensive API
  */
 export class Tf {
   #tfView;

@@ -22,11 +22,16 @@ import {
 import { removeElementWithElementId } from "../elementService.js";
 
 /**
- * Circuit elements (tfs, adders and blocks) are implemented as objects, using the message-passing style
+ * A class implementing a block of circuit elements
  *
- * A block of elements is a means for achieving abstraction. Circuit elements (such as tfs, adders and blocks) can be "stored" inside a block and form a whole, which can be handled as an element itself
+ * A block of elements is a means for achieving abstraction. Circuit elements (such as tfs, adders and blocks)
+ * can be "stored" inside a block and form a whole, which can be handled as an element itself
  *
- * Implementation assumption: Each block of elements has only one input (another tf, adder or block) and multiple outputs. Multiple inputs can be achieved by adding in front of it an adder
+ * Implementation assumption:
+ * Each block of elements has only one input (another tf, adder or block) and multiple outputs.
+ * Multiple inputs can be achieved by adding in front of it an adder
+ *
+ * The class exposes an extensive API
  */
 export class Block {
   _value; //a block obtains a value only when simplified

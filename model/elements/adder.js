@@ -14,9 +14,11 @@ import AdderView from "../../view/adderView.js";
 import { removeLineRender } from "../../view/services/core/lineRenderingService.js";
 
 /**
- * Circuit elements (tfs, adders and blocks) are implemented as objects, using the message-passing style
+ * A class implementing an adder circuit element
  *
  * Implementation assumption: Each adder has multiple inputs and multiple outputs
+ *
+ * The class exposes an extensive API
  */
 export class Adder {
   #adderView;
