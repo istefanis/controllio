@@ -21,6 +21,9 @@ const makeSpaceLine = (length) => " ".repeat(length);
 const makeRatioLine = (length) => "―".repeat(length); //horizontal bar
 // const makeRatioLine = (length) => "-".repeat(length); //minus
 
+export const replaceMultipleStringSpacesWithSingle = (s) =>
+  s.replace(/  +/g, " ");
+
 /**
  * Transform a polynomial TermsArray into a polynomial string representation in HTML markup
  * @param {Array} termsArray
@@ -102,7 +105,7 @@ export const polynomialTermsArrayToMarkup = function (termsArray) {
  * Transform a prefix-notation array expression containing symbols,
  * to an infix-notation string
  */
-const toInfixNotation = (expr) => {
+export const toInfixNotation = (expr) => {
   if (Number.isFinite(expr)) {
     return roundDecimal(expr, 3);
   }

@@ -29,7 +29,11 @@ import {
   resetActiveElements,
   moveToGroundLevel,
 } from "../util/uiService.js";
-import { polynomialTermsArrayToStringWithoutCoeffs } from "../util/prettyPrintingService.js";
+import {
+  replaceMultipleStringSpacesWithSingle,
+  toInfixNotation,
+  polynomialTermsArrayToStringWithoutCoeffs,
+} from "../util/prettyPrintingService.js";
 import BodePlot from "./plots/bodePlot.js";
 import NyquistPlot from "./plots/nyquistPlot.js";
 import TimeDomainPlot from "./plots/timeDomainPlot.js";
@@ -196,12 +200,14 @@ const populateElementAnalysisWindow = function (element, updateExistingWindow) {
   numeratorTermsArray = getTermsArray(getNumerator(tfValue));
   denominatorTermsArray = getTermsArray(getDenominator(tfValue));
   updateElementNumeratorInput.value = polynomialTermsArrayToStringWithoutCoeffs(
-    numeratorTermsArray.map((x) => (!Number.isNaN(+x) ? roundDecimal(x, 3) : x))
+    numeratorTermsArray.map((x) =>
+      !Number.isNaN(+x) ? roundDecimal(x, 3) : toInfixNotation(x)
+    )
   );
   updateElementDenominatorInput.value =
     polynomialTermsArrayToStringWithoutCoeffs(
       denominatorTermsArray.map((x) =>
-        !Number.isNaN(+x) ? roundDecimal(x, 3) : x
+        !Number.isNaN(+x) ? roundDecimal(x, 3) : toInfixNotation(x)
       )
     );
 
@@ -236,14 +242,18 @@ const updateElementValueButtonCallback = function (e) {
   ) {
     numeratorTermsArray = numeratorTermsArrayString
       .slice(1, -1)
-      .replaceAll(" ", "")
       .split(",")
-      .map((x) => (!Number.isNaN(+x) ? +x : x));
+      .map((x) => x.trim())
+      .map((x) =>
+        !Number.isNaN(+x) ? +x : replaceMultipleStringSpacesWithSingle(x)
+      );
     denominatorTermsArray = denominatorTermsArrayString
       .slice(1, -1)
-      .replaceAll(" ", "")
       .split(",")
-      .map((x) => (!Number.isNaN(+x) ? +x : x));
+      .map((x) => x.trim())
+      .map((x) =>
+        !Number.isNaN(+x) ? +x : replaceMultipleStringSpacesWithSingle(x)
+      );
 
     //constrain input to numbers only:
     // if (
@@ -261,6 +271,20 @@ const updateElementValueButtonCallback = function (e) {
     const tfValue = element.getValue();
     const oldNumeratorTermsArray = getTermsArray(getNumerator(tfValue));
     const oldDenominatorTermsArray = getTermsArray(getDenominator(tfValue));
+
+    //update displayed value in input fields
+    updateElementNumeratorInput.value =
+      polynomialTermsArrayToStringWithoutCoeffs(
+        numeratorTermsArray.map((x) =>
+          !Number.isNaN(+x) ? roundDecimal(x, 3) : toInfixNotation(x)
+        )
+      );
+    updateElementDenominatorInput.value =
+      polynomialTermsArrayToStringWithoutCoeffs(
+        denominatorTermsArray.map((x) =>
+          !Number.isNaN(+x) ? roundDecimal(x, 3) : toInfixNotation(x)
+        )
+      );
 
     if (
       !areEqualArrays(numeratorTermsArray, oldNumeratorTermsArray) ||
