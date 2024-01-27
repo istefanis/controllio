@@ -16,7 +16,10 @@ import {
 } from "../../math/computerAlgebra/algebraicOperations.js";
 import { Polynomial } from "../../math/computerAlgebra/dataTypes/polynomials.js";
 import { findComplexRootsOfPolynomial } from "../../math/numericalAnalysis/numericalAnalysisService.js";
-import { functionFromPolynomialTermsArray } from "../../util/commons.js";
+import {
+  functionFromPolynomialTermsArray,
+  areAllTfTermsNumbers,
+} from "../../util/commons.js";
 import { logMessages } from "../../util/loggingService.js";
 import {
   makeElementFontSizeNormal,
@@ -62,10 +65,12 @@ export default class NyquistPlot {
     this.#zeros = zeros;
     this.#poles = poles;
 
-    this.computeNyquistPlotCurvePoints(
-      this.#numeratorTermsArray,
-      this.#denominatorTermsArray
-    );
+    if (areAllTfTermsNumbers(numeratorTermsArray, denominatorTermsArray)) {
+      this.computeNyquistPlotCurvePoints(
+        this.#numeratorTermsArray,
+        this.#denominatorTermsArray
+      );
+    }
 
     this.createNyquistPlot();
     this.insertZerosPolesAndStabilityMarkup();
@@ -244,15 +249,22 @@ export default class NyquistPlot {
             Math.floor((i / arrowsNumber) * this.#curvePoints.length)
           )
           .map((x) => {
-            return {
-              vector: [
-                this.#curvePoints[x + 1][1] - this.#curvePoints[x][1],
-                this.#curvePoints[x + 1][2] - this.#curvePoints[x][2],
-              ],
-              offset: [this.#curvePoints[x][1], this.#curvePoints[x][2]],
-              graphType: "polyline",
-              fnType: "vector",
-            };
+            return this.#curvePoints.length > 1
+              ? {
+                  vector: [
+                    this.#curvePoints[x + 1][1] - this.#curvePoints[x][1],
+                    this.#curvePoints[x + 1][2] - this.#curvePoints[x][2],
+                  ],
+                  offset: [this.#curvePoints[x][1], this.#curvePoints[x][2]],
+                  graphType: "polyline",
+                  fnType: "vector",
+                }
+              : {
+                  vector: [],
+                  offset: [],
+                  graphType: "polyline",
+                  fnType: "vector",
+                };
           }),
       ],
     });
@@ -417,23 +429,27 @@ const computeNyquistRealAndImagWFunctions = function (
  * @returns either a string with the result or undefined
  */
 const computeStability = function (numeratorTermsArray, denominatorTermsArray) {
-  const closedLoopTfNumerator = add(
-    new Polynomial("s", numeratorTermsArray),
-    new Polynomial("s", denominatorTermsArray)
-  );
-  const closedLoopTfZeros = findComplexRootsOfPolynomial(
-    getTermsArray(closedLoopTfNumerator)
-  );
-
   let stability;
-  if (closedLoopTfZeros.length > 0) {
-    if (closedLoopTfZeros.every((x) => x[0] < 0)) {
-      stability = "yes";
-    } else if (closedLoopTfZeros.some((x) => x[0] > 0)) {
-      stability = "no";
-    } else {
-      stability = "marginally";
+  if (areAllTfTermsNumbers(numeratorTermsArray, denominatorTermsArray)) {
+    const closedLoopTfNumerator = add(
+      new Polynomial("s", numeratorTermsArray),
+      new Polynomial("s", denominatorTermsArray)
+    );
+    const closedLoopTfZeros = findComplexRootsOfPolynomial(
+      getTermsArray(closedLoopTfNumerator)
+    );
+
+    if (closedLoopTfZeros.length > 0) {
+      if (closedLoopTfZeros.every((x) => x[0] < 0)) {
+        stability = "yes";
+      } else if (closedLoopTfZeros.some((x) => x[0] > 0)) {
+        stability = "no";
+      } else {
+        stability = "marginally";
+      }
     }
+  } else {
+    stability = "N/A";
   }
   return stability;
 };

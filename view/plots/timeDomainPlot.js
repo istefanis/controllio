@@ -11,6 +11,7 @@ import {
   TalbotMethod,
   linearInterpolationOfCurvePoints,
 } from "../../math/numericalAnalysis/numericalAnalysisService.js";
+import { areAllTfTermsNumbers } from "../../util/commons.js";
 import { logMessages } from "../../util/loggingService.js";
 import {
   functionPlot,
@@ -64,10 +65,12 @@ export default class TimeDomainPlot {
     this.#zeros = zeros;
     this.#poles = poles;
 
-    this.computeTimeDomainPlotCurvePoints(
-      this.#numeratorTermsArray,
-      this.#denominatorTermsArray
-    );
+    if (areAllTfTermsNumbers(numeratorTermsArray, denominatorTermsArray)) {
+      this.computeTimeDomainPlotCurvePoints(
+        this.#numeratorTermsArray,
+        this.#denominatorTermsArray
+      );
+    }
 
     this.createTimeDomainPlot();
 

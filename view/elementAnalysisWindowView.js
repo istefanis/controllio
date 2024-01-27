@@ -14,7 +14,11 @@ import {
   getTermsArray,
 } from "../math/computerAlgebra/algebraicOperations.js";
 import { getElementFromElementId } from "../model/elementService.js";
-import { areEqualArrays, roundDecimal } from "../util/commons.js";
+import {
+  areEqualArrays,
+  roundDecimal,
+  areAllTfTermsNumbers,
+} from "../util/commons.js";
 import {
   makeElementUnhidden,
   makeElementHidden,
@@ -201,9 +205,14 @@ const populateElementAnalysisWindow = function (element, updateExistingWindow) {
       )
     );
 
-  //compute zeros & poles
-  zeros = findComplexRootsOfPolynomial(numeratorTermsArray);
-  poles = findComplexRootsOfPolynomial(denominatorTermsArray);
+  //compute zeros & poles, after checking that all terms are numbers
+  if (areAllTfTermsNumbers(numeratorTermsArray, denominatorTermsArray)) {
+    zeros = findComplexRootsOfPolynomial(numeratorTermsArray);
+    poles = findComplexRootsOfPolynomial(denominatorTermsArray);
+  } else {
+    zeros = [];
+    poles = [];
+  }
 
   if (!isWindowMaximized) {
     populateActiveTab();
@@ -262,9 +271,14 @@ const updateElementValueButtonCallback = function (e) {
       enableHistoricalStateStorage();
       element.getBlock().storeNewHistoricalState();
 
-      //compute zeros & poles
-      zeros = findComplexRootsOfPolynomial(numeratorTermsArray);
-      poles = findComplexRootsOfPolynomial(denominatorTermsArray);
+      //compute zeros & poles, after checking that all terms are numbers
+      if (areAllTfTermsNumbers(numeratorTermsArray, denominatorTermsArray)) {
+        zeros = findComplexRootsOfPolynomial(numeratorTermsArray);
+        poles = findComplexRootsOfPolynomial(denominatorTermsArray);
+      } else {
+        zeros = [];
+        poles = [];
+      }
     }
 
     //re-render lines, because DOM element dimensions may have been changed

@@ -180,6 +180,18 @@ text.axis-label {
   gap: 8px;
 }
 
+#warning-banner {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+}
+
+#warning-banner i {
+  font-size: 18px;
+}
+
 #characteristic-numbers-grid {
   display: grid;
   grid-template-columns: 2fr 7fr;

@@ -59,6 +59,16 @@ export const zeroRootsFromPolynomialTermsArray = function (termsArray) {
 };
 
 //
+// Transfer function terms
+//
+export const areAllTfTermsNumbers = (
+  numeratorTermsArray,
+  denominatorTermsArray
+) =>
+  numeratorTermsArray.every((x) => !Number.isNaN(+x)) &&
+  denominatorTermsArray.every((x) => !Number.isNaN(+x));
+
+//
 // Await
 //
 export const sleep = (millisec) => new Promise((r) => setTimeout(r, millisec));

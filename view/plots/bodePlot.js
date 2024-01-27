@@ -11,7 +11,10 @@ import {
   polynomialEvaluatedWithWiRealTermsArray,
 } from "../../math/complexAnalysis/complexAnalysisService.js";
 import { linearInterpolationOfCurvePoints } from "../../math/numericalAnalysis/numericalAnalysisService.js";
-import { functionFromPolynomialTermsArray } from "../../util/commons.js";
+import {
+  functionFromPolynomialTermsArray,
+  areAllTfTermsNumbers,
+} from "../../util/commons.js";
 import { logMessages } from "../../util/loggingService.js";
 import {
   computeCharacteristicNumbers,
@@ -63,20 +66,36 @@ export default class BodePlot {
     this.#zeros = zeros;
     this.#poles = poles;
 
-    this.computeBodePlotCurvePoints(
-      this.#numeratorTermsArray,
-      this.#denominatorTermsArray
+    let characteristicNumbers;
+
+    const allTfTermsAreNumbers = areAllTfTermsNumbers(
+      numeratorTermsArray,
+      denominatorTermsArray
     );
 
-    const characteristicNumbers = computeCharacteristicNumbers(
-      this.#magnitude,
-      this.#magnitudeCurvePoints,
-      this.#phaseCurvePoints,
-      this.#wMin,
-      this.#wMax,
-      this.#minMagnitude,
-      this.#maxMagnitude
-    );
+    if (allTfTermsAreNumbers) {
+      this.computeBodePlotCurvePoints(
+        this.#numeratorTermsArray,
+        this.#denominatorTermsArray
+      );
+
+      characteristicNumbers = computeCharacteristicNumbers(
+        this.#magnitude,
+        this.#magnitudeCurvePoints,
+        this.#phaseCurvePoints,
+        this.#wMin,
+        this.#wMax,
+        this.#minMagnitude,
+        this.#maxMagnitude
+      );
+    } else {
+      characteristicNumbers = {
+        filterTypeText: "N/A",
+        bandwidthText: "N/A",
+        thresholdText: "N/A",
+        rollOffText: "N/A",
+      };
+    }
 
     if (!plotContainerDomElement) {
       // return Bode curve points & characteristics numbers without displaying the plot (ex. for testing)
@@ -105,7 +124,8 @@ export default class BodePlot {
         plotContainerDomElement.parentNode.querySelector(
           "#characteristic-numbers-grid"
         ),
-        characteristicNumbers
+        characteristicNumbers,
+        allTfTermsAreNumbers ? false : true
       );
 
       return this.#bodeObserver;

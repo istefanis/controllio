@@ -245,13 +245,23 @@ const generateRollOffText = function (magnitude, wMin, wMax) {
 
 export const insertCharacteristicNumbersMarkup = function (
   characteristicNumbersGridDomElement,
-  characteristicNumbers
+  characteristicNumbers,
+  displayWarning
 ) {
-  const filterType =
+  const filterTypeOrWarningBanner =
     characteristicNumbersGridDomElement.parentNode.querySelector(
-      "#filter-type"
+      "#filter-type-or-warning-banner"
     );
-  filterType.innerText = characteristicNumbers.filterTypeText;
+  if (displayWarning) {
+    filterTypeOrWarningBanner.innerHTML = `
+    <div id="warning-banner">
+      <i class="bi-exclamation-triangle"></i>
+      <p>All tf terms should be numbers to proceed with computations</p>
+    </div>`;
+  } else {
+    filterTypeOrWarningBanner.innerText = characteristicNumbers.filterTypeText;
+  }
+
   const markup = `
     <p>Bandwidth</p><p>= ${
       characteristicNumbers.bandwidthText !== ""
