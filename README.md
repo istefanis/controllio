@@ -89,7 +89,7 @@ A User Guide is included in the web app, and can be launched from the main menu
 
 4. Run `npm test` to execute the tests via [Jest](https://jestjs.io/)
 
-> _Current test coverage according to Jest: 55% (statements)_
+> _Current test coverage according to Jest: 60% (statements)_
 
 ## Code Structure
 

@@ -11,6 +11,7 @@ import { getLogMode, setLogMode } from "../../../util/loggingService.js";
 import { runComputerAlgebraCustomTests } from "../computerAlgebra.customTest.js";
 import { runPlotsCustomTests } from "../plots.customTest.js";
 import { runSimplificationAlgorithmsCustomTests } from "../simplificationAlgorithms.customTest.js";
+import { runViewServicesCustomTests } from "../viewServices.customTest.js";
 
 export const runAllCustomTests = async function () {
   const logMode = getLogMode();
@@ -19,6 +20,7 @@ export const runAllCustomTests = async function () {
   await runComputerAlgebraCustomTests();
   await runPlotsCustomTests();
   await runSimplificationAlgorithmsCustomTests();
+  await runViewServicesCustomTests();
   await sleep(1000);
 
   setLogMode(logMode); //revert it to its previous value

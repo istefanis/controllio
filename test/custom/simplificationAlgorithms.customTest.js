@@ -56,7 +56,7 @@ export const runSimplificationAlgorithmsCustomTests = async function () {
   )) {
     await runSimplificationAlgorithmsCustomTest(test);
   }
-  logMessages([`[TE-05] Simplification algorithms tests end`], "tests");
+  logMessages([`[TE-06] Simplification algorithms tests end`], "tests");
 
   setAnimationSpeedCoeff(c);
 };

@@ -59,5 +59,5 @@ export const runPlotsCustomTests = async function () {
     runPlotsCustomTest(test);
     await sleep(100);
   }
-  logMessages([`[TE-05] Plots tests end`], "tests");
+  logMessages([`[TE-06] Plots tests end`], "tests");
 };

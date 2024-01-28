@@ -39,8 +39,16 @@ let maxTriesPerElementInEachLoop;
 let canvas;
 let navbarHeight;
 
-export const optimizeTopology = async function () {
+export const optimizeTopology = async function (customLoopsAndTriesObject) {
   logMessages(["[CP-101] Optimize topology started"], "checkpoints");
+
+  const loopsOverAllElements = customLoopsAndTriesObject
+    ? customLoopsAndTriesObject.loopsOverAllElements
+    : maxLoopsOverAllElements;
+
+  const triesPerElementInEachLoop = customLoopsAndTriesObject
+    ? customLoopsAndTriesObject.triesPerElementInEachLoop
+    : maxTriesPerElementInEachLoop;
 
   disableZoomButtons();
   disableHistoricalStateStorage();
@@ -52,11 +60,11 @@ export const optimizeTopology = async function () {
   canvas = getCanvas();
   navbarHeight = getNavbarHeight();
 
-  for (let i = 1; i <= maxLoopsOverAllElements; i++) {
+  for (let i = 1; i <= loopsOverAllElements; i++) {
     for (let j = 0; j < domElements.length; j++) {
       await optimizeElementPositionStochastic(
         domElements[j],
-        maxTriesPerElementInEachLoop
+        triesPerElementInEachLoop
       );
     }
   }
