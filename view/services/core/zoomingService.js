@@ -2,6 +2,10 @@
  * Controllio · Open source web drafting table for studying control systems
  */
 
+/*
+ * View / Services / Core / ZoomingService
+ */
+
 import { roundDecimal } from "../../../util/commons.js";
 import {
   scaleReferenceDimensionsAfterZoom,
@@ -10,10 +14,6 @@ import {
 } from "../../../util/uiService.js";
 import { adjustAllElementPositionsAfterZoom } from "./elementRenderingService.js";
 import { renderAllLines } from "./lineRenderingService.js";
-
-/*
- * View / Services / Core / ZoomingService
- */
 
 // the (absolute) zoom factor is stored inside 'util/uiService' to avoid circular dependencies
 

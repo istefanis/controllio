@@ -16,12 +16,17 @@ import {
   computePaddedTfStrings,
   removeSupTagsFromMarkup,
 } from "../util/prettyPrintingService.js";
-import { getNavbarHeight } from "../util/uiService.js";
+import {
+  getNavbarHeight,
+  indicativeTfHeight,
+  indicativeTfWidth,
+} from "../util/uiService.js";
 import {
   generateNewTfPosition,
   registerDomElement,
   setNewElementPosition,
 } from "./services/core/elementRenderingService.js";
+import { updateMockedGetBoundingClientRect } from "./services/core/mockingService.js";
 
 export default class TfView {
   #tf;
@@ -65,8 +70,22 @@ export default class TfView {
 
     //store width & height values
     const tfBoundingRect = this.#domElement.getBoundingClientRect();
-    this.#width = tfBoundingRect.width;
-    this.#height = tfBoundingRect.height;
+    if (tfBoundingRect.width !== 0 && tfBoundingRect.height !== 0) {
+      this.#width = tfBoundingRect.width;
+      this.#height = tfBoundingRect.height;
+    } else {
+      //mocked getBoundingClientRect() case (ex. testing with Jest)
+      updateMockedGetBoundingClientRect(this.#domElement, {
+        width: indicativeTfWidth,
+        height: indicativeTfHeight,
+        top: 0,
+        left: 0,
+        right: indicativeTfWidth,
+        bottom: indicativeTfHeight,
+      });
+      this.#width = indicativeTfWidth;
+      this.#height = indicativeTfHeight;
+    }
 
     //set dataset attribute
     this.#domElement.dataset.elementId = this.#domElementId;

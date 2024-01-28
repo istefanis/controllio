@@ -18,6 +18,7 @@ import {
   getZoomFactor,
 } from "../../../util/uiService.js";
 import { getCanvas, resetCanvas } from "./canvasService.js";
+import { updateMockedGetBoundingClientRect } from "./mockingService.js";
 
 export let domElements = [];
 
@@ -61,21 +62,29 @@ const generateNewElementPosition = function (
 
   const assignHelper = () => {
     //assign a position to the element
-    domElement.style.left =
+    const newLeft =
       marginAroundElements +
       Math.random() *
         (Math.min(canvas.width, maxUtilizedCanvasWidth) -
           elementWidth -
-          2 * marginAroundElements) +
-      "px";
-    domElement.style.top =
+          2 * marginAroundElements);
+    const newTop =
       marginAroundElements +
       Math.random() *
         (Math.min(canvas.height, maxUtilizedCanvasHeight) -
           elementHeight -
           2 * marginAroundElements) +
-      navbarHeight +
-      "px";
+      navbarHeight;
+    domElement.style.left = newLeft + "px";
+    domElement.style.top = newTop + "px";
+
+    //mocked getBoundingClientRect() case (ex. testing with Jest)
+    if (domElement.getBoundingClientRect().isMocked) {
+      updateMockedGetBoundingClientRect(domElement, {
+        top: newTop,
+        left: newLeft,
+      });
+    }
 
     step++;
 
@@ -128,6 +137,14 @@ export const setNewElementPosition = (domElement, position, skipChecks) => {
   ) {
     domElement.style.left = position.left + "px";
     domElement.style.top = position.top + getNavbarHeight() + "px";
+
+    //mocked getBoundingClientRect() case (ex. testing with Jest)
+    if (domElement.getBoundingClientRect().isMocked) {
+      updateMockedGetBoundingClientRect(domElement, {
+        top: position.top + getNavbarHeight(),
+        left: position.left,
+      });
+    }
   } else {
     generateNewElementPosition(domElement, boundRect.width, boundRect.height);
   }

@@ -32,6 +32,7 @@ import {
   disableZoomButtons,
   enableZoomButtons,
 } from "../core/zoomingService.js";
+import { updateMockedGetBoundingClientRect } from "../core/mockingService.js";
 
 let maxLoopsOverAllElements;
 let maxTriesPerElementInEachLoop;
@@ -103,6 +104,14 @@ const optimizeElementPositionStochastic = async function (
     domElement.style.left = newLeft + "px";
     domElement.style.top = newTop + "px";
 
+    //mocked getBoundingClientRect() case (ex. testing with Jest)
+    if (domElement.getBoundingClientRect().isMocked) {
+      updateMockedGetBoundingClientRect(domElement, {
+        top: newTop,
+        left: newLeft,
+      });
+    }
+
     //compute overlapping elements number (new position)
     const newOverlappingElementsNumber =
       computeOverlappingElementsNumber(domElement);
@@ -160,9 +169,17 @@ const computeOverlappingElementsNumber = (domElement) =>
       : false
   ).length;
 
-const revertPosition = (domElement, left, top) => {
-  domElement.style.left = left + "px";
-  domElement.style.top = top + "px";
+const revertPosition = (domElement, oldLeft, oldTop) => {
+  domElement.style.left = oldLeft + "px";
+  domElement.style.top = oldTop + "px";
+
+  //mocked getBoundingClientRect() case (testing with Jest)
+  if (domElement.getBoundingClientRect().isMocked) {
+    updateMockedGetBoundingClientRect(domElement, {
+      top: oldTop,
+      left: oldLeft,
+    });
+  }
 };
 
 //
