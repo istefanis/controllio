@@ -6,17 +6,34 @@
  * Test / Definitions / PlotsTests
  */
 
-import { tolerance } from "../../math/numericalAnalysis/numericalAnalysisService.js";
+import {
+  tolerance,
+  findComplexRootsOfPolynomial,
+} from "../../math/numericalAnalysis/numericalAnalysisService.js";
+import BodePlot from "../../view/plots/bodePlot.js";
 
 const toleranceSmall = tolerance; //0.0001
 const toleranceMedium = 0.2;
 const toleranceLarge = 3;
+
+const bodeSteps = (numeratorTermsArray, denominatorTermsArray) => {
+  const { magnitudeCurvePoints, phaseCurvePoints, characteristicNumbers } =
+    new BodePlot(
+      null,
+      numeratorTermsArray,
+      denominatorTermsArray,
+      findComplexRootsOfPolynomial(numeratorTermsArray),
+      findComplexRootsOfPolynomial(denominatorTermsArray)
+    );
+  return [magnitudeCurvePoints, phaseCurvePoints, characteristicNumbers];
+};
 
 export const plotsTests = {
   test1: {
     description: "test1: tf([1, 0, 0, 0], [1])",
     numeratorTermsArray: [1, 0, 0, 0],
     denominatorTermsArray: [1],
+    steps: bodeSteps,
     assertions: (
       magnitudeCurvePoints,
       phaseCurvePoints,
@@ -41,6 +58,7 @@ export const plotsTests = {
     description: "test2: tf([1], [1, 0, 0, 0])",
     numeratorTermsArray: [1],
     denominatorTermsArray: [1, 0, 0, 0],
+    steps: bodeSteps,
     assertions: (
       magnitudeCurvePoints,
       phaseCurvePoints,
@@ -65,6 +83,7 @@ export const plotsTests = {
     description: "test3: tf([1, 0, 1], [1])",
     numeratorTermsArray: [1, 0, 1],
     denominatorTermsArray: [1],
+    steps: bodeSteps,
     assertions: (
       magnitudeCurvePoints,
       phaseCurvePoints,
@@ -89,6 +108,7 @@ export const plotsTests = {
     description: "test4: tf([1], [1, 0, 1])",
     numeratorTermsArray: [1],
     denominatorTermsArray: [1, 0, 1],
+    steps: bodeSteps,
     assertions: (
       magnitudeCurvePoints,
       phaseCurvePoints,
@@ -113,6 +133,7 @@ export const plotsTests = {
     description: "test5: tf([1], [0.3, 0.1, 1])",
     numeratorTermsArray: [1],
     denominatorTermsArray: [0.3, 0.1, 1],
+    steps: bodeSteps,
     assertions: (
       magnitudeCurvePoints,
       phaseCurvePoints,
@@ -137,6 +158,7 @@ export const plotsTests = {
     description: "test6: tf([1], [1, 0])",
     numeratorTermsArray: [1],
     denominatorTermsArray: [1, 0],
+    steps: bodeSteps,
     assertions: (
       magnitudeCurvePoints,
       phaseCurvePoints,
@@ -161,6 +183,7 @@ export const plotsTests = {
     description: "test7: tf([1, 200, 33.333], [0.333, 0])",
     numeratorTermsArray: [1, 200, 33.333],
     denominatorTermsArray: [0.333, 0],
+    steps: bodeSteps,
     assertions: (
       magnitudeCurvePoints,
       phaseCurvePoints,
@@ -180,6 +203,7 @@ export const plotsTests = {
     description: "test8: tf([1, 0.625], [0.125])",
     numeratorTermsArray: [1, 0.625],
     denominatorTermsArray: [0.125],
+    steps: bodeSteps,
     assertions: (
       magnitudeCurvePoints,
       phaseCurvePoints,
@@ -199,6 +223,7 @@ export const plotsTests = {
     description: "test9: tf([1, 1.6], [0.2, 0])",
     numeratorTermsArray: [1, 1.6],
     denominatorTermsArray: [0.2, 0],
+    steps: bodeSteps,
     assertions: (
       magnitudeCurvePoints,
       phaseCurvePoints,
@@ -218,6 +243,7 @@ export const plotsTests = {
     description: "test10: tf([1, 0.2], [1.6, 0.2])",
     numeratorTermsArray: [1, 0.2],
     denominatorTermsArray: [1.6, 0.2],
+    steps: bodeSteps,
     assertions: (
       magnitudeCurvePoints,
       phaseCurvePoints,
@@ -237,6 +263,7 @@ export const plotsTests = {
     description: "test11: tf([1, 2, 5], [4, 4])",
     numeratorTermsArray: [1, 2, 5],
     denominatorTermsArray: [4, 4],
+    steps: bodeSteps,
     assertions: (
       magnitudeCurvePoints,
       phaseCurvePoints,
@@ -261,6 +288,7 @@ export const plotsTests = {
     description: "test12: tf([1, 0, -0.1], [-0.1, -0.2, -0.1])",
     numeratorTermsArray: [1, 0, -0.1],
     denominatorTermsArray: [-0.1, -0.2, -0.1],
+    steps: bodeSteps,
     assertions: (
       magnitudeCurvePoints,
       phaseCurvePoints,
@@ -285,6 +313,7 @@ export const plotsTests = {
     description: "test13: tf([1, 2, 1], [-10, 0, 1])",
     numeratorTermsArray: [1, 2, 1],
     denominatorTermsArray: [-10, 0, 1],
+    steps: bodeSteps,
     assertions: (
       magnitudeCurvePoints,
       phaseCurvePoints,
@@ -309,6 +338,7 @@ export const plotsTests = {
     description: "test14: tf([1], [64, 5.214, 64.212, 3.375, 8.062])",
     numeratorTermsArray: [1],
     denominatorTermsArray: [64, 5.214, 64.212, 3.375, 8.062],
+    steps: bodeSteps,
     assertions: (
       magnitudeCurvePoints,
       phaseCurvePoints,
@@ -328,6 +358,7 @@ export const plotsTests = {
     description: "test15: tf([3.8], [64, 5.214, 64.212, 3.375, 8.062, 0])",
     numeratorTermsArray: [3.8],
     denominatorTermsArray: [64, 5.214, 64.212, 3.375, 8.062, 0],
+    steps: bodeSteps,
     assertions: (
       magnitudeCurvePoints,
       phaseCurvePoints,
@@ -359,6 +390,7 @@ export const plotsTests = {
       -1, 0.667, 0.667, 2.333, 1.333, -0.333, -0.5, -0.833, -1.167, -0.833,
       -0.333,
     ],
+    steps: bodeSteps,
     assertions: (
       magnitudeCurvePoints,
       phaseCurvePoints,
@@ -380,6 +412,7 @@ export const plotsTests = {
       "[1, 21, 211, 1281, 4935, 11655, 15120, 10395, 10395])",
     numeratorTermsArray: [1, -21, 210, -1260, 4725, -10395, 10395],
     denominatorTermsArray: [1, 21, 211, 1281, 4935, 11655, 15120, 10395, 10395],
+    steps: bodeSteps,
     assertions: (
       magnitudeCurvePoints,
       phaseCurvePoints,

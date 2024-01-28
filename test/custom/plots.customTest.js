@@ -6,30 +6,19 @@
  * Test / Custom / Plots.customTest
  */
 
-import { findComplexRootsOfPolynomial } from "../../math/numericalAnalysis/numericalAnalysisService.js";
 import { sleep } from "../../util/commons.js";
 import { logMessages } from "../../util/loggingService.js";
-import BodePlot from "../../view/plots/bodePlot.js";
 import { plotsTests } from "../definitions/plotsTests.js";
 
 const runPlotsCustomTest = (t) => {
-  //computation of Bode curve points & characteristic numbers
-  const { magnitudeCurvePoints, phaseCurvePoints, characteristicNumbers } =
-    new BodePlot(
-      null,
-      t.numeratorTermsArray,
-      t.denominatorTermsArray,
-      findComplexRootsOfPolynomial(t.numeratorTermsArray),
-      findComplexRootsOfPolynomial(t.denominatorTermsArray)
-    );
-  // console.log(phaseCurvePoints);
+  //computation of Plot points & other values (ex. characteristic numbers)
+  const returnedValuesArray = t.steps(
+    t.numeratorTermsArray,
+    t.denominatorTermsArray
+  );
 
   //evaluation of assertions using the computed data
-  const assertionsEvaluated = t.assertions(
-    magnitudeCurvePoints,
-    phaseCurvePoints,
-    characteristicNumbers
-  );
+  const assertionsEvaluated = t.assertions.call(null, ...returnedValuesArray);
 
   if (assertionsEvaluated.length > 0) {
     const testCondition = assertionsEvaluated.every((a) => {
