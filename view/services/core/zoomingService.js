@@ -55,7 +55,7 @@ const scaleElementsAndLinesAfterZoom = (zoomFactor, relativeZoomFactor) => {
 // Zoom-in button
 //
 const zoomInButton = document.getElementById("zoom-in-button");
-zoomInButton.addEventListener("mousedown", function (e) {
+zoomInButton.addEventListener("click", function (e) {
   if (getZoomFactor() + zoomFactorIncrementStep <= maxZoomFactor) {
     //compute new zoomFactor & relativeZoomFactor
     const lastZoomFactor = getZoomFactor();
@@ -83,7 +83,7 @@ zoomInButton.addEventListener("mousedown", function (e) {
 // Zoom-out button
 //
 const zoomOutButton = document.getElementById("zoom-out-button");
-zoomOutButton.addEventListener("mousedown", function (e) {
+zoomOutButton.addEventListener("click", function (e) {
   if (getZoomFactor() - zoomFactorIncrementStep >= minZoomFactor) {
     //compute new zoomFactor & relativeZoomFactor
     const lastZoomFactor = getZoomFactor();

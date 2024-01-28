@@ -32,7 +32,7 @@
   "type": "module",
   "scripts": {
     "start": "parcel index.html --no-cache",
-    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js --verbose --collectCoverage",
+    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js --runInBand --verbose --collectCoverage",
     "build": "parcel build index.html --no-cache"
   },
   "dependencies": {

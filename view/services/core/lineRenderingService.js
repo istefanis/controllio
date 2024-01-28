@@ -191,3 +191,7 @@ export const getTotalLengthsOfLinesConnectedToElement = function (elementId) {
     .map((x) => x.getLineLength())
     .reduce((acc, x) => acc + x, 0);
 };
+
+export const getTotalLengthOfAllLines = function () {
+  return lineViews.map((x) => x.getLineLength()).reduce((acc, x) => acc + x, 0);
+};
