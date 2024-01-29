@@ -37,6 +37,7 @@ export default class NyquistPlot {
   #denominatorTermsArray;
   #zeros;
   #poles;
+  #stability;
 
   #plotContainerDomElement;
 
@@ -51,15 +52,6 @@ export default class NyquistPlot {
     zeros,
     poles
   ) {
-    this.#plotContainerDomElement = plotContainerDomElement;
-    //create the plot DOM element inside the container
-    const markup = `
-      <div class="nyquist-plot" id="nyquist-plot"></div>
-    `;
-    plotContainerDomElement.insertAdjacentHTML("afterbegin", markup);
-
-    this.#nyquistPlotDomElement =
-      plotContainerDomElement.querySelector("#nyquist-plot");
     this.#numeratorTermsArray = numeratorTermsArray;
     this.#denominatorTermsArray = denominatorTermsArray;
     this.#zeros = zeros;
@@ -72,10 +64,33 @@ export default class NyquistPlot {
       );
     }
 
-    this.createNyquistPlot();
-    this.insertZerosPolesAndStabilityMarkup();
+    this.#stability = computeStability(
+      this.#numeratorTermsArray,
+      this.#denominatorTermsArray
+    );
 
-    return this.#nyquistObserver;
+    if (!plotContainerDomElement) {
+      // return Nyquist curve points & stability without displaying the plot (ex. for testing)
+      return {
+        curvePoints: this.#curvePoints,
+        stability: this.#stability,
+      };
+    } else {
+      this.#plotContainerDomElement = plotContainerDomElement;
+      //create the plot DOM element inside the container
+      const markup = `
+        <div class="nyquist-plot" id="nyquist-plot"></div>
+      `;
+      plotContainerDomElement.insertAdjacentHTML("afterbegin", markup);
+
+      this.#nyquistPlotDomElement =
+        plotContainerDomElement.querySelector("#nyquist-plot");
+
+      this.createNyquistPlot();
+      this.insertZerosPolesAndStabilityMarkup(this.#stability);
+
+      return this.#nyquistObserver;
+    }
   }
 
   /**
@@ -312,7 +327,7 @@ export default class NyquistPlot {
       .forEach(removeOrFormatAxisTickElement);
   }
 
-  insertZerosPolesAndStabilityMarkup() {
+  insertZerosPolesAndStabilityMarkup(stability) {
     const zerosPolesAndStabilityGrid =
       this.#plotContainerDomElement.parentNode.querySelector(
         "#zeros-poles-and-stability-grid"
@@ -322,11 +337,6 @@ export default class NyquistPlot {
     } else {
       makeElementFontSizeNormal(zerosPolesAndStabilityGrid);
     }
-
-    const stability = computeStability(
-      this.#numeratorTermsArray,
-      this.#denominatorTermsArray
-    );
 
     const markup = `
     <p>Zero${this.#zeros.length === 1 ? "" : "s"}:</p><p> ${

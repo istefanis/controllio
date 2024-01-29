@@ -11,6 +11,7 @@ import {
   findComplexRootsOfPolynomial,
 } from "../../math/numericalAnalysis/numericalAnalysisService.js";
 import BodePlot from "../../view/plots/bodePlot.js";
+import NyquistPlot from "../../view/plots/nyquistPlot.js";
 
 const toleranceSmall = tolerance; //0.0001
 const toleranceMedium = 0.2;
@@ -28,16 +29,36 @@ const bodeSteps = (numeratorTermsArray, denominatorTermsArray) => {
   return [magnitudeCurvePoints, phaseCurvePoints, characteristicNumbers];
 };
 
+const nyquistSteps = (numeratorTermsArray, denominatorTermsArray) => {
+  const { curvePoints, stability } = new NyquistPlot(
+    null,
+    numeratorTermsArray,
+    denominatorTermsArray,
+    findComplexRootsOfPolynomial(numeratorTermsArray),
+    findComplexRootsOfPolynomial(denominatorTermsArray)
+  );
+  return [curvePoints, stability];
+};
+
+const bodeAndNyquistSteps = (numeratorTermsArray, denominatorTermsArray) => {
+  return [
+    ...bodeSteps(numeratorTermsArray, denominatorTermsArray),
+    ...nyquistSteps(numeratorTermsArray, denominatorTermsArray),
+  ];
+};
+
 export const plotsTests = {
   test1: {
     description: "test1: tf([1, 0, 0, 0], [1])",
     numeratorTermsArray: [1, 0, 0, 0],
     denominatorTermsArray: [1],
-    steps: bodeSteps,
+    steps: bodeAndNyquistSteps,
     assertions: (
       magnitudeCurvePoints,
       phaseCurvePoints,
-      characteristicNumbers
+      characteristicNumbers,
+      nyquistCurvePoints,
+      stability
     ) => [
       [
         "Roll-off",
@@ -51,6 +72,20 @@ export const plotsTests = {
         "270",
         toleranceSmall,
       ],
+      ["Real part at wMin", nyquistCurvePoints[0][1], 0, toleranceSmall],
+      [
+        "Imag part at w=0",
+        nyquistCurvePoints[Math.ceil(nyquistCurvePoints.length / 2)][2],
+        0,
+        toleranceSmall,
+      ],
+      [
+        "Real part at wMax",
+        nyquistCurvePoints[nyquistCurvePoints.length - 1][1],
+        0,
+        toleranceSmall,
+      ],
+      ["Stable", stability, "no"],
     ],
   },
 
@@ -58,11 +93,13 @@ export const plotsTests = {
     description: "test2: tf([1], [1, 0, 0, 0])",
     numeratorTermsArray: [1],
     denominatorTermsArray: [1, 0, 0, 0],
-    steps: bodeSteps,
+    steps: bodeAndNyquistSteps,
     assertions: (
       magnitudeCurvePoints,
       phaseCurvePoints,
-      characteristicNumbers
+      characteristicNumbers,
+      nyquistCurvePoints,
+      stability
     ) => [
       [
         "Roll-off",
@@ -76,6 +113,21 @@ export const plotsTests = {
         "-270",
         toleranceSmall,
       ],
+      ["Real part at wMin", nyquistCurvePoints[0][1], 0, toleranceSmall],
+      ["Imag part at wMin", nyquistCurvePoints[0][2], 0, toleranceSmall],
+      [
+        "Real part at wMax",
+        nyquistCurvePoints[nyquistCurvePoints.length - 1][1],
+        0,
+        toleranceSmall,
+      ],
+      [
+        "Imag part at wMax",
+        nyquistCurvePoints[nyquistCurvePoints.length - 1][2],
+        0,
+        toleranceSmall,
+      ],
+      ["Stable", stability, "no"],
     ],
   },
 

@@ -9,6 +9,8 @@
 // Any '*.test.js' files like this are automatically discovered and executed by Jest.
 // This file is not imported anywhere so as not to be executed regularly
 
+// Import this first to initialize required components
+import * as computerAlgebraService from "../../math/computerAlgebra/computerAlgebraService.js";
 import { plotsTests } from "../definitions/plotsTests.js";
 
 const runPlotsJestTest = (t) => {
