@@ -70,6 +70,7 @@ const init = function () {
         <p>+</p>
       </div>
       <p>An adder is an element used to add multiple input signals, and provides one or multiple outputs. It can be placed in front of a tf, to provide it with multiple inputs.</p>
+      <p>To subtract an input instead, pass it through a negating transfer function before connecting it to the adder.</p>
       <p><u>Implementation assumption</u>: Each adder has multiple inputs and multiple outputs.</p>
       <h3>Connections</h3>
       <p style="font-size: 18px">――&#x2192</p>
