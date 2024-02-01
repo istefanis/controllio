@@ -41,6 +41,12 @@ export const mergeSerialTfs = async function (tfsAndBlocks) {
           "checkpoints"
         );
         await mergeSerialTfs.call(this, remainingTfsAndBlocks);
+      } else if (secondTf === tf) {
+        logMessages(
+          ["[CP-52] no merge serial tfs here - same element"],
+          "checkpoints"
+        );
+        await mergeSerialTfs.call(this, remainingTfsAndBlocks);
       } else {
         await animateMergeNElements(tf.getElementId(), secondTf.getElementId());
 
@@ -82,7 +88,7 @@ export const mergeSerialTfs = async function (tfsAndBlocks) {
         // console.log(a.getValue());
 
         logMessages(
-          ["[CP-52] tfs now: " + printElementValues(this._tfs)],
+          ["[CP-53] tfs now: " + printElementValues(this._tfs)],
           "checkpoints"
         );
 
@@ -91,7 +97,7 @@ export const mergeSerialTfs = async function (tfsAndBlocks) {
     } else {
       logMessages(
         [
-          "[CP-53] no merge serial tfs here - tf.hasSingleOutput()) - " +
+          "[CP-54] no merge serial tfs here - tf.hasSingleOutput()) - " +
             tf.getValue(),
         ],
         "checkpoints"
