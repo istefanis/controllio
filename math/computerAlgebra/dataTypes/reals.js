@@ -6,6 +6,7 @@
  * Math / ComputerAlgebra / DataTypes / Reals
  */
 
+import { isZeroWithinTolerance } from "../../../util/commons.js";
 import { set } from "../algebraicOperations.js";
 
 /**
@@ -21,7 +22,7 @@ export const loadRealsOperations = function () {
 
   //BUGFIX
   set(["negate", "real"], (x) => -x);
-  set(["isZero", "real"], (x) => x === 0);
+  set(["isZero", "real"], (x) => isZeroWithinTolerance(x));
 
   set(["gcd", "real", "real"], (a, b) => gcdReals(a, b));
 

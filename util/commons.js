@@ -33,6 +33,10 @@ export const roundDecimal = function (x, digits) {
   return +x.toFixed(digits);
 };
 
+export const isZeroWithinTolerance = function (x) {
+  return Math.abs(x) < 10 ** -10;
+};
+
 //
 // Polynomial
 //

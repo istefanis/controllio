@@ -171,6 +171,10 @@ export default class NyquistPlot {
     // const minImag = Math.min(...imags);
     // const maxImag = Math.max(...imags);
 
+    //set limits for coordinates of plotted points
+    const xMax = 10 ** 4;
+    const yMax = 10 ** 4;
+
     //create the plot
     const nyquistPlot = functionPlot({
       target: `#${this.#nyquistPlotDomElement.id}`,
@@ -196,7 +200,7 @@ export default class NyquistPlot {
         // },
         {
           points: this.#curvePoints
-            .filter((x) => x[0] > 0)
+            .filter((x) => x[0] > 0 && x[1] < xMax && x[2] < yMax)
             .map((x) => [x[1], x[2]]),
           // color: "red",
           fnType: "points",
@@ -204,7 +208,7 @@ export default class NyquistPlot {
         },
         {
           points: this.#curvePoints
-            .filter((x) => x[0] < 0)
+            .filter((x) => x[0] < 0 && x[1] > -xMax && x[2] > -yMax)
             .map((x) => [x[1], x[2]]),
           fnType: "points",
           graphType: "polyline",
