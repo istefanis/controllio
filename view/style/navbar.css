@@ -112,14 +112,6 @@
 Buttons & UI elements 
 */
 
-h1,
-h2 {
-  font-size: 12px;
-  font-weight: 500;
-  margin: 0;
-  padding: 0;
-}
-
 .navbar-button {
   box-sizing: border-box;
   min-width: 42px;

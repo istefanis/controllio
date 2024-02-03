@@ -40,7 +40,7 @@
   background-color: var(--color-grey-240);
 }
 
-.element-analysis-window-header p {
+.element-analysis-window-header h2 {
   margin: 0 0 0 10px;
   user-select: none;
   -webkit-user-select: none;

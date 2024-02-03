@@ -32,7 +32,7 @@ export const openPopupWindow = function (
   //fill popup window
   popupWindowContents.innerHTML = "";
   popupWindowContents.insertAdjacentHTML("beforeend", contentsMarkup);
-  popupWindowHeader.querySelector("p").innerText = headerText;
+  popupWindowHeader.querySelector("h2").innerText = headerText;
 
   //display popup window
   pageOverlay.classList.remove("hidden");

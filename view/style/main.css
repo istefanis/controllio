@@ -68,6 +68,15 @@ body,
   overflow: hidden;
 }
 
+h1,
+h2,
+h3 {
+  font-size: 12px;
+  font-weight: 500;
+  margin: 0;
+  padding: 0;
+}
+
 .grid {
   height: 100%;
   width: 100%;
@@ -138,6 +147,11 @@ body,
 .tab-content {
   display: none;
   margin: 15px;
+}
+
+.tab-content h3 {
+  font-size: 14px;
+  font-weight: bold;
 }
 
 /* Util */

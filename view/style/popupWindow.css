@@ -48,7 +48,7 @@
   background-color: var(--color-grey-240);
 }
 
-.popup-window-header p {
+.popup-window-header h2 {
   margin: 0 0 0 5px;
   user-select: none;
   -webkit-user-select: none;
@@ -82,6 +82,18 @@
   align-items: start;
   border-radius: 4px;
   z-index: 200;
+}
+
+.popup-window-contents-subsection {
+  width: 100%;
+}
+
+.popup-window-contents-subsection-header {
+  padding: 8px 5px;
+  background-color: var(--color-grey-248);
+  cursor: default;
+  user-select: none;
+  -webkit-user-select: none;
 }
 
 .popup-window-selectable-content {

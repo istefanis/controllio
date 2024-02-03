@@ -15,35 +15,52 @@ import {
 import { openPopupWindow } from "../../popupWindowView.js";
 import { closeElementAnalysisWindow } from "../../elementAnalysisWindowView.js";
 
-const readyMadeTfsArray = [];
+const readyMadeTfsSubsections = [];
 
 export const openNewReadyMadeTfPopupWindow = async function (
   invokedByTouchEvent
 ) {
   closeElementAnalysisWindow();
 
-  //create the popup window contents markup
-  const contentsMarkup = readyMadeTfsArray
-    .map((x, i) => {
-      //compute numerator & denominator markup
-      const numMarkup = polynomialTermsArrayToMarkup(x[1]);
-      const denMarkup = polynomialTermsArrayToMarkup(x[2]);
+  //count tfs across subsections
+  let tfsCounter = -1;
 
-      //compute horizontal line of proper length
-      const [, h2] = computePaddedTfStrings(
-        removeSupTagsFromMarkup(numMarkup),
-        removeSupTagsFromMarkup(denMarkup)
-      );
+  //create the popup window contents markup
+  const contentsMarkup = readyMadeTfsSubsections
+    .map((subsection) => {
+      const subsectionMarkup = subsection[1]
+        .map((x) => {
+          //compute numerator & denominator markup
+          const numMarkup = polynomialTermsArrayToMarkup(x[1]);
+          const denMarkup = polynomialTermsArrayToMarkup(x[2]);
+
+          //compute horizontal line of proper length
+          const [, h2] = computePaddedTfStrings(
+            removeSupTagsFromMarkup(numMarkup),
+            removeSupTagsFromMarkup(denMarkup)
+          );
+
+          tfsCounter++;
+
+          return `
+            <a class="popup-window-selectable-content popup-window-tf-content" data-content-id='${tfsCounter}'>
+              <div class="element tf popup-window-tf measured"> 
+                <p>${numMarkup}</p>
+                <p>${h2}</p>
+                <p>${denMarkup}</p>
+              </div>
+              <p class="popup-window-tf-description">${x[0]}</p>
+            </a>`;
+        })
+        .join("");
 
       return `
-     <a class="popup-window-selectable-content popup-window-tf-content" data-content-id='${i}'>
-       <div class="element tf popup-window-tf measured"> 
-         <p>${numMarkup}</p>
-         <p>${h2}</p>
-         <p>${denMarkup}</p>
-       </div>
-       <p class="popup-window-tf-description">${x[0]}</p>
-     </a>`;
+        <section class="popup-window-contents-subsection">
+          <h3 class="popup-window-contents-subsection-header">${subsection[0]}</h3>
+          <div>
+            ${subsectionMarkup}
+          </div>
+        </section>`;
     })
     .join("");
 
@@ -52,8 +69,8 @@ export const openNewReadyMadeTfPopupWindow = async function (
   if (result !== null) {
     const [selectedContentId, clientX, clientY, domElementBoundRect] = result;
     createNewReadyMadeTf(
-      readyMadeTfsArray[selectedContentId][1],
-      readyMadeTfsArray[selectedContentId][2],
+      readyMadeTfsSubsections.flatMap((s) => s[1])[selectedContentId][1],
+      readyMadeTfsSubsections.flatMap((s) => s[1])[selectedContentId][2],
       clientX,
       clientY,
       domElementBoundRect.width,
@@ -66,13 +83,23 @@ export const openNewReadyMadeTfPopupWindow = async function (
 // Init
 //
 const init = function () {
-  readyMadeTfsArray.push(["Integrator / step", [1], [1, 0]]);
-  readyMadeTfsArray.push(["Exponential decay", [1], [1, 0.2]]);
-  readyMadeTfsArray.push(["Sine", [1], [1, 0, 1]]);
-  readyMadeTfsArray.push(["Phase delay", [5, 1], [8, 1]]);
-  readyMadeTfsArray.push(["PI controller", ["kp", "ki"], [1, 0]]);
-  readyMadeTfsArray.push(["PD controller", ["kd", "kp"], [1]]);
-  readyMadeTfsArray.push(["PID controller", ["kd", "kp", "ki"], [1, 0]]);
+  readyMadeTfsSubsections.push([
+    "Simple components",
+    [
+      ["Integrator / step", [1], [1, 0]],
+      ["Exponential decay", [1], [1, 0.2]],
+      ["Sine", [1], [1, 0, 1]],
+      ["Phase delay", [5, 1], [8, 1]],
+    ],
+  ]);
+  readyMadeTfsSubsections.push([
+    "Controllers",
+    [
+      ["PI controller", ["kp", "ki"], [1, 0]],
+      ["PD controller", ["kd", "kp"], [1]],
+      ["PID controller", ["kd", "kp", "ki"], [1, 0]],
+    ],
+  ]);
 };
 
 init();
