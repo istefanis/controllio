@@ -180,20 +180,21 @@ export default class TimeDomainPlot {
       },
       grid: true,
       data: [
-        {
-          graphType: "polyline",
-          fn: (scope) => {
-            return linearInterpolationOfCurvePoints(
-              this.#timeResponseCurvePoints
-            )(scope.x);
-          },
-        },
-        // {
-        //   points: this.#timeResponseCurvePoints,
-        //   fnType: "points",
-        //   color: "red",
-        //   graphType: "scatter",
-        // },
+        this.#timeResponseCurvePoints.length > 0
+          ? {
+              graphType: "polyline",
+              fn: (scope) => {
+                return linearInterpolationOfCurvePoints(
+                  this.#timeResponseCurvePoints
+                )(scope.x);
+              },
+            }
+          : {
+              points: this.#timeResponseCurvePoints,
+              fnType: "points",
+              color: "red",
+              graphType: "scatter",
+            },
       ],
     });
 

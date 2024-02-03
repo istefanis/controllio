@@ -12,14 +12,14 @@ import {
   halfIntervalMethod,
 } from "../../math/numericalAnalysis/numericalAnalysisService.js";
 
-let characteristicNumbersGridDomElement;
-
 //values required for characteristic numbers computations
 let magnitudeAtWMin;
 let magnitudeAtWMax;
 let bandwidthThreshold;
 let bandwidthFunction;
 let wCutoffRoots;
+let rollOffLow;
+let rollOffHigh;
 
 //filter types
 let isAllPassFilter;
@@ -35,9 +35,11 @@ let characteristicNumbers = {
   bandwidthText: "",
   thresholdText: "",
   rollOffText: "",
+  bandwidthThreshold,
 };
 
 const halfPowerThreshold = Math.sqrt(2) / 2;
+const unitMagnitude = 1;
 
 export const computeCharacteristicNumbers = function (
   magnitude,
@@ -50,27 +52,37 @@ export const computeCharacteristicNumbers = function (
 ) {
   resetCharacteristicNumbers();
 
-  computeValuesRequired(
-    magnitude,
-    magnitudeCurvePoints,
-    phaseCurvePoints,
-    wMin,
-    wMax
+  magnitudeAtWMin = magnitude(wMin);
+  magnitudeAtWMax = magnitude(wMax);
+
+  rollOffLow = roundDecimal(
+    Math.log(magnitudeAtWMin / magnitude(0.01)) / Math.log(wMin / 0.01), //log(AR2/AR1)/log(w2/w1))
+    3
+  );
+  rollOffHigh = roundDecimal(
+    Math.log(magnitude(100) / magnitudeAtWMax) / Math.log(100 / wMax),
+    3
   );
 
   generateFilterTypeText(minMagnitude, maxMagnitude);
-  generateBandwidthAndThresholdText(wMin);
+
+  computeBandwidthFunctionAndWCutoffRoots(magnitude, magnitudeCurvePoints);
+
+  generateBandwidthAndThresholdText(wMin, maxMagnitude);
+
   generateRollOffText(magnitude, wMin, wMax);
 
-  // console.log(characteristicNumbers.filterTypeText);
-  // console.log("Bandwidth      = " + characteristicNumbers.bandwidthText);
-  // console.log("Threshold      = " + characteristicNumbers.thresholdText);
-  // console.log("Roll-off       = " + characteristicNumbers.rollOffText);
-
+  // console.log(characteristicNumbers);
   return characteristicNumbers;
 };
 
 const resetCharacteristicNumbers = function () {
+  bandwidthThreshold = undefined;
+  bandwidthFunction = undefined;
+  wCutoffRoots = undefined;
+  rollOffLow = undefined;
+  rollOffHigh = undefined;
+
   isAllPassFilter = false;
   isNoPassFilter = false;
   isBandPassFilter = false;
@@ -82,27 +94,96 @@ const resetCharacteristicNumbers = function () {
   characteristicNumbers.bandwidthText = "";
   characteristicNumbers.thresholdText = "";
   characteristicNumbers.rollOffText = "";
+  characteristicNumbers.bandwidthThreshold = undefined;
 };
 
-const computeValuesRequired = function (
+const generateFilterTypeText = function (minMagnitude, maxMagnitude) {
+  // console.log(rollOffLow, rollOffHigh, magnitudeAtWMin, magnitudeAtWMax);
+
+  if (
+    roundDecimal(minMagnitude, 3) > unitMagnitude &&
+    Math.abs(rollOffLow) < 0.5 &&
+    Math.abs(rollOffHigh) < 0.5
+  ) {
+    characteristicNumbers.filterTypeText = "All-pass filter";
+    isAllPassFilter = true;
+    bandwidthThreshold = halfPowerThreshold * minMagnitude;
+    characteristicNumbers.bandwidthThreshold = bandwidthThreshold;
+    return;
+  }
+  if (roundDecimal(maxMagnitude, 3) < unitMagnitude) {
+    characteristicNumbers.filterTypeText = "No-pass filter";
+    isNoPassFilter = true;
+    bandwidthThreshold = 1;
+    return;
+  }
+  if (
+    roundDecimal(magnitudeAtWMin, 3) < unitMagnitude &&
+    roundDecimal(magnitudeAtWMax, 3) < unitMagnitude &&
+    roundDecimal(maxMagnitude, 3) >= unitMagnitude
+  ) {
+    characteristicNumbers.filterTypeText = "Band-pass filter";
+    isBandPassFilter = true;
+    bandwidthThreshold = halfPowerThreshold * maxMagnitude;
+    characteristicNumbers.bandwidthThreshold = bandwidthThreshold;
+    return;
+  }
+  if (
+    roundDecimal(magnitudeAtWMin, 3) >= unitMagnitude &&
+    roundDecimal(magnitudeAtWMax, 3) >= unitMagnitude &&
+    roundDecimal(minMagnitude, 3) < unitMagnitude &&
+    Math.abs(rollOffLow) > 0.5 &&
+    Math.abs(rollOffHigh) > 0.5
+  ) {
+    characteristicNumbers.filterTypeText = "Band-stop filter";
+    isBandStopFilter = true;
+    bandwidthThreshold = unitMagnitude;
+    characteristicNumbers.bandwidthThreshold = bandwidthThreshold;
+    return;
+  }
+  if (
+    roundDecimal(magnitudeAtWMin, 3) >= unitMagnitude &&
+    Math.abs(rollOffLow) < 0.5 &&
+    roundDecimal(magnitudeAtWMin, 3) > roundDecimal(magnitudeAtWMax, 3)
+  ) {
+    characteristicNumbers.filterTypeText = "Low-pass filter";
+    isLowPassFilter = true;
+    bandwidthThreshold = halfPowerThreshold * magnitudeAtWMin;
+    characteristicNumbers.bandwidthThreshold = bandwidthThreshold;
+    return;
+  }
+  if (
+    roundDecimal(magnitudeAtWMax, 3) >= unitMagnitude &&
+    Math.abs(rollOffHigh) < 0.5 &&
+    roundDecimal(magnitudeAtWMin, 3) < roundDecimal(magnitudeAtWMax, 3)
+  ) {
+    characteristicNumbers.filterTypeText = "High-pass filter";
+    isHighPassFilter = true;
+    bandwidthThreshold = halfPowerThreshold * magnitudeAtWMax;
+    characteristicNumbers.bandwidthThreshold = bandwidthThreshold;
+    return;
+  }
+  bandwidthThreshold = 1;
+};
+
+const computeBandwidthFunctionAndWCutoffRoots = function (
   magnitude,
-  magnitudeCurvePoints,
-  phaseCurvePoints,
-  wMin,
-  wMax
+  magnitudeCurvePoints
 ) {
-  magnitudeAtWMin = magnitude(wMin);
-  magnitudeAtWMax = magnitude(wMax);
+  // console.log(characteristicNumbers.filterTypeText);
 
-  bandwidthThreshold = halfPowerThreshold;
-  bandwidthFunction = (w) => magnitude(w) - bandwidthThreshold;
+  if (bandwidthThreshold) {
+    bandwidthFunction = (w) => magnitude(w) - bandwidthThreshold;
 
-  const wCutoffRootIntervals = findCurveRootIntervals(
-    magnitudeCurvePoints.map((x) => [x[0], x[1] - bandwidthThreshold])
-  );
-  wCutoffRoots = wCutoffRootIntervals.map((interval) =>
-    halfIntervalMethod(bandwidthFunction, ...interval)
-  );
+    const wCutoffRootIntervals = findCurveRootIntervals(
+      magnitudeCurvePoints.map((x) => [x[0], x[1] - bandwidthThreshold])
+    );
+    wCutoffRoots = wCutoffRootIntervals.map((interval) =>
+      halfIntervalMethod(bandwidthFunction, ...interval)
+    );
+
+    // console.log(wCutoffRoots);
+  }
 
   // TODO - add more characteristic numbers
   // console.log(initialW);
@@ -117,69 +198,21 @@ const computeValuesRequired = function (
   // const phaseMargin = wPhaseMargin ? 180 + phaseCurve(wPhaseMargin) : false;
 };
 
-const generateFilterTypeText = function (minMagnitude, maxMagnitude) {
-  if (minMagnitude > bandwidthThreshold) {
-    characteristicNumbers.filterTypeText = "All-pass filter";
-    isAllPassFilter = true;
-    return;
+const generateBandwidthAndThresholdText = function (wMin, maxMagnitude) {
+  if (bandwidthThreshold) {
+    characteristicNumbers.thresholdText = `${roundDecimal(
+      bandwidthThreshold,
+      3
+    )}${
+      isAllPassFilter || isBandPassFilter || isLowPassFilter || isHighPassFilter
+        ? " &#8660 -3 [dB]"
+        : ""
+    }`;
   }
-  if (maxMagnitude < bandwidthThreshold) {
-    characteristicNumbers.filterTypeText = "No-pass filter";
-    isNoPassFilter = true;
-    return;
-  }
-  if (
-    magnitudeAtWMin < bandwidthThreshold &&
-    magnitudeAtWMax < bandwidthThreshold &&
-    maxMagnitude > bandwidthThreshold
-  ) {
-    characteristicNumbers.filterTypeText = "Band-pass filter";
-    isBandPassFilter = true;
-    return;
-  }
-  if (
-    magnitudeAtWMin > bandwidthThreshold &&
-    magnitudeAtWMax > bandwidthThreshold &&
-    minMagnitude < bandwidthThreshold
-  ) {
-    characteristicNumbers.filterTypeText = "Band-stop filter";
-    isBandStopFilter = true;
-    return;
-  }
-  if (
-    magnitudeAtWMin > magnitudeAtWMax &&
-    magnitudeAtWMin > bandwidthThreshold &&
-    magnitudeAtWMax < 3 * bandwidthThreshold &&
-    magnitudeAtWMin / magnitudeAtWMax > 1.5
-  ) {
-    characteristicNumbers.filterTypeText = "Low-pass filter";
-    isLowPassFilter = true;
-    return;
-  }
-  if (
-    magnitudeAtWMax > magnitudeAtWMin &&
-    magnitudeAtWMax > bandwidthThreshold &&
-    magnitudeAtWMin < 3 * bandwidthThreshold &&
-    magnitudeAtWMax / magnitudeAtWMin > 1.5
-  ) {
-    characteristicNumbers.filterTypeText = "High-pass filter";
-    isHighPassFilter = true;
-    return;
-  }
-  if (characteristicNumbers.filterTypeText !== "") {
-    console.log(characteristicNumbers.filterTypeText);
-  }
-};
 
-const generateBandwidthAndThresholdText = function (wMin) {
-  characteristicNumbers.thresholdText = `${roundDecimal(
-    bandwidthThreshold,
-    3
-  )}${bandwidthThreshold === halfPowerThreshold ? " = -3 [dB]" : ""}`;
-
-  if (wCutoffRoots.length === 0) {
+  if (!wCutoffRoots || wCutoffRoots.length === 0) {
     characteristicNumbers.bandwidthText =
-      bandwidthFunction(1) > 0 ? "(0, ∞) [rad/s]" : "N/A";
+      bandwidthFunction && bandwidthFunction(1) > 0 ? "(0, ∞) [rad/s]" : "N/A";
     return;
   }
 
@@ -215,32 +248,15 @@ const generateBandwidthAndThresholdText = function (wMin) {
 };
 
 const generateRollOffText = function (magnitude, wMin, wMax) {
-  if (
-    isAllPassFilter ||
-    isNoPassFilter ||
-    isBandPassFilter ||
-    isBandStopFilter ||
-    isLowPassFilter ||
-    isHighPassFilter
-  ) {
-    const rollOffLow = roundDecimal(
-      Math.log(magnitudeAtWMin / magnitude(0.01)) / Math.log(wMin / 0.01), //log(AR2/AR1)/log(w2/w1))
-      3
-    );
-    const rollOffHigh = roundDecimal(
-      Math.log(magnitude(100) / magnitudeAtWMax) / Math.log(100 / wMax),
-      3
-    );
-    characteristicNumbers.rollOffText =
-      (rollOffLow === 0
-        ? "0 [dB/dec] (low)"
-        : `${roundDecimal(20 * rollOffLow, 3)} [dB/dec] (low)`) +
-      ", " +
-      (rollOffHigh === 0
-        ? "0 [dB/dec] (high)"
-        : `${roundDecimal(20 * rollOffHigh, 3)} [dB/dec] (high)`);
-    return;
-  }
+  characteristicNumbers.rollOffText =
+    (rollOffLow === 0
+      ? "0 [dB/dec] (low)"
+      : `${roundDecimal(20 * rollOffLow, 3)} [dB/dec] (low)`) +
+    ", " +
+    (rollOffHigh === 0
+      ? "0 [dB/dec] (high)"
+      : `${roundDecimal(20 * rollOffHigh, 3)} [dB/dec] (high)`);
+  return;
 };
 
 export const insertCharacteristicNumbersMarkup = function (

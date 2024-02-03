@@ -52,6 +52,8 @@ export default class BodePlot {
   #wMin = 5 * 10 ** -4;
   #wMax = 5 * 10 ** 3;
 
+  #bandwidthThreshold;
+
   #bodeObserver;
 
   constructor(
@@ -88,13 +90,20 @@ export default class BodePlot {
         this.#minMagnitude,
         this.#maxMagnitude
       );
+
+      if (characteristicNumbers.bandwidthThreshold) {
+        this.#bandwidthThreshold = characteristicNumbers.bandwidthThreshold;
+      }
     } else {
       characteristicNumbers = {
         filterTypeText: "N/A",
         bandwidthText: "N/A",
         thresholdText: "N/A",
         rollOffText: "N/A",
+        bandwidthThreshold: "",
       };
+
+      this.#bandwidthThreshold = "";
     }
 
     if (!plotContainerDomElement) {
@@ -235,6 +244,17 @@ export default class BodePlot {
       "checkpoints"
     );
 
+    //calculate magnitude min & max values
+    const magnitudeCurvePoints = this.#magnitudeCurvePoints.map((x) => x[1]);
+    this.#minMagnitude =
+      magnitudeCurvePoints.length > 0
+        ? Math.min(...magnitudeCurvePoints)
+        : undefined;
+    this.#maxMagnitude =
+      magnitudeCurvePoints.length > 0
+        ? Math.max(...magnitudeCurvePoints)
+        : undefined;
+
     //adjust phase based on expected phase value at wMax according to the transfer function polynomials
     const zerosAtPositiveHalfplane = this.#zeros.filter((x) => x[0] > 0).length;
     const zerosAtNegativeHalfplaneOrYAxis = this.#zeros.filter(
@@ -286,14 +306,12 @@ export default class BodePlot {
     let plotWidth = plotBoundRect.width;
     let plotHeight = plotBoundRect.height;
 
-    //calculate min & max values
-    const magnitudeCurvePoints = this.#magnitudeCurvePoints.map((x) => x[1]);
-    this.#minMagnitude = Math.min(...magnitudeCurvePoints);
-    this.#maxMagnitude = Math.max(...magnitudeCurvePoints);
-
+    //calculate phase min & max values
     const phaseCurvePoints = this.#phaseCurvePoints.map((x) => x[1]);
-    const minPhase = Math.min(...phaseCurvePoints);
-    const maxPhase = Math.max(...phaseCurvePoints);
+    const minPhase =
+      phaseCurvePoints.length > 0 ? Math.min(...phaseCurvePoints) : undefined;
+    const maxPhase =
+      phaseCurvePoints.length > 0 ? Math.max(...phaseCurvePoints) : undefined;
 
     //create the two plots
     const magnitudePlot = functionPlot({
@@ -309,8 +327,8 @@ export default class BodePlot {
         label: "Magnitude (abs)",
         type: "log",
         domain: [
-          Math.min(this.#minMagnitude, 0.1),
-          Math.max(this.#maxMagnitude, 1),
+          Math.min(this.#minMagnitude ? this.#minMagnitude : 0.1, 0.1),
+          Math.max(this.#maxMagnitude ? this.#maxMagnitude : 10, 10),
         ],
       },
       tip: {
@@ -319,22 +337,23 @@ export default class BodePlot {
       },
       grid: true,
       data: [
+        this.#magnitudeCurvePoints.length > 0
+          ? {
+              graphType: "polyline",
+              fn: (scope) => {
+                return linearInterpolationOfCurvePoints(
+                  this.#magnitudeCurvePoints
+                )(scope.x);
+              },
+            }
+          : {
+              points: this.#magnitudeCurvePoints,
+              color: "red",
+              fnType: "points",
+              graphType: "scatter",
+            },
         {
-          graphType: "polyline",
-          fn: (scope) => {
-            return linearInterpolationOfCurvePoints(this.#magnitudeCurvePoints)(
-              scope.x
-            );
-          },
-        },
-        // {
-        //   points: this.#magnitudeCurvePoints,
-        //   color: "red",
-        //   fnType: "points",
-        //   graphType: "scatter",
-        // },
-        {
-          fn: "0.707",
+          fn: this.#bandwidthThreshold ? String(this.#bandwidthThreshold) : "1",
           color: "red",
           nSamples: 30,
           graphType: "scatter",
@@ -355,7 +374,7 @@ export default class BodePlot {
       yAxis: {
         label: "Phase [deg]",
         // type: "log",
-        domain: [minPhase, maxPhase],
+        domain: [minPhase ? minPhase : -90, maxPhase ? maxPhase : 90],
       },
       tip: {
         xLine: true,
@@ -363,20 +382,21 @@ export default class BodePlot {
       },
       grid: true,
       data: [
-        {
-          graphType: "polyline",
-          fn: (scope) => {
-            return linearInterpolationOfCurvePoints(this.#phaseCurvePoints)(
-              scope.x
-            );
-          },
-        },
-        // {
-        //   points: this.#phaseCurvePoints,
-        //   color: "red",
-        //   fnType: "points",
-        //   graphType: "scatter",
-        // },
+        this.#phaseCurvePoints.length > 0
+          ? {
+              graphType: "polyline",
+              fn: (scope) => {
+                return linearInterpolationOfCurvePoints(this.#phaseCurvePoints)(
+                  scope.x
+                );
+              },
+            }
+          : {
+              points: this.#phaseCurvePoints,
+              color: "red",
+              fnType: "points",
+              graphType: "scatter",
+            },
       ],
     });
 
