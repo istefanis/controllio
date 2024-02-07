@@ -78,18 +78,20 @@ export const openPopupWindow = function (
 
     const selectionElementsCaseCallback = function (e) {
       const content = e.target.closest(".popup-window-selectable-content");
-      const elementBoundRect = content
-        .querySelector(".measured")
-        ?.getBoundingClientRect();
+      if (content) {
+        const elementBoundRect = content
+          .querySelector(".measured")
+          ?.getBoundingClientRect();
 
-      removePopupWindowEventListeners();
-      closePopupWindow();
-      resolve([
-        +content.dataset.contentId,
-        e.clientX,
-        e.clientY,
-        elementBoundRect,
-      ]);
+        removePopupWindowEventListeners();
+        closePopupWindow();
+        resolve([
+          +content.dataset.contentId,
+          e.clientX,
+          e.clientY,
+          elementBoundRect,
+        ]);
+      }
     };
 
     const tabButtons = Array.from(
@@ -111,11 +113,16 @@ export const openPopupWindow = function (
       }
     };
 
-    const regularButtonCaseCallback = function () {
-      buttonCallbackFunction();
-      removePopupWindowEventListeners();
-      closePopupWindow();
-      resolve(null);
+    const regularButtonCaseCallback = function (e) {
+      const result = buttonCallbackFunction(e);
+      if (result === -1) {
+        //don't close popup window
+        return;
+      } else {
+        removePopupWindowEventListeners();
+        closePopupWindow();
+        resolve(result);
+      }
     };
 
     const inputButtonCaseCallback = async function (e) {

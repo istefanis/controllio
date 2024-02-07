@@ -68,7 +68,7 @@ export const computeCharacteristicNumbers = function (
 
   computeBandwidthFunctionAndWCutoffRoots(magnitude, magnitudeCurvePoints);
 
-  generateBandwidthAndThresholdText(wMin, maxMagnitude);
+  generateBandwidthAndThresholdText(wMin);
 
   generateRollOffText(magnitude, wMin, wMax);
 
@@ -101,7 +101,7 @@ const generateFilterTypeText = function (minMagnitude, maxMagnitude) {
   // console.log(rollOffLow, rollOffHigh, magnitudeAtWMin, magnitudeAtWMax);
 
   if (
-    roundDecimal(minMagnitude, 3) > unitMagnitude &&
+    roundDecimal(minMagnitude, 3) >= unitMagnitude &&
     Math.abs(rollOffLow) < 0.5 &&
     Math.abs(rollOffHigh) < 0.5
   ) {
@@ -198,7 +198,7 @@ const computeBandwidthFunctionAndWCutoffRoots = function (
   // const phaseMargin = wPhaseMargin ? 180 + phaseCurve(wPhaseMargin) : false;
 };
 
-const generateBandwidthAndThresholdText = function (wMin, maxMagnitude) {
+const generateBandwidthAndThresholdText = function (wMin) {
   if (bandwidthThreshold) {
     characteristicNumbers.thresholdText = `${roundDecimal(
       bandwidthThreshold,

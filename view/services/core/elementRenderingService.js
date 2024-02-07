@@ -18,6 +18,7 @@ import {
   getZoomFactor,
 } from "../../../util/uiService.js";
 import { getCanvas, resetCanvas } from "./canvasService.js";
+import { renderAllLines } from "./lineRenderingService.js";
 import { updateMockedGetBoundingClientRect } from "./mockingService.js";
 
 export let domElements = [];
@@ -105,6 +106,8 @@ const generateNewElementPosition = function (
   };
 
   assignHelper();
+
+  renderAllLines();
 };
 
 export const generateNewTfPosition = (domTfElement) =>
