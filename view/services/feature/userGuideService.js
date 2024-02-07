@@ -86,6 +86,10 @@ const init = function () {
         <li>Sine</li>
         <li>Phase delay</li>
       </ul>
+      <h4>Filters</h4>
+      <ul>
+        <li>Butterworth filter</li>
+      </ul>
       <h4>Controllers</h4>
       <ul>
         <li>PI controller 

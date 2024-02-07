@@ -43,6 +43,7 @@ The motivation behind Controllio is to create an open-source tool for studying C
 ### Ready-made components
 
 - Utilities: integrator / step, exponential decay, sine, phase delay
+- Filters: Butterworth
 - Controllers: PI, PD, PID
 
 ## User Guide

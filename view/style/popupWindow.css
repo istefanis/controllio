@@ -173,6 +173,7 @@
 
 .popup-window-text-content input {
   text-align: end;
+  margin: 0;
   margin-left: 10px;
   max-width: 120px;
 }
@@ -191,4 +192,47 @@ tr {
 
 th {
   min-width: 50px;
+}
+
+/* Custom popup windows: filter design */
+
+.popup-window-text-content .input-radio-buttons {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  gap: 15px;
+}
+
+.popup-window-text-content .input-radio-buttons input:hover {
+  cursor: pointer;
+}
+
+.popup-window-text-content .input-radio-buttons label {
+  margin: 10px;
+  display: flex;
+  flex-direction: row;
+  border: none;
+}
+
+.popup-window-text-content .input-radio-buttons label:hover {
+  background-color: #fff;
+  cursor: pointer;
+}
+
+.popup-window-text-content .flex-row-left p:first-of-type {
+  width: 100px;
+  min-width: 100px;
+  max-width: 100px;
+  text-align: right;
+}
+
+.popup-window-text-content .flex-row-left input {
+  width: 60px;
+  min-width: 60px;
+  max-width: 60px;
+}
+
+.popup-window-text-content .flex-row-left input:out-of-range,
+.popup-window-text-content .flex-row-left input:invalid {
+  outline: 1px solid red;
 }

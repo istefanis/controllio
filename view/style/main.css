@@ -171,6 +171,13 @@ h3 {
   align-items: center;
 }
 
+.flex-row-left {
+  display: flex;
+  flex-direction: row;
+  justify-content: left;
+  align-items: center;
+}
+
 .flex-column-center {
   display: flex;
   flex-direction: column;
