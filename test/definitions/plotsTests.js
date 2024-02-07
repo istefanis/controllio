@@ -6,16 +6,14 @@
  * Test / Definitions / PlotsTests
  */
 
+import { findComplexRootsOfPolynomial } from "../../math/numericalAnalysis/numericalAnalysisService.js";
 import {
-  tolerance,
-  findComplexRootsOfPolynomial,
-} from "../../math/numericalAnalysis/numericalAnalysisService.js";
+  toleranceTestsSmall,
+  toleranceTestsMedium,
+  toleranceTestsLarge,
+} from "../../util/commons.js";
 import BodePlot from "../../view/plots/bodePlot.js";
 import NyquistPlot from "../../view/plots/nyquistPlot.js";
-
-const toleranceSmall = tolerance; //0.0001
-const toleranceMedium = 0.2;
-const toleranceLarge = 3;
 
 const bodeSteps = (numeratorTermsArray, denominatorTermsArray) => {
   const { magnitudeCurvePoints, phaseCurvePoints, characteristicNumbers } =
@@ -65,25 +63,25 @@ export const plotsTests = {
         characteristicNumbers?.rollOffText,
         "60 [dB/dec] (low), 60 [dB/dec] (high)",
       ],
-      ["Phase at wMin", phaseCurvePoints[0][1], "270", toleranceSmall],
+      ["Phase at wMin", phaseCurvePoints[0][1], "270", toleranceTestsSmall],
       [
         "Phase at wMax",
         phaseCurvePoints[phaseCurvePoints.length - 1][1],
         "270",
-        toleranceSmall,
+        toleranceTestsSmall,
       ],
-      ["Real part at wMin", nyquistCurvePoints[0][1], 0, toleranceSmall],
+      ["Real part at wMin", nyquistCurvePoints[0][1], 0, toleranceTestsSmall],
       [
         "Imag part at w=0",
         nyquistCurvePoints[Math.ceil(nyquistCurvePoints.length / 2)][2],
         0,
-        toleranceSmall,
+        toleranceTestsSmall,
       ],
       [
         "Real part at wMax",
         nyquistCurvePoints[nyquistCurvePoints.length - 1][1],
         0,
-        toleranceSmall,
+        toleranceTestsSmall,
       ],
       ["Stable", stability, "no"],
     ],
@@ -106,26 +104,26 @@ export const plotsTests = {
         characteristicNumbers?.rollOffText,
         "-60 [dB/dec] (low), -60 [dB/dec] (high)",
       ],
-      ["Phase at wMin", phaseCurvePoints[0][1], "-270", toleranceSmall],
+      ["Phase at wMin", phaseCurvePoints[0][1], "-270", toleranceTestsSmall],
       [
         "Phase at wMax",
         phaseCurvePoints[phaseCurvePoints.length - 1][1],
         "-270",
-        toleranceSmall,
+        toleranceTestsSmall,
       ],
-      ["Real part at wMin", nyquistCurvePoints[0][1], 0, toleranceSmall],
-      ["Imag part at wMin", nyquistCurvePoints[0][2], 0, toleranceSmall],
+      ["Real part at wMin", nyquistCurvePoints[0][1], 0, toleranceTestsSmall],
+      ["Imag part at wMin", nyquistCurvePoints[0][2], 0, toleranceTestsSmall],
       [
         "Real part at wMax",
         nyquistCurvePoints[nyquistCurvePoints.length - 1][1],
         0,
-        toleranceSmall,
+        toleranceTestsSmall,
       ],
       [
         "Imag part at wMax",
         nyquistCurvePoints[nyquistCurvePoints.length - 1][2],
         0,
-        toleranceSmall,
+        toleranceTestsSmall,
       ],
       ["Stable", stability, "no"],
     ],
@@ -146,12 +144,12 @@ export const plotsTests = {
         characteristicNumbers?.rollOffText,
         "0 [dB/dec] (low), 40 [dB/dec] (high)",
       ],
-      ["Phase at wMin", phaseCurvePoints[0][1], "0", toleranceSmall],
+      ["Phase at wMin", phaseCurvePoints[0][1], "0", toleranceTestsSmall],
       [
         "Phase at wMax",
         phaseCurvePoints[phaseCurvePoints.length - 1][1],
         "180",
-        toleranceSmall,
+        toleranceTestsSmall,
       ],
     ],
   },
@@ -171,12 +169,12 @@ export const plotsTests = {
         characteristicNumbers?.rollOffText,
         "0 [dB/dec] (low), -40 [dB/dec] (high)",
       ],
-      ["Phase at wMin", phaseCurvePoints[0][1], "0", toleranceSmall],
+      ["Phase at wMin", phaseCurvePoints[0][1], "0", toleranceTestsSmall],
       [
         "Phase at wMax",
         phaseCurvePoints[phaseCurvePoints.length - 1][1],
         "-180",
-        toleranceSmall,
+        toleranceTestsSmall,
       ],
     ],
   },
@@ -196,12 +194,12 @@ export const plotsTests = {
         characteristicNumbers?.rollOffText,
         "0 [dB/dec] (low), -40 [dB/dec] (high)",
       ],
-      ["Phase at wMin", phaseCurvePoints[0][1], "0", toleranceMedium],
+      ["Phase at wMin", phaseCurvePoints[0][1], "0", toleranceTestsMedium],
       [
         "Phase at wMax",
         phaseCurvePoints[phaseCurvePoints.length - 1][1],
         "-180",
-        toleranceMedium,
+        toleranceTestsMedium,
       ],
     ],
   },
@@ -221,12 +219,12 @@ export const plotsTests = {
         characteristicNumbers?.rollOffText,
         "-20 [dB/dec] (low), -20 [dB/dec] (high)",
       ],
-      ["Phase at wMin", phaseCurvePoints[0][1], "-90", toleranceSmall],
+      ["Phase at wMin", phaseCurvePoints[0][1], "-90", toleranceTestsSmall],
       [
         "Phase at wMax",
         phaseCurvePoints[phaseCurvePoints.length - 1][1],
         "-90",
-        toleranceSmall,
+        toleranceTestsSmall,
       ],
     ],
   },
@@ -241,12 +239,12 @@ export const plotsTests = {
       phaseCurvePoints,
       characteristicNumbers
     ) => [
-      ["Phase at wMin", phaseCurvePoints[0][1], "-90", toleranceMedium],
+      ["Phase at wMin", phaseCurvePoints[0][1], "-90", toleranceTestsMedium],
       [
         "Phase at wMax",
         phaseCurvePoints[phaseCurvePoints.length - 1][1],
         "90",
-        toleranceLarge,
+        toleranceTestsLarge,
       ],
     ],
   },
@@ -261,12 +259,12 @@ export const plotsTests = {
       phaseCurvePoints,
       characteristicNumbers
     ) => [
-      ["Phase at wMin", phaseCurvePoints[0][1], "0", toleranceMedium],
+      ["Phase at wMin", phaseCurvePoints[0][1], "0", toleranceTestsMedium],
       [
         "Phase at wMax",
         phaseCurvePoints[phaseCurvePoints.length - 1][1],
         "90",
-        toleranceMedium,
+        toleranceTestsMedium,
       ],
     ],
   },
@@ -281,12 +279,12 @@ export const plotsTests = {
       phaseCurvePoints,
       characteristicNumbers
     ) => [
-      ["Phase at wMin", phaseCurvePoints[0][1], "-90", toleranceMedium],
+      ["Phase at wMin", phaseCurvePoints[0][1], "-90", toleranceTestsMedium],
       [
         "Phase at wMax",
         phaseCurvePoints[phaseCurvePoints.length - 1][1],
         "0",
-        toleranceMedium,
+        toleranceTestsMedium,
       ],
     ],
   },
@@ -301,12 +299,12 @@ export const plotsTests = {
       phaseCurvePoints,
       characteristicNumbers
     ) => [
-      ["Phase at wMin", phaseCurvePoints[0][1], "0", toleranceMedium],
+      ["Phase at wMin", phaseCurvePoints[0][1], "0", toleranceTestsMedium],
       [
         "Phase at wMax",
         phaseCurvePoints[phaseCurvePoints.length - 1][1],
         "0",
-        toleranceMedium,
+        toleranceTestsMedium,
       ],
     ],
   },
@@ -326,12 +324,12 @@ export const plotsTests = {
         characteristicNumbers?.rollOffText,
         "0 [dB/dec] (low), 20 [dB/dec] (high)",
       ],
-      ["Phase at wMin", phaseCurvePoints[0][1], "0", toleranceMedium],
+      ["Phase at wMin", phaseCurvePoints[0][1], "0", toleranceTestsMedium],
       [
         "Phase at wMax",
         phaseCurvePoints[phaseCurvePoints.length - 1][1],
         "90",
-        toleranceMedium,
+        toleranceTestsMedium,
       ],
     ],
   },
@@ -351,12 +349,12 @@ export const plotsTests = {
         characteristicNumbers?.rollOffText,
         "0 [dB/dec] (low), 0 [dB/dec] (high)",
       ],
-      ["Phase at wMin", phaseCurvePoints[0][1], "0", toleranceMedium],
+      ["Phase at wMin", phaseCurvePoints[0][1], "0", toleranceTestsMedium],
       [
         "Phase at wMax",
         phaseCurvePoints[phaseCurvePoints.length - 1][1],
         "-180",
-        toleranceMedium,
+        toleranceTestsMedium,
       ],
     ],
   },
@@ -376,12 +374,12 @@ export const plotsTests = {
         characteristicNumbers?.rollOffText,
         "0 [dB/dec] (low), 0 [dB/dec] (high)",
       ],
-      ["Phase at wMin", phaseCurvePoints[0][1], "-180", toleranceMedium],
+      ["Phase at wMin", phaseCurvePoints[0][1], "-180", toleranceTestsMedium],
       [
         "Phase at wMax",
         phaseCurvePoints[phaseCurvePoints.length - 1][1],
         "0",
-        toleranceMedium,
+        toleranceTestsMedium,
       ],
     ],
   },
@@ -396,12 +394,12 @@ export const plotsTests = {
       phaseCurvePoints,
       characteristicNumbers
     ) => [
-      ["Phase at wMin", phaseCurvePoints[0][1], "0", toleranceMedium],
+      ["Phase at wMin", phaseCurvePoints[0][1], "0", toleranceTestsMedium],
       [
         "Phase at wMax",
         phaseCurvePoints[phaseCurvePoints.length - 1][1],
         "-360",
-        toleranceMedium,
+        toleranceTestsMedium,
       ],
     ],
   },
@@ -421,12 +419,12 @@ export const plotsTests = {
         characteristicNumbers?.rollOffText,
         "-20 [dB/dec] (low), -100 [dB/dec] (high)",
       ],
-      ["Phase at wMin", phaseCurvePoints[0][1], "-90", toleranceMedium],
+      ["Phase at wMin", phaseCurvePoints[0][1], "-90", toleranceTestsMedium],
       [
         "Phase at wMax",
         phaseCurvePoints[phaseCurvePoints.length - 1][1],
         "-450",
-        toleranceMedium,
+        toleranceTestsMedium,
       ],
     ],
   },
@@ -448,12 +446,12 @@ export const plotsTests = {
       phaseCurvePoints,
       characteristicNumbers
     ) => [
-      ["Phase at wMin", phaseCurvePoints[0][1], "-720", toleranceMedium],
+      ["Phase at wMin", phaseCurvePoints[0][1], "-720", toleranceTestsMedium],
       [
         "Phase at wMax",
         phaseCurvePoints[phaseCurvePoints.length - 1][1],
         "-720",
-        toleranceMedium,
+        toleranceTestsMedium,
       ],
     ],
   },
@@ -475,12 +473,12 @@ export const plotsTests = {
         characteristicNumbers?.rollOffText,
         "0 [dB/dec] (low), -40 [dB/dec] (high)",
       ],
-      ["Phase at wMin", phaseCurvePoints[0][1], "0", toleranceMedium],
+      ["Phase at wMin", phaseCurvePoints[0][1], "0", toleranceTestsMedium],
       [
         "Phase at wMax",
         phaseCurvePoints[phaseCurvePoints.length - 1][1],
         "-1260",
-        toleranceLarge,
+        toleranceTestsLarge,
       ],
     ],
   },

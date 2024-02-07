@@ -14,6 +14,7 @@ import { linearInterpolationOfCurvePoints } from "../../math/numericalAnalysis/n
 import {
   functionFromPolynomialTermsArray,
   areAllTfTermsNumbers,
+  roundDecimal,
 } from "../../util/commons.js";
 import { logMessages } from "../../util/loggingService.js";
 import {
@@ -274,7 +275,10 @@ export default class BodePlot {
       );
       logMessages(
         [
-          `[CP-88] Current phase value at wMax: ${lastPhaseValue}. Expected phase value at wMax: ${expectedPhaseValueAtWmax}. Phase adjustment via wMax: ${
+          `[CP-88] Current phase value at wMax: ${roundDecimal(
+            lastPhaseValue,
+            5
+          )}. Expected phase value at wMax: ${expectedPhaseValueAtWmax}. Phase adjustment via wMax: ${
             -factor * 180
           }`,
         ],
@@ -289,7 +293,10 @@ export default class BodePlot {
       );
       logMessages(
         [
-          `[CP-89] Current phase value at wMax: ${lastPhaseValue}. Expected phase value at wMax: ${expectedPhaseValueAtWmax}. Phase adjustment via wMax: ${
+          `[CP-89] Current phase value at wMax: ${roundDecimal(
+            lastPhaseValue,
+            5
+          )}. Expected phase value at wMax: ${expectedPhaseValueAtWmax}. Phase adjustment via wMax: ${
             factor * 180
           }`,
         ],

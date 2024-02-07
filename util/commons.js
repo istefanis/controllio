@@ -20,6 +20,13 @@ export const areEqualArrays = (a1, a2) => {
   return JSON.stringify(a1) == JSON.stringify(a2);
 };
 
+//
+// Rounding & tolerances
+//
+export const roundDecimal = function (x, digits) {
+  return +x.toFixed(digits);
+};
+
 export const areEqualArraysRoundDecimal = (a1, a2, digits) => {
   if (a1.length !== a2.length) return false;
   const roundingReplacer = (key, val) =>
@@ -29,12 +36,18 @@ export const areEqualArraysRoundDecimal = (a1, a2, digits) => {
   );
 };
 
-export const roundDecimal = function (x, digits) {
-  return +x.toFixed(digits);
-};
+export const roundDecimalDigitsPrettyPrinting = 3;
+export const roundDecimalDigitsNumericalAnalysis = 3;
+export const roundDecimalDigitsTests = 3;
+
+export const toleranceNumericalAnalysisTiny = 10 ** -10;
+export const toleranceNumericalAnalysisSmall = 10 ** -4;
+export const toleranceTestsSmall = 10 ** -4;
+export const toleranceTestsMedium = 0.2;
+export const toleranceTestsLarge = 3;
 
 export const isZeroWithinTolerance = function (x) {
-  return Math.abs(x) < 10 ** -10;
+  return Math.abs(x) < toleranceNumericalAnalysisTiny;
 };
 
 //

@@ -15,6 +15,7 @@ import {
   primitiveOperationsSymbols,
   isSymbol,
   roundDecimal,
+  roundDecimalDigitsPrettyPrinting,
 } from "./commons.js";
 
 const makeSpaceLine = (length) => " ".repeat(length);
@@ -34,7 +35,7 @@ export const polynomialTermsArrayToMarkup = function (termsArray) {
 
   //rounding
   termsArray = termsArray.map((x) =>
-    Number.isFinite(x) ? roundDecimal(x, 3) : x
+    Number.isFinite(x) ? roundDecimal(x, roundDecimalDigitsPrettyPrinting) : x
   );
 
   const termsArrayOrder = termsArray.length - 1;
@@ -208,12 +209,12 @@ export const displayTf = function (ratio) {
   //rounding
   const numString = polynomialTermsArrayToStringWithCoeffs(
     getTermsArray(getNumerator(ratio)).map((x) =>
-      Number.isFinite(x) ? roundDecimal(x, 3) : x
+      Number.isFinite(x) ? roundDecimal(x, roundDecimalDigitsPrettyPrinting) : x
     )
   );
   const denString = polynomialTermsArrayToStringWithCoeffs(
     getTermsArray(getDenominator(ratio)).map((x) =>
-      Number.isFinite(x) ? roundDecimal(x, 3) : x
+      Number.isFinite(x) ? roundDecimal(x, roundDecimalDigitsPrettyPrinting) : x
     )
   );
 

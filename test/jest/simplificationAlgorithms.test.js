@@ -12,12 +12,14 @@
 // Import this first to initialize required components
 import * as computerAlgebraService from "../../math/computerAlgebra/computerAlgebraService.js";
 import { Block } from "../../model/elements/block.js";
-import { areEqualArraysRoundDecimal } from "../../util/commons.js";
+import {
+  areEqualArraysRoundDecimal,
+  roundDecimalDigitsTests,
+} from "../../util/commons.js";
 import { getLogMode, setLogMode } from "../../util/loggingService.js";
 import { simplificationAlgorithmsTests } from "../definitions/simplificationAlgorithmsTests.js";
 
 let testsBlock = new Block();
-const roundingDigits = 3;
 
 const runSimplificationAlgorithmsJestTest = async (t) => {
   testsBlock.clearState();
@@ -29,7 +31,7 @@ const runSimplificationAlgorithmsJestTest = async (t) => {
   const testCondition = areEqualArraysRoundDecimal(
     actualValue,
     expectedValue,
-    roundingDigits
+    roundDecimalDigitsTests
   );
 
   test(`[TE-04] ${t.description} - ${actualValue} ~== ${expectedValue}`, () => {

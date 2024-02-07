@@ -32,6 +32,8 @@ import { Complex } from "../../assets/lib/Complex/Complex.js";
 import findRoots from "../../assets/lib/durand-kerner/roots.js";
 import {
   roundDecimal,
+  roundDecimalDigitsNumericalAnalysis,
+  toleranceNumericalAnalysisSmall,
   zeroRootsFromPolynomialTermsArray,
 } from "../../util/commons.js";
 
@@ -40,8 +42,6 @@ import {
 //
 
 let maxLoopCounter = 0;
-
-export const tolerance = 0.0001;
 const maxLoops = 1000;
 
 /**
@@ -69,7 +69,10 @@ const computeFixedPoint = function (f, firstGuess) {
     } else {
       const next = f(guess);
       // console.log(next);
-      if (Math.abs(guess - next) < tolerance || maxLoopCounter > maxLoops) {
+      if (
+        Math.abs(guess - next) < toleranceNumericalAnalysisSmall ||
+        maxLoopCounter > maxLoops
+      ) {
         return next;
       } else {
         if (isNaN(next)) {
@@ -94,7 +97,7 @@ const computeFixedPoint = function (f, firstGuess) {
 export const halfIntervalMethod = function (f, a, b) {
   const loop = function (an, bn, n) {
     const m = (an + bn) / 2;
-    if (n > maxLoops || Math.abs(bn - an) < tolerance) {
+    if (n > maxLoops || Math.abs(bn - an) < toleranceNumericalAnalysisSmall) {
       return m;
     } else {
       return f(an) * f(m) < 0 ? loop(an, m, n + 1) : loop(m, bn, n + 1);
@@ -191,7 +194,10 @@ export const findComplexRootsOfPolynomial = function (termsArray) {
   if (r && r[0]) {
     for (let i = 0; i <= r[0].length - 1; i++) {
       //real & imag parts respectively
-      complexRoots.push([roundDecimal(r[0][i], 3), roundDecimal(r[1][i], 3)]);
+      complexRoots.push([
+        roundDecimal(r[0][i], roundDecimalDigitsNumericalAnalysis),
+        roundDecimal(r[1][i], roundDecimalDigitsNumericalAnalysis),
+      ]);
     }
   }
   return complexRoots.sort(function (x1, x2) {

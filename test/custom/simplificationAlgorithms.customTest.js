@@ -11,12 +11,14 @@ import {
   animationSpeedCoeff,
   setAnimationSpeedCoeff,
 } from "../../view/navbarView.js";
-import { areEqualArraysRoundDecimal } from "../../util/commons.js";
+import {
+  areEqualArraysRoundDecimal,
+  roundDecimalDigitsTests,
+} from "../../util/commons.js";
 import { logMessages } from "../../util/loggingService.js";
 import { simplificationAlgorithmsTests } from "../definitions/simplificationAlgorithmsTests.js";
 
 let testsBlock = new Block();
-const roundingDigits = 3;
 
 const runSimplificationAlgorithmsCustomTest = async (t) => {
   testsBlock.clearState();
@@ -28,7 +30,7 @@ const runSimplificationAlgorithmsCustomTest = async (t) => {
   const testCondition = areEqualArraysRoundDecimal(
     actualValue,
     expectedValue,
-    roundingDigits
+    roundDecimalDigitsTests
   );
 
   logMessages(
