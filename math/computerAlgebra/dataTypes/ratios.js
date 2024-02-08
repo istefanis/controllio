@@ -24,6 +24,7 @@ import {
   subtract,
   multiply,
   reduce,
+  round,
 } from "../algebraicOperations.js";
 
 /**
@@ -75,6 +76,10 @@ export const loadRatiosOperations = function () {
   set(["simplify", "ratio"], (r) => {
     const res = reduce(numerator(r), denominator(r));
     return tag(newRatio(numerator(res), denominator(res)));
+  });
+
+  set(["round", "ratio", "real"], (r, d) => {
+    return tag(newRatio(round(numerator(r), d), round(denominator(r), d)));
   });
 
   // console.log("Ratios operations loaded");

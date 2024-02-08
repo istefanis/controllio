@@ -8,10 +8,12 @@
 
 import { Ratio } from "../../math/computerAlgebra/dataTypes/ratios.js";
 import { Polynomial } from "../../math/computerAlgebra/dataTypes/polynomials.js";
+import { round } from "../../math/computerAlgebra/algebraicOperations.js";
 import {
   generateNewElementIdForElement,
   setElementIdForElement,
 } from "../elementService.js";
+import { roundDecimalDigitsTfComputations } from "../../util/commons.js";
 import TfView from "../../view/tfView.js";
 import { removeLineRender } from "../../view/services/core/lineRenderingService.js";
 
@@ -43,10 +45,9 @@ export class Tf {
       setElementIdForElement(id, this);
       this.#elementId = id;
     }
-    this.#value = value;
     this.#block = block;
 
-    this.#render(position);
+    this.setValue(value, position);
 
     block.adjoinTfs(this);
 
@@ -95,9 +96,9 @@ export class Tf {
   getPosition = () => this.#tfView.getPosition();
 
   getValue = () => this.#value;
-  setValue = (x) => {
-    this.#value = x;
-    this.#render();
+  setValue = (x, position) => {
+    this.#value = round(x, roundDecimalDigitsTfComputations);
+    this.#render(position);
   };
 
   isBlock = () => this.#iAmBlock;

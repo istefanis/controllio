@@ -6,7 +6,7 @@
  * Math / ComputerAlgebra / DataTypes / Reals
  */
 
-import { isZeroWithinTolerance } from "../../../util/commons.js";
+import { isZeroWithinTolerance, roundDecimal } from "../../../util/commons.js";
 import { set } from "../algebraicOperations.js";
 
 /**
@@ -25,6 +25,8 @@ export const loadRealsOperations = function () {
   set(["isZero", "real"], (x) => isZeroWithinTolerance(x));
 
   set(["gcd", "real", "real"], (a, b) => gcdReals(a, b));
+
+  set(["round", "real", "real"], (x, d) => roundDecimal(x, d));
 
   // console.log("Reals operations loaded");
 };

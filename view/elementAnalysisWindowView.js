@@ -12,11 +12,12 @@ import {
   getDenominator,
   getNumerator,
   getTermsArray,
+  round,
 } from "../math/computerAlgebra/algebraicOperations.js";
 import { getElementFromElementId } from "../model/elementService.js";
 import {
   areEqualArrays,
-  roundDecimal,
+  roundDecimalDigitsTfComputations,
   areAllTfTermsNumbers,
 } from "../util/commons.js";
 import {
@@ -200,14 +201,12 @@ const populateElementAnalysisWindow = function (element, updateExistingWindow) {
   numeratorTermsArray = getTermsArray(getNumerator(tfValue));
   denominatorTermsArray = getTermsArray(getDenominator(tfValue));
   updateElementNumeratorInput.value = polynomialTermsArrayToStringWithoutCoeffs(
-    numeratorTermsArray.map((x) =>
-      !Number.isNaN(+x) ? roundDecimal(x, 3) : toInfixNotation(x)
-    )
+    numeratorTermsArray.map((x) => (!Number.isNaN(+x) ? x : toInfixNotation(x)))
   );
   updateElementDenominatorInput.value =
     polynomialTermsArrayToStringWithoutCoeffs(
       denominatorTermsArray.map((x) =>
-        !Number.isNaN(+x) ? roundDecimal(x, 3) : toInfixNotation(x)
+        !Number.isNaN(+x) ? x : toInfixNotation(x)
       )
     );
 
@@ -246,20 +245,18 @@ const updateElementValueButtonCallback = function (e) {
       .map((x) => x.trim())
       .map((x) =>
         !Number.isNaN(+x) ? +x : replaceMultipleStringSpacesWithSingle(x)
-      );
+      )
+      .map((x) => round(x, roundDecimalDigitsTfComputations));
+
     denominatorTermsArray = denominatorTermsArrayString
       .slice(1, -1)
       .split(",")
       .map((x) => x.trim())
       .map((x) =>
         !Number.isNaN(+x) ? +x : replaceMultipleStringSpacesWithSingle(x)
-      );
+      )
+      .map((x) => round(x, roundDecimalDigitsTfComputations));
 
-    //constrain input to numbers only:
-    // if (
-    //   numeratorTermsArray.every((x) => Number.isFinite(x)) &&
-    //   denominatorTermsArray.every((x) => Number.isFinite(x))
-    // ) {
     const newTfValue = new Ratio(
       new Polynomial("s", numeratorTermsArray),
       new Polynomial("s", denominatorTermsArray)
@@ -276,13 +273,13 @@ const updateElementValueButtonCallback = function (e) {
     updateElementNumeratorInput.value =
       polynomialTermsArrayToStringWithoutCoeffs(
         numeratorTermsArray.map((x) =>
-          !Number.isNaN(+x) ? roundDecimal(x, 3) : toInfixNotation(x)
+          !Number.isNaN(+x) ? x : toInfixNotation(x)
         )
       );
     updateElementDenominatorInput.value =
       polynomialTermsArrayToStringWithoutCoeffs(
         denominatorTermsArray.map((x) =>
-          !Number.isNaN(+x) ? roundDecimal(x, 3) : toInfixNotation(x)
+          !Number.isNaN(+x) ? x : toInfixNotation(x)
         )
       );
 
@@ -303,10 +300,10 @@ const updateElementValueButtonCallback = function (e) {
         zeros = [];
         poles = [];
       }
-    }
 
-    //re-render lines, because DOM element dimensions may have been changed
-    renderAllLines();
+      //re-render lines, because DOM element dimensions may have been changed
+      renderAllLines();
+    }
 
     //update plot(s)
     if (!isWindowMaximized) {

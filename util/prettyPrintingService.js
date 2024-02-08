@@ -108,7 +108,7 @@ export const polynomialTermsArrayToMarkup = function (termsArray) {
  */
 export const toInfixNotation = (expr) => {
   if (Number.isFinite(expr)) {
-    return roundDecimal(expr, 3);
+    return roundDecimal(expr, roundDecimalDigitsPrettyPrinting);
   }
   // console.log(expr);
   if (primitiveOperationsSymbols.includes(expr[0])) {

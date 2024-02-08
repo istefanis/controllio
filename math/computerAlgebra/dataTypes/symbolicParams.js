@@ -46,5 +46,7 @@ export const loadSymbolicParamsOperations = function () {
   set(["negate", "symbol"], (x) => ["-", x]);
   set(["isZero", "symbol"], (x) => false);
 
+  set(["round", "symbol", "real"], (x, d) => x);
+
   // console.log("Symbolic params operations loaded");
 };

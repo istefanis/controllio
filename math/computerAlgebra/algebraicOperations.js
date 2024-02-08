@@ -128,3 +128,5 @@ export const reduce = (p1, p2) => invokeOperation("reduce", p1, p2); // polynomi
 export const getNumerator = (r) => invokeOperation("getNumerator", r); // ratios
 export const getDenominator = (r) => invokeOperation("getDenominator", r); // ratios
 export const getTermsArray = (p) => invokeOperation("getTermsArray", p); // polynomials
+
+export const round = (x, d) => invokeOperation("round", x, d);

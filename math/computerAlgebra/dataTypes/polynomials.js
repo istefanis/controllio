@@ -27,6 +27,7 @@ import {
   negate,
   isZero,
   gcd,
+  round,
 } from "../algebraicOperations.js";
 
 /**
@@ -66,6 +67,19 @@ export const loadPolynomialsOperations = function () {
       : addExtraFirstTerm(
           negate(coeff(firstTerm(ta))),
           negateTerms(restTermsArray(ta))
+        );
+  };
+
+  const roundPolynomial = function (p, d) {
+    return newPolynomial(param(p), roundTerms(termsArray(p), d));
+  };
+
+  const roundTerms = function (ta, d) {
+    return isEmptyTermsArray(ta)
+      ? emptyTermsArray
+      : addExtraFirstTerm(
+          round(coeff(firstTerm(ta)), d),
+          roundTerms(restTermsArray(ta), d)
         );
   };
 
@@ -316,6 +330,8 @@ export const loadPolynomialsOperations = function () {
   );
 
   set(["getTermsArray", "polynomial"], termsArray);
+
+  set(["round", "polynomial", "real"], (p, d) => tag(roundPolynomial(p, d)));
 
   // console.log("Polynomials operations loaded");
 };

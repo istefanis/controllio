@@ -67,7 +67,7 @@ export const simplifyBlock = async function () {
         });
         */
 
-      this._value = this._tfs.concat(this._blocks)[0].getValue();
+      this.setValue(this._tfs.concat(this._blocks)[0].getValue());
 
       enableHistoricalStateStorage();
       storeNewHistoricalBlockState.call(this);
@@ -131,7 +131,7 @@ export const simplifyBlock = async function () {
   if (this._tfs.concat(this._blocks).length === 0 || this.isFullySimplified()) {
     this._iAmSimplified = true;
     // console.log(this._blocks);
-    this._value = this._tfs.concat(this._blocks)[0].getValue();
+    this.setValue(this._tfs.concat(this._blocks)[0].getValue());
     logMessages(["NO SIMPLIFICATIONS TO BE DONE"], "algorithms");
   } else {
     // logMessages(["problem"], "algorithms");

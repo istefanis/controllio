@@ -24,7 +24,7 @@ export const areEqualArrays = (a1, a2) => {
 // Rounding & tolerances
 //
 export const roundDecimal = function (x, digits) {
-  return +x.toFixed(digits);
+  return digits === -1 ? x : +x.toFixed(digits);
 };
 
 export const areEqualArraysRoundDecimal = (a1, a2, digits) => {
@@ -36,8 +36,23 @@ export const areEqualArraysRoundDecimal = (a1, a2, digits) => {
   );
 };
 
-export const roundDecimalDigitsPrettyPrinting = 3;
+/**
+ * The number of digits that all tf terms will be rounded to,
+ * when the tf method 'setValue()' is invoked
+ * (during tf creation/update or a simplification), and that will be stored.
+ *
+ * In the element analysis window, terms are displayed with this number of digits.
+ *
+ * Set it to -1 to disable terms rounding, and use the default JS precision
+ */
+export const roundDecimalDigitsTfComputations = 5;
 export const roundDecimalDigitsNumericalAnalysis = 3;
+/**
+ * The number of digits displayed in HTML markup & the console
+ * (these may differ from the actual ones stored, used in computations,
+ * and displayed in the element analysis window)
+ */
+export const roundDecimalDigitsPrettyPrinting = 3;
 export const roundDecimalDigitsTests = 3;
 
 export const toleranceNumericalAnalysisTiny = 10 ** -10;
