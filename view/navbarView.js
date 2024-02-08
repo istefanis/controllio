@@ -177,6 +177,7 @@ const deleteAllButton = document.getElementById("delete-all-button");
 deleteAllButton.addEventListener("click", function (e) {
   closeElementAnalysisWindow();
   getTopBlock().clearState();
+  getTopBlock().storeNewHistoricalState();
 });
 
 //

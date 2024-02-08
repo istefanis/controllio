@@ -43,7 +43,6 @@ export const openImportFilePopupWindow = async function () {
         if (state.blocks && state.tfs && state.adders && state.connections) {
           resetZoom();
           closeElementAnalysisWindow();
-          getTopBlock().clearState();
           getTopBlock().clearStateHistory();
           getTopBlock().setState(state);
         } else {

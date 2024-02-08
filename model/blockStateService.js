@@ -14,6 +14,7 @@ import {
   getElementFromElementId,
   resetElementService,
 } from "./elementService.js";
+import { roundDecimal } from "../util/commons.js";
 import { getNavbarHeight, getZoomFactor } from "../util/uiService.js";
 import { resetCanvas } from "../view/services/core/canvasService.js";
 import { resetElementRenderingService } from "../view/services/core/elementRenderingService.js";
@@ -22,9 +23,33 @@ import {
   resetLineRenderingService,
 } from "../view/services/core/lineRenderingService.js";
 
+//
+// State-related navbar buttons
+//
+const previousButton = document.getElementById("previous-button");
+const nextButton = document.getElementById("next-button");
+const connectionButton = document.getElementById("connection-button");
+const deleteAllButton = document.getElementById("delete-all-button");
 const optimizeTopologyButton = document.getElementById(
   "optimize-topology-button"
 );
+const simplifyButton = document.getElementById("simplify-button");
+
+const enableOrDisableButtonsBasedOnBlockState = function (state) {
+  const isEmptyState = isEmptyBlockState(state);
+
+  connectionButton.disabled = isEmptyState;
+  deleteAllButton.disabled = isEmptyState;
+  optimizeTopologyButton.disabled = isEmptyState;
+  simplifyButton.disabled = isEmptyState;
+};
+
+/**
+ * Check if block state contains no tfs & adders
+ */
+const isEmptyBlockState = function (state) {
+  return state.tfs.length === 0 && state.adders.length === 0;
+};
 
 /**
  * Clear current block state
@@ -52,9 +77,9 @@ export const clearBlockState = function () {
  * Set/override current block state
  */
 export const setBlockState = function (state) {
-  const zoomFactor = getZoomFactor();
-
   clearBlockState.call(this);
+
+  const zoomFactor = getZoomFactor();
 
   //adjust the element positions to the current zoom factor
   state.tfs.forEach(
@@ -112,8 +137,8 @@ export const getBlockState = function () {
     currentState.blocks[x.getElementId()] = {
       value: x.getValue(),
       position: {
-        left: boundRect.left / zoomFactor,
-        top: (boundRect.top - navbarHeight) / zoomFactor,
+        left: roundDecimal(boundRect.left / zoomFactor, 1),
+        top: roundDecimal((boundRect.top - navbarHeight) / zoomFactor, 1),
       },
     };
   });
@@ -128,8 +153,8 @@ export const getBlockState = function () {
     currentState.tfs.push({
       value: x.getValue(),
       position: {
-        left: boundRect.left / zoomFactor,
-        top: (boundRect.top - navbarHeight) / zoomFactor,
+        left: roundDecimal(boundRect.left / zoomFactor, 1),
+        top: roundDecimal((boundRect.top - navbarHeight) / zoomFactor, 1),
       },
       elementId: x.getElementId(),
     });
@@ -145,8 +170,8 @@ export const getBlockState = function () {
     currentState.adders.push({
       value: x.getValue(),
       position: {
-        left: boundRect.left / zoomFactor,
-        top: (boundRect.top - navbarHeight) / zoomFactor,
+        left: roundDecimal(boundRect.left / zoomFactor, 1),
+        top: roundDecimal((boundRect.top - navbarHeight) / zoomFactor, 1),
       },
       elementId: x.getElementId(),
     });
@@ -179,6 +204,9 @@ export const disableHistoricalStateStorage = () =>
 export const clearBlockStateHistory = function () {
   this._stateHistory = [];
   this._currentHistoricalState = [];
+
+  previousButton.disabled = true;
+  nextButton.disabled = true;
 };
 
 /**
@@ -187,6 +215,7 @@ export const clearBlockStateHistory = function () {
 export const storeNewHistoricalBlockState = function () {
   if (historicalStateStorageEnabled) {
     const currentState = getBlockState.call(this);
+    enableOrDisableButtonsBasedOnBlockState(currentState);
 
     //if the current state is not the last historical state, remove all following states
     if (this._currentHistoricalState !== this._stateHistory.length - 1) {
@@ -204,13 +233,12 @@ export const storeNewHistoricalBlockState = function () {
     // log every new state stored:
     // console.log(this._stateHistory);
 
-    previousButton.disabled = false;
+    if (this._currentHistoricalState > 0) {
+      previousButton.disabled = false;
+    }
     nextButton.disabled = true;
   }
 };
-
-const previousButton = document.getElementById("previous-button");
-const nextButton = document.getElementById("next-button");
 
 /**
  * Load previous historical state
@@ -219,7 +247,11 @@ export const loadPreviousHistoricalBlockState = function () {
   const previousHistoricalState = this._currentHistoricalState - 1;
   if (previousHistoricalState >= 0) {
     disableHistoricalStateStorage();
-    setBlockState.call(this, this._stateHistory[previousHistoricalState]);
+
+    const state = this._stateHistory[previousHistoricalState];
+    setBlockState.call(this, state);
+    enableOrDisableButtonsBasedOnBlockState(state);
+
     this._currentHistoricalState = previousHistoricalState;
     enableHistoricalStateStorage();
     nextButton.disabled = false;
@@ -236,7 +268,11 @@ export const loadNextHistoricalBlockState = function () {
   const nextHistoricalState = this._currentHistoricalState + 1;
   if (nextHistoricalState < this._stateHistory.length) {
     disableHistoricalStateStorage();
-    setBlockState.call(this, this._stateHistory[nextHistoricalState]);
+
+    const state = this._stateHistory[nextHistoricalState];
+    setBlockState.call(this, state);
+    enableOrDisableButtonsBasedOnBlockState(state);
+
     this._currentHistoricalState = nextHistoricalState;
     enableHistoricalStateStorage();
     previousButton.disabled = false;
