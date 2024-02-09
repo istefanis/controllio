@@ -101,6 +101,44 @@ export const areAllTfTermsNumbers = (
   denominatorTermsArray.every((x) => !Number.isNaN(+x));
 
 //
+// Ready-made tfs
+//
+
+/**
+ * Compute a Butterworth filter's numerator & denominator terms arrays
+ * @param {*} type "low-pass", or "high-pass"
+ * @param {*} order 1-5
+ * @param {*} gain >= 1
+ * @param {*} wCutoff >= 0.01 [rad/s]
+ * @returns [numeratorTermsArray, denominatorTermsArray]
+ */
+export const computeButterworthTermsArrays = function (
+  type,
+  order,
+  gain,
+  wCutoff
+) {
+  const butterworthFilterNormalizedCoeffs = {
+    1: [1, 1],
+    2: [1, 1.41421, 1],
+    3: [1, 2, 2, 1],
+    4: [1, 2.61313, 3.41421, 2.61313, 1],
+    5: [1, 3.23607, 5.23607, 5.23607, 3.23607, 1],
+  };
+
+  const numeratorTermsArray =
+    type === "low-pass"
+      ? [gain * wCutoff ** order]
+      : [gain, ...Array(order).fill(0)];
+
+  const denominatorTermsArray = butterworthFilterNormalizedCoeffs[order].map(
+    (x, i) => x * wCutoff ** i
+  );
+
+  return [numeratorTermsArray, denominatorTermsArray];
+};
+
+//
 // Await
 //
 export const sleep = (millisec) => new Promise((r) => setTimeout(r, millisec));
