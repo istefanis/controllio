@@ -11,6 +11,7 @@ import { Polynomial } from "../../math/computerAlgebra/dataTypes/polynomials.js"
 import { adder } from "../../model/elements/adder.js";
 import { tf, Tf } from "../../model/elements/tf.js";
 import { connect } from "../../model/elementConnectionService.js";
+import { computeButterworthTermsArrays } from "../../util/commons.js";
 
 export const mergeFeedbackLoopTest1 = (block1) => {
   const tf1 = new Tf(
@@ -124,5 +125,28 @@ export const circuit1 = (block1) => {
   connect(tf2, add3);
   connect(tf2p, add3);
   connect(add3, tf3);
+  return block1;
+};
+
+export const linkwitzRiley4Crossover = (block1) => {
+  const termsArrays1 = computeButterworthTermsArrays("low-pass", 2, 1, 1);
+  const lowPassButterworth1 = tf(...termsArrays1, block1);
+  const lowPassButterworth2 = tf(...termsArrays1, block1);
+
+  const termsArrays2 = computeButterworthTermsArrays("high-pass", 2, 1, 1);
+  const highPassButterworth1 = tf(...termsArrays2, block1);
+  const highPassButterworth2 = tf(...termsArrays2, block1);
+
+  const add1 = adder(block1);
+  const add2 = adder(block1);
+
+  connect(add1, lowPassButterworth1);
+  connect(lowPassButterworth1, lowPassButterworth2);
+  connect(lowPassButterworth2, add2);
+
+  connect(add1, highPassButterworth1);
+  connect(highPassButterworth1, highPassButterworth2);
+  connect(highPassButterworth2, add2);
+
   return block1;
 };

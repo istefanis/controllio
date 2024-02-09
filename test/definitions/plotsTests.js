@@ -482,4 +482,31 @@ export const plotsTests = {
       ],
     ],
   },
+
+  test18: {
+    description:
+      "test18: tf([1, 0, 0, 0, 1], " +
+      "[1, 2.8284, 4, 2.8284, 1]) - linkwitzRiley4Crossover",
+    numeratorTermsArray: [1, 0, 0, 0, 1],
+    denominatorTermsArray: [1, 2.8284, 4, 2.8284, 1],
+    steps: bodeSteps,
+    assertions: (
+      magnitudeCurvePoints,
+      phaseCurvePoints,
+      characteristicNumbers
+    ) => [
+      [
+        "Max magnitude",
+        Math.max(...magnitudeCurvePoints.map((x) => x[1])),
+        1,
+        toleranceTestsSmall,
+      ],
+      ["Filter type", characteristicNumbers?.filterTypeText, "All-pass filter"],
+      [
+        "Roll-off",
+        characteristicNumbers?.rollOffText,
+        "0 [dB/dec] (low), 0 [dB/dec] (high)",
+      ],
+    ],
+  },
 };

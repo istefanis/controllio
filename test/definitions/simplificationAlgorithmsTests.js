@@ -8,6 +8,7 @@
 
 import {
   circuit1,
+  linkwitzRiley4Crossover,
   mergeFeedbackLoopTest1,
   mergeParallelTfsTest1,
   mergeSerialAddersTest1,
@@ -71,6 +72,18 @@ export const simplificationAlgorithmsTests = {
       [
         ["polynomial", ["s", [1, 3.166, 7.957, 7.54, 4.05, 2.301]]],
         ["polynomial", ["s", [-0.821, -2.874, -4.927, -4.517, -1.642]]],
+      ],
+    ],
+  },
+
+  test6: {
+    description: "test6: linkwitzRiley4Crossover",
+    circuit: linkwitzRiley4Crossover,
+    assertion: [
+      "ratio",
+      [
+        ["polynomial", ["s", [1, 0, 0, 0, 1]]],
+        ["polynomial", ["s", [1, 2.8284, 4, 2.8284, 1]]],
       ],
     ],
   },
