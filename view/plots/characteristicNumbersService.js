@@ -6,7 +6,7 @@
  * View / Plots / CharacteristicNumbersService
  */
 
-import { isOdd, roundDecimal } from "../../util/commons.js";
+import { isOdd, isReal, roundDecimal } from "../../util/commons.js";
 import {
   findCurveRootIntervals,
   halfIntervalMethod,
@@ -178,9 +178,11 @@ const computeBandwidthFunctionAndWCutoffRoots = function (
     const wCutoffRootIntervals = findCurveRootIntervals(
       magnitudeCurvePoints.map((x) => [x[0], x[1] - bandwidthThreshold])
     );
-    wCutoffRoots = wCutoffRootIntervals.map((interval) =>
-      halfIntervalMethod(bandwidthFunction, ...interval)
-    );
+    // console.log(wCutoffRootIntervals);
+
+    wCutoffRoots = wCutoffRootIntervals
+      .map((interval) => halfIntervalMethod(bandwidthFunction, ...interval))
+      .filter((x) => isReal(x));
 
     // console.log(wCutoffRoots);
   }

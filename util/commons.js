@@ -13,7 +13,7 @@ export const isOdd = (x) => x % 2;
 export const isPowerOfTen = (x) => Math.log10(Math.abs(x)) % 1 === 0;
 
 export const isSymbol = (x) => typeof x === "string" || x instanceof String;
-export const isReal = (x) => !isNaN(x);
+export const isReal = (x) => !isNaN(x) && x !== true && x !== false;
 
 export const areEqualArrays = (a1, a2) => {
   if (a1.length !== a2.length) return false;
