@@ -16,7 +16,12 @@
  * noted below as 'SICP'
  */
 
-import { isSymbol, isReal, areEqualArrays } from "../../../util/commons.js";
+import {
+  isSymbol,
+  isReal,
+  areEqualArrays,
+  isZeroWithinTolerance,
+} from "../../../util/commons.js";
 import {
   set,
   get,
@@ -232,23 +237,25 @@ export const loadPolynomialsOperations = function () {
   };
 
   const gcdTerms = function (ta1, ta2) {
+    // console.log("gcdTerms:", ta1, ta2);
     if (isEmptyTermsArray(ta2)) {
       //BUGFIX
       const gcdivisor =
         order(ta1) > 0
-          ? gcd.apply("_", coeffsOfTermsArray(ta1))
+          ? [...coeffsOfTermsArray(ta1)].reduce(gcd)
           : coeff(firstTerm(ta1));
-      return multiplyRealByTermsArray(1 / gcdivisor, ta1);
+      return !isZeroWithinTolerance(gcdivisor)
+        ? multiplyRealByTermsArray(1 / gcdivisor, ta1)
+        : ta1;
     }
-    return gcdTerms(ta2, pseudoremainderTerms(ta1, ta2));
-  };
 
-  const pseudoremainderTerms = function (ta1, ta2) {
-    const x = Math.pow(
-      coeff(firstTerm(ta2)),
-      1 + order(firstTerm(ta1)) - order(firstTerm(ta2))
+    const remainderTerms = divideTerms(ta1, ta2)[1];
+    return gcdTerms(
+      ta2,
+      remainderTerms.every((x) => isZeroWithinTolerance(x))
+        ? emptyTermsArray
+        : remainderTerms
     );
-    return divideTerms(multiplyRealByTermsArray(x, ta1), ta2)[1];
   };
 
   // ex.: SICP 2.97
@@ -293,7 +300,7 @@ export const loadPolynomialsOperations = function () {
     // simplification of integer coefficients:
 
     // a. based on the gcd of all coefficients:
-    // const gcdivisor = gcd.apply("_", simplifiedNumerator.concat(simplifiedDenominator));
+    // const gcdivisor = [...simplifiedNumerator, ...simplifiedDenominator].reduce(gcd)
     // return [
     //   multiplyRealByTermsArray(1 / gcdivisor, simplifiedNumerator),
     //   multiplyRealByTermsArray(1 / gcdivisor, simplifiedDenominator),

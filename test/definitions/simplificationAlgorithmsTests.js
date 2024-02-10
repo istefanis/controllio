@@ -70,8 +70,8 @@ export const simplificationAlgorithmsTests = {
     assertion: [
       "ratio",
       [
-        ["polynomial", ["s", [1, 3.166, 7.957, 7.54, 4.05, 2.301]]],
-        ["polynomial", ["s", [-0.821, -2.874, -4.927, -4.517, -1.642]]],
+        ["polynomial", ["s", [1, 2.166, 5.791, 1.748, 2.301]]],
+        ["polynomial", ["s", [-0.821, -2.053, -2.874, -1.642]]],
       ],
     ],
   },
