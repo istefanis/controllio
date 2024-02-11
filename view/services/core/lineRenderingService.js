@@ -100,7 +100,7 @@ export const drawLineWithArrow = function (startX, startY, endX, endY) {
     const dx = 15 * zoomFactor;
     const dy = 5 * zoomFactor;
 
-    if (endX > startX + 2 * dx) {
+    if (endX > startX + dx) {
       if (Math.abs(endY - startY) > 10 * zoomFactor) {
         //taxicab/'Manhattan' line path (large vertical difference case)
         // console.log("line1");
