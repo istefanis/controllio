@@ -10,8 +10,10 @@ import { Block } from "../../model/elements/block.js";
 import { getTopBlock, setTopBlock } from "../../model/topBlockService.js";
 import { roundDecimal, sleep } from "../../util/commons.js";
 import { setLogMode } from "../../util/loggingService.js";
+import { domElements } from "../../view/services/core/elementRenderingService.js";
 import { getTotalLengthOfAllLines } from "../../view/services/core/lineRenderingService.js";
 import { optimizeTopology } from "../../view/services/feature/optimizeTopologyService.js";
+import { openOrUpdateElementAnalysisWindow } from "../../view/elementAnalysisWindowView.js";
 import { circuit1 } from "./circuits.js";
 
 export const viewServicesTests = {
@@ -125,6 +127,39 @@ export const viewServicesTests = {
       )[0];
       popupWindowCloseButton.click();
       await sleep(200);
+
+      return [true];
+    },
+    assertion: (x) => x,
+    resultsDescription: () => "traversed successfully",
+  },
+
+  test4: {
+    description: "test4: elementAnalysisWindowView",
+    steps: async function () {
+      if (getTopBlock()) {
+        getTopBlock().clearState();
+      } else {
+        setTopBlock(new Block());
+      }
+      setTopBlock(circuit1(getTopBlock()));
+
+      openOrUpdateElementAnalysisWindow(domElements[0]);
+
+      for (let i = 1; i <= 3; i++) {
+        const elementAnalysisWindowTabButton = document.getElementById(
+          `element-analysis-window-tab-button-${i}`
+        );
+        elementAnalysisWindowTabButton.click();
+        await sleep(500);
+      }
+
+      const elementAnalysisWindowCloseButton = document.getElementById(
+        `element-analysis-window-close-button`
+      );
+      elementAnalysisWindowCloseButton.click();
+
+      getTopBlock().clearState();
 
       return [true];
     },

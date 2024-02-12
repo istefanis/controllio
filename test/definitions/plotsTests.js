@@ -14,6 +14,7 @@ import {
 } from "../../util/commons.js";
 import BodePlot from "../../view/plots/bodePlot.js";
 import NyquistPlot from "../../view/plots/nyquistPlot.js";
+import TimeDomainPlot from "../../view/plots/timeDomainPlot.js";
 
 const bodeSteps = (numeratorTermsArray, denominatorTermsArray) => {
   const { magnitudeCurvePoints, phaseCurvePoints, characteristicNumbers } =
@@ -38,10 +39,28 @@ const nyquistSteps = (numeratorTermsArray, denominatorTermsArray) => {
   return [curvePoints, stability];
 };
 
+const timeDomainSteps = (numeratorTermsArray, denominatorTermsArray) => {
+  const { timeResponseCurvePoints, trajectoryCurvePoints } = new TimeDomainPlot(
+    null,
+    numeratorTermsArray,
+    denominatorTermsArray,
+    findComplexRootsOfPolynomial(numeratorTermsArray),
+    findComplexRootsOfPolynomial(denominatorTermsArray)
+  );
+  return [timeResponseCurvePoints, trajectoryCurvePoints];
+};
+
 const bodeAndNyquistSteps = (numeratorTermsArray, denominatorTermsArray) => {
   return [
     ...bodeSteps(numeratorTermsArray, denominatorTermsArray),
     ...nyquistSteps(numeratorTermsArray, denominatorTermsArray),
+  ];
+};
+
+const bodeAndTimeDomainSteps = (numeratorTermsArray, denominatorTermsArray) => {
+  return [
+    ...bodeSteps(numeratorTermsArray, denominatorTermsArray),
+    ...timeDomainSteps(numeratorTermsArray, denominatorTermsArray),
   ];
 };
 
@@ -158,11 +177,13 @@ export const plotsTests = {
     description: "test4: tf([1], [1, 0, 1])",
     numeratorTermsArray: [1],
     denominatorTermsArray: [1, 0, 1],
-    steps: bodeSteps,
+    steps: bodeAndTimeDomainSteps,
     assertions: (
       magnitudeCurvePoints,
       phaseCurvePoints,
-      characteristicNumbers
+      characteristicNumbers,
+      timeResponseCurvePoints,
+      trajectoryCurvePoints
     ) => [
       [
         "Roll-off",
@@ -174,6 +195,18 @@ export const plotsTests = {
         "Phase at wMax",
         phaseCurvePoints[phaseCurvePoints.length - 1][1],
         "-180",
+        toleranceTestsSmall,
+      ],
+      [
+        "Max f(t)",
+        Math.max(...timeResponseCurvePoints.map((x) => x[1])),
+        1,
+        toleranceTestsSmall,
+      ],
+      [
+        "Min f(t)",
+        Math.min(...timeResponseCurvePoints.map((x) => x[1])),
+        -1,
         toleranceTestsSmall,
       ],
     ],
