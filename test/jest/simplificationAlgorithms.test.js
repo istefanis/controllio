@@ -12,6 +12,7 @@
 // Import this first to initialize required components
 import * as computerAlgebraService from "../../math/computerAlgebra/computerAlgebraService.js";
 import { Block } from "../../model/elements/block.js";
+import { getTopBlock, setTopBlock } from "../../model/topBlockService.js";
 import {
   areEqualArraysRoundDecimal,
   roundDecimalDigitsTests,
@@ -19,14 +20,16 @@ import {
 import { getLogMode, setLogMode } from "../../util/loggingService.js";
 import { simplificationAlgorithmsTests } from "../definitions/simplificationAlgorithmsTests.js";
 
-let testsBlock = new Block();
-
 const runSimplificationAlgorithmsJestTest = async (t) => {
-  testsBlock.clearState();
-  testsBlock = t.circuit(testsBlock);
+  if (getTopBlock()) {
+    getTopBlock().clearState();
+  } else {
+    setTopBlock(new Block());
+  }
+  setTopBlock(t.circuit(getTopBlock()));
 
   //computation of simplified block value
-  const actualValue = await testsBlock.getSimplifiedValue();
+  const actualValue = await getTopBlock().getSimplifiedValue();
   const expectedValue = t.assertion;
   const testCondition = areEqualArraysRoundDecimal(
     actualValue,
@@ -38,7 +41,7 @@ const runSimplificationAlgorithmsJestTest = async (t) => {
     expect(testCondition).toBeTruthy();
   });
 
-  testsBlock.clearState();
+  getTopBlock().clearState();
   return;
 };
 

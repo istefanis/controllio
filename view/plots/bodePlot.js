@@ -107,7 +107,7 @@ export default class BodePlot {
       this.#bandwidthThreshold = "";
     }
 
-    if (!plotContainerDomElement) {
+    if (!plotContainerDomElement || !functionPlot) {
       // return Bode curve points & characteristics numbers without displaying the plot (ex. for testing)
       return {
         magnitudeCurvePoints: this.#magnitudeCurvePoints,

@@ -69,7 +69,7 @@ export default class NyquistPlot {
       this.#denominatorTermsArray
     );
 
-    if (!plotContainerDomElement) {
+    if (!plotContainerDomElement || !functionPlot) {
       // return Nyquist curve points & stability without displaying the plot (ex. for testing)
       return {
         curvePoints: this.#curvePoints,

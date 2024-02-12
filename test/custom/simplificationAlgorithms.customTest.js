@@ -7,6 +7,7 @@
  */
 
 import { Block } from "../../model/elements/block.js";
+import { getTopBlock, setTopBlock } from "../../model/topBlockService.js";
 import {
   animationSpeedCoeff,
   setAnimationSpeedCoeff,
@@ -18,14 +19,16 @@ import {
 import { logMessages } from "../../util/loggingService.js";
 import { simplificationAlgorithmsTests } from "../definitions/simplificationAlgorithmsTests.js";
 
-let testsBlock = new Block();
-
 const runSimplificationAlgorithmsCustomTest = async (t) => {
-  testsBlock.clearState();
-  testsBlock = t.circuit(testsBlock);
+  if (getTopBlock()) {
+    getTopBlock().clearState();
+  } else {
+    setTopBlock(new Block());
+  }
+  setTopBlock(t.circuit(getTopBlock()));
 
   //computation of simplified block value
-  const actualValue = await testsBlock.getSimplifiedValue();
+  const actualValue = await getTopBlock().getSimplifiedValue();
   const expectedValue = t.assertion;
   const testCondition = areEqualArraysRoundDecimal(
     actualValue,
@@ -44,7 +47,7 @@ const runSimplificationAlgorithmsCustomTest = async (t) => {
     "tests-css"
   );
 
-  testsBlock.clearState();
+  getTopBlock().clearState();
   return;
 };
 

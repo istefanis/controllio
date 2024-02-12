@@ -9,6 +9,7 @@
 import { Block } from "../../model/elements/block.js";
 import { getTopBlock, setTopBlock } from "../../model/topBlockService.js";
 import { roundDecimal, sleep } from "../../util/commons.js";
+import { setLogMode } from "../../util/loggingService.js";
 import { getTotalLengthOfAllLines } from "../../view/services/core/lineRenderingService.js";
 import { optimizeTopology } from "../../view/services/feature/optimizeTopologyService.js";
 import { circuit1 } from "./circuits.js";
@@ -17,7 +18,14 @@ export const viewServicesTests = {
   test1: {
     description: "test1: zoomingService",
     steps: async function () {
-      setTopBlock(circuit1(new Block()));
+      setLogMode("null");
+
+      if (getTopBlock()) {
+        getTopBlock().clearState();
+      } else {
+        setTopBlock(new Block());
+      }
+      setTopBlock(circuit1(getTopBlock()));
 
       const zoomInButton = document.getElementById("zoom-in-button");
       const zoomOutButton = document.getElementById("zoom-out-button");
@@ -61,7 +69,12 @@ export const viewServicesTests = {
   test2: {
     description: "test2: optimizeTopologyService",
     steps: async function () {
-      setTopBlock(circuit1(new Block()));
+      if (getTopBlock()) {
+        getTopBlock().clearState();
+      } else {
+        setTopBlock(new Block());
+      }
+      setTopBlock(circuit1(getTopBlock()));
 
       const initialTotalLengthOfAllLines = getTotalLengthOfAllLines();
       await optimizeTopology({

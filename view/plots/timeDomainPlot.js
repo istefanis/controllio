@@ -47,19 +47,6 @@ export default class TimeDomainPlot {
     zeros,
     poles
   ) {
-    this.#plotContainerDomElement = plotContainerDomElement;
-    //create the two plot DOM elements inside the container
-    const markup = `
-      <div class="time-domain-subplot" id="time-response-plot"></div>
-      <div class="time-domain-subplot" id="trajectory-plot"></div>
-    `;
-    plotContainerDomElement.insertAdjacentHTML("afterbegin", markup);
-
-    this.#timeResponsePlotDomElement = plotContainerDomElement.querySelector(
-      "#time-response-plot"
-    );
-    this.#trajectoryPlotDomElement =
-      plotContainerDomElement.querySelector("#trajectory-plot");
     this.#numeratorTermsArray = numeratorTermsArray;
     this.#denominatorTermsArray = denominatorTermsArray;
     this.#zeros = zeros;
@@ -72,9 +59,31 @@ export default class TimeDomainPlot {
       );
     }
 
-    this.createTimeDomainPlot();
+    if (!plotContainerDomElement || !functionPlot) {
+      // return time domain curve points without displaying the plots (ex. for testing)
+      return {
+        timeResponseCurvePoints: this.#timeResponseCurvePoints,
+        trajectoryCurvePoints: this.#trajectoryCurvePoints,
+      };
+    } else {
+      this.#plotContainerDomElement = plotContainerDomElement;
+      //create the two plot DOM elements inside the container
+      const markup = `
+      <div class="time-domain-subplot" id="time-response-plot"></div>
+      <div class="time-domain-subplot" id="trajectory-plot"></div>
+    `;
+      plotContainerDomElement.insertAdjacentHTML("afterbegin", markup);
 
-    return this.#timeDomainObserver;
+      this.#timeResponsePlotDomElement = plotContainerDomElement.querySelector(
+        "#time-response-plot"
+      );
+      this.#trajectoryPlotDomElement =
+        plotContainerDomElement.querySelector("#trajectory-plot");
+
+      this.createTimeDomainPlot();
+
+      return this.#timeDomainObserver;
+    }
   }
 
   /**
