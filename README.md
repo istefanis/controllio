@@ -1,8 +1,10 @@
 # Controllio
 
-![app](https://github.com/istefanis/controllio/blob/main/assets/img/app.png)
+![tests-workflow](https://github.com/istefanis/controllio/actions/workflows/tests.yml/badge.svg)
 
-Controllio is a web app which lets Control Systems engineers design & experiment with LTI (linear time-invariant) dynamical systems online.
+![app-preview](https://github.com/istefanis/controllio/blob/main/assets/img/app.png)
+
+Controllio is a web app which lets Control Systems engineers design & experiment with LTI (linear time-invariant) dynamical systems.
 
 So far, functionality has been implemented for:
 
@@ -18,7 +20,7 @@ So far, functionality has been implemented for:
 
 The motivation behind Controllio is to create an open-source tool for studying Control Systems, which:
 
-- runs on the browser without any installation, is fast and mobile-friendly
+- runs in the browser without any installation, is fast and mobile-friendly
 - is written in a widely-used programming language (vanilla Javascript), and can be easily extended
 
 ## Technical details

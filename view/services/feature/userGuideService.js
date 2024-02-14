@@ -35,7 +35,7 @@ const init = function () {
   <div class="popup-window-tab-contents tab-contents">  
     <section class="tab-content" id="popup-window-tab-content-1">
       <h3>General</h3>
-      <p>Controllio is an open-source web app which lets Control Systems engineers design & experiment with LTI (linear time-invariant) dynamical systems online.</p>
+      <p>Controllio is an open-source web app which lets Control Systems engineers design & experiment with LTI (linear time-invariant) dynamical systems.</p>
       <p>So far, functionality has been implemented for:</p>
       <ul>
         <li>the analytical computation of the overall transfer function (tf) of a system modeled by interconnected elements in the s-domain</li>
@@ -45,9 +45,9 @@ const init = function () {
         <li>the numerical computation of its stability</li>
       </ul>
       <h3>Motivation</h3>
-      <p>The motivation behind Controllio is to create an open-source drafting table for studying control systems, which:</p>
+      <p>The motivation behind Controllio is to create an open-source tool for studying Control Systems, which:</p>
       <ul>
-        <li>runs on the browser without any installation, is fast and mobile-friendly</li>
+        <li>runs in the browser without any installation, is fast and mobile-friendly</li>
         <li>is written in a widely-used programming language (vanilla Javascript), and can be easily extended</li>
       </ul>
       <h3>License</h3>
