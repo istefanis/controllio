@@ -173,6 +173,10 @@ export const resetActiveElements = function () {
   allElements.forEach(makeElementInactive);
 };
 
+export const moveAllElementsToGroundLevel = function () {
+  Array.from(document.querySelectorAll(".element")).map(moveToGroundLevel);
+};
+
 //
 // Stored here to avoid circular dependencies
 //

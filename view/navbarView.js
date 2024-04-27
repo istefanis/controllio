@@ -15,6 +15,7 @@ import {
 } from "./services/feature/elementCreationService.js";
 import { optimizeTopology } from "./services/feature/optimizeTopologyService.js";
 import {
+  copyExpandedOrSelectedElements,
   deleteExpandedOrSelectedElements,
   toggleNewConnectionMode,
 } from "./services/core/elementSelectingAndDraggingService.js";
@@ -162,6 +163,13 @@ if (isTouchScreenDevice) {
     await openNewReadyMadeTfPopupWindow(true);
   });
 }
+
+//
+// Copy button
+//
+const copyButton = document.getElementById("copy-button");
+copyButton.disabled = true;
+copyButton.addEventListener("click", copyExpandedOrSelectedElements);
 
 //
 // Delete button
@@ -387,7 +395,8 @@ const init = function () {
   if (isMobileDevice) {
     setLogMode("null");
   } else {
-    //Delete all button
+    //Display extra buttons
+    copyButton.classList.remove("hidden");
     deleteAllButton.classList.remove("hidden");
 
     //Log Mode slider

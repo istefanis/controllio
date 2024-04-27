@@ -45,6 +45,7 @@ import { renderAllLines } from "./services/core/lineRenderingService.js";
 //
 // Select DOM elements
 //
+const copyButton = document.getElementById("copy-button");
 const deleteButton = document.getElementById("delete-button");
 
 const elementAnalysisWindow = document.querySelector(
@@ -105,16 +106,18 @@ let expandedDomElement;
 export const setExpandedElement = (element) => {
   expandedDomElement = element;
   if (element) {
+    copyButton.disabled = false;
     deleteButton.disabled = false;
   }
 };
 export const getExpandedElement = () => expandedDomElement;
 
-export const resetExpandedElements = () => {
+export const resetExpandedElement = () => {
   if (expandedDomElement) {
     closeElementAnalysisWindow();
     moveToGroundLevel(expandedDomElement);
     setExpandedElement(null);
+    copyButton.disabled = true;
     deleteButton.disabled = true;
   }
 };
@@ -135,7 +138,9 @@ let timeDomainInputSignal;
 let isWindowMaximized = false;
 
 export const openOrUpdateElementAnalysisWindow = function (domElement) {
+  copyButton.disabled = false;
   deleteButton.disabled = false;
+
   let updateExistingWindow = false;
 
   resetActiveElements();
@@ -184,7 +189,7 @@ export const closeElementAnalysisWindow = function () {
     makeElementUnexpanded(expandedDomElement);
     expandedDomElement = null;
 
-    resetExpandedElements();
+    resetExpandedElement();
 
     makeElementHidden(elementAnalysisWindow);
 

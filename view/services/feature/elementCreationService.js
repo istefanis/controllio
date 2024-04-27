@@ -27,6 +27,7 @@ import {
   resetActiveElements,
   getNavbarHeight,
   getZoomFactor,
+  moveAllElementsToGroundLevel,
 } from "../../../util/uiService.js";
 import {
   closeElementAnalysisWindow,
@@ -39,6 +40,7 @@ import {
   setNewlyCreatedElement,
 } from "../core/elementSelectingAndDraggingService.js";
 
+const copyButton = document.getElementById("copy-button");
 const deleteButton = document.getElementById("delete-button");
 
 export const createNewTf = function (invokedByTouchEvent) {
@@ -80,7 +82,10 @@ export const createNewTf = function (invokedByTouchEvent) {
     const tfId = tf.getElementId();
     const tfDomElement = document.querySelector(`#element${tfId}`);
 
+    copyButton.disabled = true;
     deleteButton.disabled = true;
+    moveAllElementsToGroundLevel();
+
     if (invokedByTouchEvent && isMobileDevice) {
       //store state
       enableHistoricalStateStorage();
@@ -154,7 +159,10 @@ export const createNewReadyMadeTf = function (
   const tfId = tf.getElementId();
   const tfDomElement = document.querySelector(`#element${tfId}`);
 
+  copyButton.disabled = true;
   deleteButton.disabled = true;
+  moveAllElementsToGroundLevel();
+
   if (invokedByTouchEvent && isMobileDevice) {
     //store state
     enableHistoricalStateStorage();
@@ -204,7 +212,10 @@ export const createNewAdder = function (invokedByTouchEvent) {
     const adderId = adder.getElementId();
     const adderDomElement = document.querySelector(`#element${adderId}`);
 
+    copyButton.disabled = true;
     deleteButton.disabled = true;
+    moveAllElementsToGroundLevel();
+
     if (invokedByTouchEvent && isMobileDevice) {
       //store state
       enableHistoricalStateStorage();

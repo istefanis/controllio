@@ -33,7 +33,7 @@ export default class AdderView {
       </div>
     `;
     let grid = document.querySelector(".grid");
-    grid.insertAdjacentHTML("afterbegin", markup);
+    grid.insertAdjacentHTML("beforeend", markup);
 
     //retrieve DOM element
     this.#domElement = document.querySelector(`#element${this.#domElementId}`);

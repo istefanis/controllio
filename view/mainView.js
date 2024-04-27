@@ -15,6 +15,7 @@ import {
   endSelectionOrDrag,
   deleteExpandedOrSelectedElements,
   resetExpandedOrSelectedElements,
+  copyExpandedOrSelectedElements,
 } from "./services/core/elementSelectingAndDraggingService.js";
 
 //
@@ -37,7 +38,10 @@ if (isTouchScreenDevice) {
 //
 document.addEventListener("keydown", function (e) {
   if (e.key === "Delete") {
-    deleteExpandedOrSelectedElements();
+    const deleteButton = document.getElementById("delete-button");
+    if (deleteButton.disabled === false) {
+      deleteExpandedOrSelectedElements();
+    }
   } else if (e.key === "Escape") {
     const popupWindow = document.querySelector(".popup-window");
     if (!popupWindow.classList.contains("hidden")) {
@@ -45,6 +49,11 @@ document.addEventListener("keydown", function (e) {
       closePopupWindow();
     } else {
       resetExpandedOrSelectedElements();
+    }
+  } else if (e.ctrlKey && (e.key === "c" || e.key === "C")) {
+    const copyButton = document.getElementById("copy-button");
+    if (copyButton.disabled === false) {
+      copyExpandedOrSelectedElements();
     }
   } else if (e.ctrlKey && (e.key === "z" || e.key === "Z")) {
     const previousButton = document.getElementById("previous-button");

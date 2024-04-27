@@ -19,8 +19,8 @@ Controllio · Open source web drafting table for studying control systems
     <!-- icons -->
     <link
       rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.3/font/bootstrap-icons.min.css"
-      integrity="sha512-YFENbnqHbCRmJt5d+9lHimyEMt8LKSNTMLSaHjvsclnZGICeY/0KYEeiHwD1Ux4Tcao0h60tdcMv+0GljvWyHg=="
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.11.3/font/bootstrap-icons.min.css"
+      integrity="sha512-dPXYcDub/aeb08c63jRq/k6GaKccl256JQy/AnOq7CAnEZ9FzSL9wSbcZkMp4R26vBsMLFYH4kQ67/bbV8XaCQ=="
       crossorigin="anonymous"
       referrerpolicy="no-referrer"
     />
@@ -219,6 +219,21 @@ Controllio · Open source web drafting table for studying control systems
                 If using a non-touch device, after selecting the tf, move your
                 pointer over the canvas, and then click again to position it
               </p>
+            </div>
+          </button>
+          <!-- to be displayed only for non-mobile devices -->
+          <button
+            class="navbar-button button-with-tooltip hidden"
+            id="copy-button"
+          >
+            <i class="bi-copy"></i>
+            <p>Copy</p>
+            <div class="tooltip">
+              <h5>Copy</h5>
+              <p>
+                Copy and paste the selected elements, without their connections
+              </p>
+              <p class="tooltip-expansion">Shortcut: Ctrl + C</p>
             </div>
           </button>
           <button class="navbar-button button-with-tooltip" id="delete-button">

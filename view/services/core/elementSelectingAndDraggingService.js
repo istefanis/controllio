@@ -21,6 +21,7 @@ import {
   getAllElements,
   getNavbarHeight,
   makeElementUnexpanded,
+  moveAllElementsToGroundLevel,
 } from "../../../util/uiService.js";
 import {
   getCanvasContext,
@@ -32,7 +33,7 @@ import {
   closeElementAnalysisWindow,
   setExpandedElement,
   getExpandedElement,
-  resetExpandedElements,
+  resetExpandedElement,
 } from "../../elementAnalysisWindowView.js";
 import { drawLineWithArrow, renderAllLines } from "./lineRenderingService.js";
 import {
@@ -44,6 +45,7 @@ import {
   disableHistoricalStateStorage,
   enableHistoricalStateStorage,
 } from "../../../model/blockStateService.js";
+import { copyElement } from "../feature/elementCopyService.js";
 
 let currentElement; //single selected DOM element
 let isDraggingActive = false;
@@ -69,6 +71,7 @@ let newConnectionElement2;
 const canvasContext = getCanvasContext();
 let navbarHeight;
 
+const copyButton = document.getElementById("copy-button");
 const deleteButton = document.getElementById("delete-button");
 
 //
@@ -77,7 +80,43 @@ const deleteButton = document.getElementById("delete-button");
 
 export const resetExpandedOrSelectedElements = function () {
   resetSelectedElements();
-  resetExpandedElements();
+  resetExpandedElement();
+};
+
+export const copyExpandedOrSelectedElements = function () {
+  if (getExpandedElement()) {
+    //single element case
+    const element = getElementFromElementId(
+      +getExpandedElement().dataset.elementId
+    );
+    closeElementAnalysisWindow();
+
+    //store only one new block state for all changes
+    const block = element.getBlock();
+    disableHistoricalStateStorage();
+    copyElement(element);
+    moveAllElementsToGroundLevel();
+    enableHistoricalStateStorage();
+    block.storeNewHistoricalState();
+
+    resetExpandedOrSelectedElements();
+  } else if (selectedElements.length !== 0) {
+    //multiple elements case
+    //store only one new block state for all changes
+    const block = getElementFromElementId(
+      +selectedElements[0].dataset.elementId
+    ).getBlock();
+    disableHistoricalStateStorage();
+    selectedElements.forEach((x) => {
+      const element = getElementFromElementId(+x.dataset.elementId);
+      copyElement(element);
+      moveAllElementsToGroundLevel();
+    });
+    enableHistoricalStateStorage();
+    block.storeNewHistoricalState();
+
+    resetExpandedOrSelectedElements();
+  }
 };
 
 export const deleteExpandedOrSelectedElements = function () {
@@ -96,6 +135,7 @@ export const deleteExpandedOrSelectedElements = function () {
     block.storeNewHistoricalState();
 
     setExpandedElement(null);
+    copyButton.disabled = true;
     deleteButton.disabled = true;
   } else if (selectedElements.length !== 0) {
     //multiple elements case
@@ -112,6 +152,7 @@ export const deleteExpandedOrSelectedElements = function () {
     block.storeNewHistoricalState();
 
     selectedElements = [];
+    copyButton.disabled = true;
     deleteButton.disabled = true;
   }
 };
@@ -149,6 +190,7 @@ export const toggleNewConnectionMode = () => {
 
     newConnectionMode = true;
     selectedElements = [];
+    copyButton.disabled = true;
     deleteButton.disabled = true;
     isDraggingActive = false;
   } else {
@@ -205,6 +247,7 @@ export const startSelectionOrDrag = function (e) {
       moveToGroundLevel(getExpandedElement());
       if (currentElement !== getExpandedElement()) {
         setExpandedElement(null);
+        copyButton.disabled = true;
         deleteButton.disabled = true;
       }
     }
@@ -243,6 +286,7 @@ export const startSelectionOrDrag = function (e) {
       if (currentElement !== getExpandedElement()) {
         elementToBeUnexpanded = getExpandedElement();
         setExpandedElement(null);
+        copyButton.disabled = true;
         deleteButton.disabled = true;
       }
     }
@@ -263,6 +307,7 @@ export const startSelectionOrDrag = function (e) {
       moveToGroundLevel(getExpandedElement());
       closeElementAnalysisWindow();
       setExpandedElement(null);
+      copyButton.disabled = true;
       deleteButton.disabled = true;
     }
   }
@@ -373,8 +418,10 @@ export const selectionOrDrag = function (e) {
       )
     );
     if (selectedElements.length > 0) {
+      copyButton.disabled = false;
       deleteButton.disabled = false;
     } else if (selectedElements.length === 0) {
+      copyButton.disabled = true;
       deleteButton.disabled = true;
     }
 
@@ -462,6 +509,7 @@ export const endSelectionOrDrag = function (e) {
   ) {
     // console.log("end3");
     setExpandedElement(currentElement);
+    copyButton.disabled = false;
     deleteButton.disabled = false;
     moveToGroundLevel(elementToBeUnexpanded);
     makeElementUnexpanded(elementToBeUnexpanded);
@@ -476,6 +524,7 @@ export const endSelectionOrDrag = function (e) {
   } else if (currentElement && anyElementCanBeExpanded) {
     // console.log("end4");
     setExpandedElement(currentElement);
+    copyButton.disabled = false;
     deleteButton.disabled = false;
     makeElementInactive(getExpandedElement());
     moveΤοForeground(getExpandedElement());
@@ -503,6 +552,8 @@ export const endSelectionOrDrag = function (e) {
   } else {
     // console.log("end6");
     renderAllLines();
+    moveAllElementsToGroundLevel();
+
     if (selectedElements.length > 0) {
       selectedElements.map(moveΤοForeground);
     }
@@ -517,6 +568,7 @@ export const endSelectionOrDrag = function (e) {
 const resetSelectedElements = function () {
   selectedElements.forEach(makeElementInactive);
   selectedElements = [];
+  copyButton.disabled = true;
   deleteButton.disabled = true;
 };
 
