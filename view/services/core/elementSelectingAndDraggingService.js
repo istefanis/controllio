@@ -215,47 +215,47 @@ export const toggleNewConnectionMode = () => {
 
 /**
  * Invoked when the mouse or touch 'click' is initiated
+ * ('mousedown' or 'touchstart' event)
  */
 export const startSelectionOrDrag = function (e) {
   //stop propagation to other overlappping elements
   e.stopPropagation();
 
-  //set the canvas size here, in case the window has been resized meanwhile
-  //(it will delete all existing elements)
+  //reset the canvas, in case the window has been resized meanwhile (it will delete all existing lines)
   resetCanvas();
   renderAllLines();
   navbarHeight = getNavbarHeight();
 
   currentElement = e.target.closest(".element"); //will be reset at endSelectionOrDrag()
   if (newlyCreatedElement) {
-    //just to escape the other 'if' clauses
+    // console.log("start-1");
+    //case: click on the grid to place a newly created element
+    //(just to escape the other 'if' clauses)
   } else if (
     selectedElements.length > 0 &&
     currentElement &&
     selectedElements.includes(currentElement)
   ) {
-    // console.log("start1");
-    //existing selection area + single element click case (drag and drop multiple elements - phase 2)
+    // console.log("start-2");
+    //case: click on a single element, which is one of the elements already selected via area selection
+    //(drag and drop of area selection elements - phase 2: translation of selected elements)
+
     setCursorCoordinates(e);
     selectedElements.map(moveΤοForeground);
-
-    //unexpand element when drag and drop multiple elements starts,
-    //or when clicking in empty space
-    if (getExpandedElement()) {
-      // console.log("start1-2");
-      closeElementAnalysisWindow();
-      moveToGroundLevel(getExpandedElement());
-      if (currentElement !== getExpandedElement()) {
-        setExpandedElement(null);
-        copyButton.disabled = true;
-        deleteButton.disabled = true;
-      }
-    }
   } else if (newConnectionMode && currentElement) {
+    // console.log("start-3");
+    //case: click on element to define an new connection
+
     if (!newConnectionElement1) {
+      // console.log("start-3.1");
+      //case: click on first element of the new connection
+
       newConnectionElement1 = currentElement;
       makeElementActive(newConnectionElement1);
     } else if (!newConnectionElement2) {
+      // console.log("start-3.2");
+      //case: click on second element of the new connection
+
       const element2 = getElementFromElementId(
         +currentElement.dataset.elementId
       );
@@ -268,42 +268,50 @@ export const startSelectionOrDrag = function (e) {
         +newConnectionElement1.dataset.elementId
       );
 
-      //connect
       connect(element1, element2);
     }
   } else if (currentElement) {
-    // console.log("start3");
-    //single element selection case (drag and drop single element)
+    // console.log("start-4");
+    //case: single element selection, or start of single element dragging (drag and drop of single element)
+    // - elements may or may not be selected before
+
     resetActiveElements();
     resetSelectedElements();
     setCursorCoordinates(e);
     moveΤοForeground(currentElement);
 
-    //unexpand element when drag and drop single element starts,
-    //or when clicking in empty space
-    if (getExpandedElement()) {
-      // console.log("start3-2");
-      if (currentElement !== getExpandedElement()) {
-        elementToBeUnexpanded = getExpandedElement();
-        setExpandedElement(null);
-        copyButton.disabled = true;
-        deleteButton.disabled = true;
-      }
+    if (getExpandedElement() && currentElement !== getExpandedElement()) {
+      // console.log("start-4.1");
+      //case: click on a different element, while another one is already expanded
+      //(the expanded element to be unexpanded if drag and drop starts)
+
+      elementToBeUnexpanded = getExpandedElement();
+      copyButton.disabled = true;
+      deleteButton.disabled = true;
     }
   } else {
+    // console.log("start-5");
+    //case: click on empty space, or start a new area selection dragging
+    //(drag and drop of area selection elements - phase 1: selection of elements)
+    // - elements may or may not be selected before
+
     if (newConnectionMode) {
+      // console.log("start-5.1");
+      //case: click on empty space, or start a new area selection dragging,
+      //which cancels the definition of a new connection between elements
+
       toggleNewConnectionMode();
     }
 
-    // console.log("start4");
-    //new selection area case (drag and drop multiple elements - phase 1)
     resetActiveElements();
     resetSelectedElements();
     setInitialCursorCoordinates(e);
 
     if (getExpandedElement()) {
-      //unexpand element when new selection area dragging starts
-      // console.log("start4-2");
+      // console.log("start-5.2");
+      //case: element to be unexpanded,
+      //after a click on empty space, or the start of a new area selection dragging
+
       moveToGroundLevel(getExpandedElement());
       closeElementAnalysisWindow();
       setExpandedElement(null);
@@ -316,13 +324,16 @@ export const startSelectionOrDrag = function (e) {
 
 /**
  * Invoked when the mouse is moved or when the touch point is dragged
+ * ('mousemove' or 'touchmove' event)
  */
 export const selectionOrDrag = function (e) {
   e.stopPropagation();
   // e.preventDefault();
 
   if (newlyCreatedElement) {
-    // console.log("drag1");
+    // console.log("drag-1");
+    //case: translate a newly created element, before placing it on the grid
+
     makeElementActive(newlyCreatedElement);
     changeCursorStyle("move", newlyCreatedElement);
 
@@ -338,8 +349,10 @@ export const selectionOrDrag = function (e) {
     isDraggingActive &&
     selectedElements.includes(currentElement)
   ) {
-    //existing selection area + single element click case (drag and drop multiple elements - phase 2)
-    // console.log("drag2");
+    // console.log("drag-2");
+    //case: elements are selected via an area selection & are now being dragged, after a single element click
+    //(drag and drop of area selection elements - phase 2: translation of selected elements)
+
     changeCursorStyle("move", currentElement);
 
     setTranslateCoordinates(e);
@@ -351,6 +364,10 @@ export const selectionOrDrag = function (e) {
 
     renderAllLines();
   } else if (newConnectionMode && newConnectionElement1) {
+    // console.log("drag-3");
+    //case: translation of the mouse over the grid to define a new connection,
+    //after the first/start element has been selected
+
     //calculate start & end points
     const newConnectionElement1BoundingRect =
       newConnectionElement1.getBoundingClientRect();
@@ -373,13 +390,20 @@ export const selectionOrDrag = function (e) {
     renderAllLines();
     drawLineWithArrow(startX, startY, endX, endY);
   } else if (currentElement && isDraggingActive) {
-    //single element selection case (drag and drop single element)
+    // console.log("drag-4");
+    //case: single element dragging, after single element selection (drag and drop of single element)
+    //(element is expanded or unexpanded)
 
     if (currentElement !== getExpandedElement()) {
-      // console.log("drag3");
+      // console.log("drag-4.1");
+      //case: dragging of an unexpanded element
+
       anyElementCanBeExpanded = false;
       if (elementToBeUnexpanded) {
-        // console.log("drag3-2");
+        // console.log("drag-4.1.1");
+        //case: start of dragging of an unexpanded element, while another element is still expanded
+        //(this will run only once during a dragging, to unexpand the expanded element)
+
         closeElementAnalysisWindow();
         moveToGroundLevel(elementToBeUnexpanded);
         elementToBeUnexpanded = null;
@@ -396,7 +420,10 @@ export const selectionOrDrag = function (e) {
 
     renderAllLines();
   } else if (isDraggingActive) {
-    //new selection area case (drag and drop multiple elements - phase 1)
+    // console.log("drag-5");
+    //case: translation of the mouse over the grid to define a new area selection
+    //(drag and drop of area selection elements - phase 1: selection of elements)
+
     const clientX = e.type === "touchmove" ? e.touches[0].clientX : e.clientX;
     const clientY =
       e.type === "touchmove"
@@ -442,23 +469,31 @@ export const selectionOrDrag = function (e) {
 
 /**
  * Invoked when the mouse or touch 'click' is completed
+ * ('mouseup' or 'touchend' event)
  */
 export const endSelectionOrDrag = function (e) {
   e.preventDefault();
   e.stopPropagation();
 
   if (newConnectionMode) {
+    // console.log("end-1");
+    //case: click on first element of the new connection
+
     if (newConnectionElement2) {
+      // console.log("end-1.1");
+      //case: click on second element of the new connection
+
       toggleNewConnectionMode();
     }
-
-    //existing selection area + single element click case (drag and drop multiple elements - phase 2)
   } else if (
     selectedElements.length > 0 &&
     currentElement &&
     selectedElements.includes(currentElement)
   ) {
-    // console.log("end1");
+    // console.log("end-2");
+    //case: end of dragging of elements selected via an area selection
+    //(drag and drop of area selection elements - phase 2: translation of selected elements)
+
     selectedElements.map(moveToGroundLevel);
     changeCursorStyle("pointer", currentElement);
 
@@ -468,15 +503,17 @@ export const endSelectionOrDrag = function (e) {
       .storeNewHistoricalState();
 
     currentElement = null;
-
-    //single expanded element selection case (drag and drop single expanded element)
   } else if (
     currentElement &&
     anyElementCanBeExpanded &&
     currentElement === getExpandedElement()
   ) {
+    // console.log("end-3");
+    //case: end of dragging of single expanded element
+
     if (newlyCreatedElement) {
-      // console.log("end2-1");
+      // console.log("end-3.1");
+      //case: end of placement of newly created element
       enableHistoricalStateStorage();
 
       newlyCreatedElement = null;
@@ -489,7 +526,6 @@ export const endSelectionOrDrag = function (e) {
       makeButtonInActive(newAdderButton);
     }
 
-    // console.log("end2");
     makeElementInactive(currentElement);
     changeCursorStyle("pointer", currentElement);
 
@@ -500,14 +536,14 @@ export const endSelectionOrDrag = function (e) {
 
     currentElement = null;
     anyElementCanBeExpanded = true;
-
-    //expand another element by clicking on it
   } else if (
     currentElement &&
     anyElementCanBeExpanded &&
     elementToBeUnexpanded
   ) {
-    // console.log("end3");
+    // console.log("end-4");
+    //case: expand another element by clicking on it
+
     setExpandedElement(currentElement);
     copyButton.disabled = false;
     deleteButton.disabled = false;
@@ -519,10 +555,10 @@ export const endSelectionOrDrag = function (e) {
     currentElement = null;
     anyElementCanBeExpanded = true;
     elementToBeUnexpanded = null;
-
-    //expand new element by clicking on it
   } else if (currentElement && anyElementCanBeExpanded) {
-    // console.log("end4");
+    // console.log("end-5");
+    //case: expand new element by clicking on it (no other element is previously expanded)
+
     setExpandedElement(currentElement);
     copyButton.disabled = false;
     deleteButton.disabled = false;
@@ -532,10 +568,10 @@ export const endSelectionOrDrag = function (e) {
     openOrUpdateElementAnalysisWindow(getExpandedElement());
     currentElement = null;
     anyElementCanBeExpanded = true;
-
-    //single element selection case (drag and drop single element)
   } else if (currentElement) {
-    // console.log("end5");
+    // console.log("end-6");
+    //case: end of dragging of single unexpanded element
+
     makeElementInactive(currentElement);
     moveToGroundLevel(currentElement);
     changeCursorStyle("pointer", currentElement);
@@ -547,10 +583,11 @@ export const endSelectionOrDrag = function (e) {
 
     currentElement = null;
     anyElementCanBeExpanded = true;
-
-    //new selection area case (drag and drop multiple elements - phase 1) or click in empty space
   } else {
-    // console.log("end6");
+    // console.log("end-7");
+    //case: click on empty space, or end of new area selection dragging
+    //(drag and drop of area selection elements - phase 1: selection of elements)
+
     renderAllLines();
     moveAllElementsToGroundLevel();
 
@@ -573,7 +610,7 @@ const resetSelectedElements = function () {
 };
 
 /**
- * Set the selection area starting point coordinates
+ * Set the area selection starting point coordinates
  */
 const setInitialCursorCoordinates = function (e) {
   if (e.type === "touchstart") {
