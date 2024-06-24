@@ -52,7 +52,16 @@ document.addEventListener("keydown", function (e) {
     }
   } else if (e.ctrlKey && (e.key === "c" || e.key === "C")) {
     const copyButton = document.getElementById("copy-button");
-    if (copyButton.disabled === false) {
+
+    //if an input text field is on focus, disable element copy in favor of text copy
+    const elementOnFocus = document.querySelector(":focus");
+    const inputElements = [
+      ...document.querySelectorAll(".update-element-value-input"),
+    ];
+    if (
+      copyButton.disabled === false &&
+      !inputElements.includes(elementOnFocus)
+    ) {
       copyExpandedOrSelectedElements();
     }
   } else if (e.ctrlKey && (e.key === "z" || e.key === "Z")) {
