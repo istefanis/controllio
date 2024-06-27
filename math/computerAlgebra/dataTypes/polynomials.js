@@ -289,8 +289,14 @@ export const loadPolynomialsOperations = function () {
       coeff(firstTerm(gcd1)),
       1 + maxOrder - order(firstTerm(gcd1))
     );
-    const numerator = divideTerms(multiplyRealByTermsArray(x, ta1), gcd1);
-    const denominator = divideTerms(multiplyRealByTermsArray(x, ta2), gcd1);
+    const numerator = divideTerms(
+      !isZeroWithinTolerance(x) ? multiplyRealByTermsArray(x, ta1) : ta1,
+      gcd1
+    );
+    const denominator = divideTerms(
+      !isZeroWithinTolerance(x) ? multiplyRealByTermsArray(x, ta2) : ta2,
+      gcd1
+    );
     // console.log("numerator: ", numerator, "denominator: ", denominator);
 
     // division with gcd1 returns no remainder, so:
