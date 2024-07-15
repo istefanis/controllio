@@ -206,19 +206,22 @@ export const findComplexRootsOfPolynomial = function (termsArray) {
 };
 
 //
-// Laplace inversion
+// Laplace-transform inversion
 //
 
 /**
- * Using an implementation of the Talbot numerical method for Laplace inversion,
- * after taking as input the s-domain Laplace transform function F(s),
+ * Using an implementation of the Talbot numerical method for Laplace-transform inversion,
+ * after taking as input the s-domain function F(s),
  * compute the t-domain function value f(t) at time t
  *
  * It uses the 'Complex' library
  */
-export const TalbotMethod = function (F, t, N) {
+export const talbotMethodForLaplaceTransformInversion = function (F, t, N) {
   if (t <= 0) {
-    console.error("TalbotMethod()", "t must be positive");
+    console.error(
+      "talbotMethodForLaplaceTransformInversion()",
+      "t must be positive"
+    );
     return;
   }
 

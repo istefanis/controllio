@@ -8,8 +8,8 @@
 
 import { tfEvaluatedWithComplexNumber } from "../../math/complexAnalysis/complexAnalysisService.js";
 import {
-  TalbotMethod,
   linearInterpolationOfCurvePoints,
+  talbotMethodForLaplaceTransformInversion,
 } from "../../math/numericalAnalysis/numericalAnalysisService.js";
 import { areAllTfTermsNumbers } from "../../util/commons.js";
 import { logMessages } from "../../util/loggingService.js";
@@ -105,7 +105,7 @@ export default class TimeDomainPlot {
 
     for (let t = this.#tMin; t <= this.#tMax; t += step) {
       //new values
-      newFunctionValue = TalbotMethod(
+      newFunctionValue = talbotMethodForLaplaceTransformInversion(
         tfEvaluatedWithComplexNumber(
           this.#numeratorTermsArray,
           this.#denominatorTermsArray

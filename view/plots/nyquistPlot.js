@@ -45,6 +45,9 @@ export default class NyquistPlot {
 
   #nyquistObserver;
 
+  //plot colors
+  #curveSegmentColor1 = "#4682b4";
+  #curveSegmentColor2 = "#aaaaaa";
   constructor(
     plotContainerDomElement,
     numeratorTermsArray,
@@ -156,8 +159,6 @@ export default class NyquistPlot {
   }
 
   createNyquistPlot() {
-    const arrowsNumber = 100;
-
     let plotBoundRect = this.#nyquistPlotDomElement.getBoundingClientRect();
     let plotWidth = plotBoundRect.width;
     let plotHeight = plotBoundRect.height;
@@ -170,6 +171,9 @@ export default class NyquistPlot {
     // const imags = this.#curvePoints.map((x) => x[2]);
     // const minImag = Math.min(...imags);
     // const maxImag = Math.max(...imags);
+
+    const arrowsNumber = 100;
+    const maxAllowedDistanceOfConsecutivePoints = 50;
 
     //set limits for coordinates of plotted points
     const xMax = 10 ** 4;
@@ -198,31 +202,41 @@ export default class NyquistPlot {
         //     )(scope.x);
         //   },
         // },
-        {
-          points: this.#curvePoints
-            .filter((x) => x[0] > 0 && x[1] < xMax && x[2] < yMax)
-            .map((x) => [x[1], x[2]]),
-          // color: "red",
-          fnType: "points",
-          graphType: "polyline",
-        },
-        {
-          points: this.#curvePoints
-            .filter((x) => x[0] < 0 && x[1] > -xMax && x[2] > -yMax)
-            .map((x) => [x[1], x[2]]),
-          fnType: "points",
-          graphType: "polyline",
-          color: "gray",
-        },
         // {
         //   graphType: "polyline",
-        //   color: "gray",
         //   fn: (scope) => {
         //     return linearInterpolationOfCurvePoints(
         //       this.#curvePoints.filter((x) => x[0] < 0).map((x) => [x[1], x[2]])
         //     )(scope.x);
         //   },
+        //   color: this.#curveSegmentColor2,
         // },
+        ...divideNyquistCurveIntoSegments(
+          this.#curvePoints
+            .filter((x) => x[0] > 0 && x[1] < xMax && x[2] < yMax)
+            .map((x) => [x[1], x[2]]),
+          maxAllowedDistanceOfConsecutivePoints
+        ).map((curvePointsSegment) => {
+          return {
+            points: curvePointsSegment,
+            fnType: "points",
+            graphType: "polyline",
+            color: this.#curveSegmentColor1,
+          };
+        }),
+        ...divideNyquistCurveIntoSegments(
+          this.#curvePoints
+            .filter((x) => x[0] < 0 && x[1] > -xMax && x[2] > -yMax)
+            .map((x) => [x[1], x[2]]),
+          maxAllowedDistanceOfConsecutivePoints
+        ).map((curvePointsSegment) => {
+          return {
+            points: curvePointsSegment,
+            fnType: "points",
+            graphType: "polyline",
+            color: this.#curveSegmentColor2,
+          };
+        }),
         {
           points: this.#zeros,
           fnType: "points",
@@ -409,7 +423,7 @@ const computeNyquistRealAndImagWFunctions = function (
   );
 
   //
-  // define magnitude & phase functions
+  // define real & imag functions
   //
   const numReal = functionFromPolynomialTermsArray(
     polynomialEvaluatedWithWiRealTermsArray(numeratorTermsArray)
@@ -466,4 +480,42 @@ const computeStability = function (numeratorTermsArray, denominatorTermsArray) {
     stability = "N/A";
   }
   return stability;
+};
+
+/**
+ * Divide a Nyquist plot curve into multiple segments, in case
+ * connections between two consecutive points of paths tending into inf
+ * are expected to be made
+ *
+ * @returns an array of curve segments
+ * (with each curve segment as an array of points)
+ */
+const divideNyquistCurveIntoSegments = (
+  curvePoints,
+  maxAllowedDistanceOfConsecutivePoints
+) => {
+  const allSegments = [];
+  let currentSegment = [];
+
+  for (let p of curvePoints) {
+    if (currentSegment.length === 0) {
+      currentSegment.push(p);
+    } else {
+      const lastP = currentSegment.slice(-1)[0];
+
+      if (
+        (lastP[0] * p[0] < 0 || lastP[1] * p[1] < 0) &&
+        Math.sqrt((lastP[0] - p[0]) ** 2 + (lastP[1] - p[1]) ** 2) >
+          maxAllowedDistanceOfConsecutivePoints
+      ) {
+        //segment end
+        allSegments.push([...currentSegment]);
+        currentSegment = [];
+      }
+      currentSegment.push(p);
+    }
+  }
+  allSegments.push([...currentSegment]);
+
+  return allSegments;
 };
