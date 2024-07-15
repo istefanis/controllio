@@ -407,11 +407,11 @@ export const plotsTests = {
         characteristicNumbers?.rollOffText,
         "0 [dB/dec] (low), 0 [dB/dec] (high)",
       ],
-      ["Phase at wMin", phaseCurvePoints[0][1], "-180", toleranceTestsMedium],
+      ["Phase at wMin", phaseCurvePoints[0][1], "0", toleranceTestsMedium],
       [
         "Phase at wMax",
         phaseCurvePoints[phaseCurvePoints.length - 1][1],
-        "0",
+        "180",
         toleranceTestsMedium,
       ],
     ],
@@ -479,11 +479,11 @@ export const plotsTests = {
       phaseCurvePoints,
       characteristicNumbers
     ) => [
-      ["Phase at wMin", phaseCurvePoints[0][1], "-720", toleranceTestsMedium],
+      ["Phase at wMin", phaseCurvePoints[0][1], "180", toleranceTestsMedium],
       [
         "Phase at wMax",
         phaseCurvePoints[phaseCurvePoints.length - 1][1],
-        "-720",
+        "180",
         toleranceTestsMedium,
       ],
     ],
@@ -539,6 +539,66 @@ export const plotsTests = {
         "Roll-off",
         characteristicNumbers?.rollOffText,
         "0 [dB/dec] (low), 0 [dB/dec] (high)",
+      ],
+    ],
+  },
+
+  test19: {
+    description: "test19: tf([1, 2], [1, 5])",
+    numeratorTermsArray: [1, 2],
+    denominatorTermsArray: [1, 5],
+    steps: bodeSteps,
+    assertions: (
+      magnitudeCurvePoints,
+      phaseCurvePoints,
+      characteristicNumbers
+    ) => [
+      ["Phase at wMin", phaseCurvePoints[0][1], "0", toleranceTestsMedium],
+      [
+        "Phase at wMax",
+        phaseCurvePoints[phaseCurvePoints.length - 1][1],
+        "0",
+        toleranceTestsMedium,
+      ],
+    ],
+  },
+
+  test20: {
+    description: "test20: tf([1, -2], [1, 5])",
+    numeratorTermsArray: [1, -2],
+    denominatorTermsArray: [1, 5],
+    steps: bodeSteps,
+    assertions: (
+      magnitudeCurvePoints,
+      phaseCurvePoints,
+      characteristicNumbers
+    ) => [
+      ["Phase at wMin", phaseCurvePoints[0][1], "180", toleranceTestsMedium],
+      [
+        "Phase at wMax",
+        phaseCurvePoints[phaseCurvePoints.length - 1][1],
+        "0",
+        toleranceTestsMedium,
+      ],
+    ],
+  },
+
+  test21: {
+    description: "test21: tf([-0.15, -2, -200, -2000], [1, 5, 1000, 2000])",
+    numeratorTermsArray: [-0.15, -2, -200, -2000],
+    denominatorTermsArray: [1, 5, 1000, 2000],
+    steps: bodeSteps,
+    assertions: (
+      magnitudeCurvePoints,
+      phaseCurvePoints,
+      characteristicNumbers
+    ) => [
+      ["Phase at wMin", phaseCurvePoints[0][1], "180", toleranceTestsMedium],
+      [
+        "Phase at wMax",
+        phaseCurvePoints[phaseCurvePoints.length - 1][1],
+        "180",
+        toleranceTestsMedium,
       ],
     ],
   },

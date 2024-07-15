@@ -6,7 +6,11 @@
  * View / Plots / PlotService
  */
 
-import { isPowerOfTen, roundDecimal } from "../../util/commons.js";
+import {
+  isPowerOfTen,
+  roundDecimal,
+  tolerancePhaseUnwrapMedium,
+} from "../../util/commons.js";
 import { logMessages } from "../../util/loggingService.js";
 
 // to run with NPM uncomment this:
@@ -191,14 +195,14 @@ export class PhaseUnwrapper {
     newPhaseValue += this.#phaseAdjustmentTotal;
     this.#newAdjustment = 0;
     let diff = newPhaseValue - lastPhaseValue;
-    if (diff > 300) {
+    if (diff > 220) {
       // console.log("case1", newPhaseValue, lastPhaseValue);
       logMessages(
         [`[CP-83] Phase unwarp adjustment by -360, at w=${roundDecimal(w, 5)}`],
         "checkpoints"
       );
       this.#newAdjustment = -360;
-    } else if (diff < -300) {
+    } else if (diff < -220) {
       // console.log("case2", newPhaseValue, lastPhaseValue);
       logMessages(
         [`[CP-84] Phase unwarp adjustment by +360, at w=${roundDecimal(w, 5)}`],
@@ -208,13 +212,13 @@ export class PhaseUnwrapper {
     } else if (
       (diff > 70 || diff < -70) &&
       [...this.#expectedSteepPhaseShiftsMap].filter(
-        (x) => Math.abs(x[0] - w) < 0.05
+        (x) => Math.abs(x[0] - w) < tolerancePhaseUnwrapMedium
       ).length === 1
     ) {
       // console.log("case3", newPhaseValue, lastPhaseValue);
       const expectedSteepPhaseShift = [
         ...this.#expectedSteepPhaseShiftsMap,
-      ].filter((x) => Math.abs(x[0] - w) < 0.05)[0][1];
+      ].filter((x) => Math.abs(x[0] - w) < tolerancePhaseUnwrapMedium)[0][1];
       logMessages(
         [
           `[CP-85] Steep phase shift by ${

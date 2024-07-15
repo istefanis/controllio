@@ -15,6 +15,8 @@ import {
   functionFromPolynomialTermsArray,
   areAllTfTermsNumbers,
   roundDecimal,
+  toleranceNumericalAnalysisSmall,
+  tolerancePhaseAdjustmentLarge,
 } from "../../util/commons.js";
 import { logMessages } from "../../util/loggingService.js";
 import {
@@ -159,8 +161,16 @@ export default class BodePlot {
 
     //compute expected steep phase shifts due to polynomial zeros & poles at y-axis
     const expectedSteepPhaseShiftsMap = new Map();
-    const zerosAtYAxis = this.#zeros.filter((x) => x[0] === 0 && x[1] !== 0);
-    const polesAtYAxis = this.#poles.filter((x) => x[0] === 0 && x[1] !== 0);
+    const zerosAtYAxis = this.#zeros.filter(
+      (x) =>
+        (x[0] === 0 && x[1] !== 0) ||
+        (Math.abs(x[0]) < 1 && Math.abs(x[1] / x[0]) > 15)
+    );
+    const polesAtYAxis = this.#poles.filter(
+      (x) =>
+        (x[0] === 0 && x[1] !== 0) ||
+        (Math.abs(x[0]) < 1 && Math.abs(x[1] / x[0]) > 15)
+    );
 
     zerosAtYAxis.forEach((x) => {
       const value = expectedSteepPhaseShiftsMap.get(Math.abs(x[1]));
@@ -186,7 +196,8 @@ export default class BodePlot {
     let newMagnitudeValue;
     let newPhaseValue;
     let lastMagnitudeValue = magnitude(this.#wMin);
-    let lastPhaseValue = (180 / Math.PI) * phase(this.#wMin);
+    const firstPhaseValue = (180 / Math.PI) * phase(this.#wMin);
+    let lastPhaseValue = firstPhaseValue;
 
     const variableStep = new VariableStep();
     const phaseUnwrapper = new PhaseUnwrapper(expectedSteepPhaseShiftsMap);
@@ -256,22 +267,49 @@ export default class BodePlot {
         ? Math.max(...magnitudeCurvePoints)
         : undefined;
 
-    //adjust phase based on expected phase value at wMax according to the transfer function polynomials
-    const zerosAtPositiveHalfplane = this.#zeros.filter((x) => x[0] > 0).length;
-    const zerosAtNegativeHalfplaneOrYAxis = this.#zeros.filter(
-      (x) => x[0] <= 0
-    ).length;
+    //calculate pre-adjusted phase min & max values
+    const minPhaseTemp =
+      this.#phaseCurvePoints.length > 0
+        ? Math.min(...this.#phaseCurvePoints.map((x) => x[1]))
+        : undefined;
+    const maxPhaseTemp =
+      this.#phaseCurvePoints.length > 0
+        ? Math.max(...this.#phaseCurvePoints.map((x) => x[1]))
+        : undefined;
 
-    const expectedPhaseValueAtWmax =
-      -90 *
-      (this.#denominatorTermsArray.length -
-        1 +
-        zerosAtPositiveHalfplane -
-        zerosAtNegativeHalfplaneOrYAxis);
+    let expectedPhaseValueAtWmax = lastPhaseValue;
+    const tol = tolerancePhaseAdjustmentLarge;
 
-    if (lastPhaseValue > expectedPhaseValueAtWmax + 10) {
+    //adjust expected phase value at wMax - case 1
+    if (minPhaseTemp > 180 - tol && maxPhaseTemp > minPhaseTemp + 2 * tol) {
+      expectedPhaseValueAtWmax = lastPhaseValue - 360;
+    } else if (
+      maxPhaseTemp < -180 + tol &&
+      maxPhaseTemp > minPhaseTemp + 2 * tol
+    ) {
+      expectedPhaseValueAtWmax = lastPhaseValue + 360;
+    }
+
+    //adjust expected phase value at wMax - case 2
+    //(display absolute phase values beyond 180, as an exception in this case)
+    const polesAtYAxisOrOrigin = this.#poles.filter((x) => x[0] === 0).length;
+    const zerosAtYAxisOrOrigin = this.#zeros.filter((x) => x[0] === 0).length;
+    if (
+      this.#poles.length === polesAtYAxisOrOrigin &&
+      this.#zeros.length === 0
+    ) {
+      expectedPhaseValueAtWmax = -90 * polesAtYAxisOrOrigin;
+    } else if (
+      this.#zeros.length === zerosAtYAxisOrOrigin &&
+      this.#poles.length === 0
+    ) {
+      expectedPhaseValueAtWmax = 90 * zerosAtYAxisOrOrigin;
+    }
+
+    //apply adjustment
+    if (lastPhaseValue > expectedPhaseValueAtWmax + tol) {
       const factor = Math.ceil(
-        (Math.abs(lastPhaseValue - expectedPhaseValueAtWmax) - 10) / 180
+        (Math.abs(lastPhaseValue - expectedPhaseValueAtWmax) - tol) / 180
       );
       logMessages(
         [
@@ -287,9 +325,9 @@ export default class BodePlot {
       this.#phaseCurvePoints.forEach(
         (_, i) => (this.#phaseCurvePoints[i][1] -= factor * 180)
       );
-    } else if (lastPhaseValue + 10 < expectedPhaseValueAtWmax) {
+    } else if (lastPhaseValue + tol < expectedPhaseValueAtWmax) {
       const factor = Math.ceil(
-        (Math.abs(expectedPhaseValueAtWmax - lastPhaseValue) - 10) / 180
+        (Math.abs(expectedPhaseValueAtWmax - lastPhaseValue) - tol) / 180
       );
       logMessages(
         [

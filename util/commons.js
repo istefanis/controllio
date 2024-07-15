@@ -55,11 +55,13 @@ export const roundDecimalDigitsNumericalAnalysis = 3;
 export const roundDecimalDigitsPrettyPrinting = 3;
 export const roundDecimalDigitsTests = 3;
 
-export const toleranceNumericalAnalysisTiny = 10 ** -10;
+export const toleranceNumericalAnalysisTiny = 10 ** -8;
 export const toleranceNumericalAnalysisSmall = 10 ** -4;
 export const toleranceTestsSmall = 10 ** -4;
 export const toleranceTestsMedium = 0.2;
 export const toleranceTestsLarge = 3;
+export const tolerancePhaseUnwrapMedium = 0.05;
+export const tolerancePhaseAdjustmentLarge = 10;
 
 export const isZeroWithinTolerance = function (x) {
   return Math.abs(x) < toleranceNumericalAnalysisTiny;
