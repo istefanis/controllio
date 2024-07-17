@@ -28,6 +28,7 @@ import {
   getNavbarHeight,
   getZoomFactor,
   moveAllElementsToGroundLevel,
+  toggledButtons,
 } from "../../../util/uiService.js";
 import {
   closeElementAnalysisWindow,
@@ -39,9 +40,6 @@ import {
   getNewlyCreatedElement,
   setNewlyCreatedElement,
 } from "../core/elementSelectingAndDraggingService.js";
-
-const copyButton = document.getElementById("copy-button");
-const deleteButton = document.getElementById("delete-button");
 
 export const createNewTf = function (invokedByTouchEvent) {
   const newTfButton = document.getElementById("tf-button");
@@ -82,8 +80,7 @@ export const createNewTf = function (invokedByTouchEvent) {
     const tfId = tf.getElementId();
     const tfDomElement = document.querySelector(`#element${tfId}`);
 
-    copyButton.disabled = true;
-    deleteButton.disabled = true;
+    toggledButtons.forEach((x) => (x.disabled = true));
     moveAllElementsToGroundLevel();
 
     if (invokedByTouchEvent && isMobileDevice) {
@@ -119,7 +116,8 @@ export const createNewReadyMadeTf = function (
   clientX,
   clientY,
   domElementWidth,
-  invokedByTouchEvent
+  invokedByTouchEvent,
+  samplingT
 ) {
   const newReadyMadeTfButton = document.getElementById("ready-made-tf-button");
 
@@ -145,22 +143,23 @@ export const createNewReadyMadeTf = function (
   //create new tf
   const tf = new Tf(
     new Ratio(
-      new Polynomial("s", numTermsArray),
-      new Polynomial("s", denTermsArray)
+      new Polynomial(samplingT ? "z" : "s", numTermsArray),
+      new Polynomial(samplingT ? "z" : "s", denTermsArray)
     ),
     block,
     {
       left: position.left,
       top: position.top,
-    }
+    },
+    null,
+    samplingT
   );
 
   //retrieve DOM element
   const tfId = tf.getElementId();
   const tfDomElement = document.querySelector(`#element${tfId}`);
 
-  copyButton.disabled = true;
-  deleteButton.disabled = true;
+  toggledButtons.forEach((x) => (x.disabled = true));
   moveAllElementsToGroundLevel();
 
   if (invokedByTouchEvent && isMobileDevice) {
@@ -212,8 +211,7 @@ export const createNewAdder = function (invokedByTouchEvent) {
     const adderId = adder.getElementId();
     const adderDomElement = document.querySelector(`#element${adderId}`);
 
-    copyButton.disabled = true;
-    deleteButton.disabled = true;
+    toggledButtons.forEach((x) => (x.disabled = true));
     moveAllElementsToGroundLevel();
 
     if (invokedByTouchEvent && isMobileDevice) {

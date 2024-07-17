@@ -31,7 +31,13 @@ export const copyElement = function (element) {
     if (element.isAdder()) {
       return new Adder(block, copiedElementPosition);
     } else if (element.isTf()) {
-      return new Tf(element.getValue(), block, copiedElementPosition);
+      return new Tf(
+        element.getValue(),
+        block,
+        copiedElementPosition,
+        null,
+        element.getSamplingT()
+      );
     }
   }
 };

@@ -15,6 +15,23 @@ export const isPowerOfTen = (x) => Math.log10(Math.abs(x)) % 1 === 0;
 export const isSymbol = (x) => typeof x === "string" || x instanceof String;
 export const isReal = (x) => !isNaN(x) && x !== true && x !== false;
 
+/**
+ * Check whether a nested array tree contains any symbols
+ */
+export const containsSymbols = function (a) {
+  if (!a) return false;
+  if (Array.isArray(a)) {
+    if (a.length > 1) {
+      return containsSymbols(a[0]) || containsSymbols(a.slice(1));
+    } else if (a.length === 1) {
+      return containsSymbols(a[0]);
+    } else {
+      return false;
+    }
+  }
+  return isSymbol(a[0]) && !primitiveOperationsSymbols.includes(a[0]);
+};
+
 export const areEqualArrays = (a1, a2) => {
   if (a1.length !== a2.length) return false;
   return JSON.stringify(a1) == JSON.stringify(a2);
@@ -139,6 +156,52 @@ export const computeButterworthTermsArrays = function (
 
   return [numeratorTermsArray, denominatorTermsArray];
 };
+
+//
+// Pascal's triangle
+//
+
+/**
+ * Compute a single binomial coefficient
+ *
+ * Example:
+ * - (1,1) => 1
+ * - (1,2) => 1,  (2,2)=> 1
+ * - (1,3) => 1,  (2,3)=> 2,  (3,3)=> 1
+ */
+export const pascalTriangleElement = (element, line) => {
+  if (element > line) {
+    return 0;
+  } else if (element === 1 || element === line) {
+    return 1;
+  } else {
+    return (
+      pascalTriangleElement(element - 1, line - 1) +
+      pascalTriangleElement(element, line - 1)
+    );
+  }
+};
+
+/**
+ * Compute all of a binomial's coefficients
+ *
+ * @param order the binomial's order
+ * @param includeNegativeSigns true, if the second term of the binomial is subtracted from the first
+ */
+export const pascalTriangleLine = (order, isSubtraction) => {
+  return new Array(order + 1)
+    .fill(0)
+    .map(
+      (_, i) =>
+        (isSubtraction && isOdd(i) ? -1 : 1) *
+        pascalTriangleElement(order - i + 1, order + 1)
+    );
+};
+
+//
+// Discrete systems
+//
+export const minSamplingT = 0.0001;
 
 //
 // Await

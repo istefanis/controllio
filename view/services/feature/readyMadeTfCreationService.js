@@ -6,7 +6,10 @@
  * View / Services / Feature / ReadyMadeTfCreationService
  */
 
-import { computeButterworthTermsArrays } from "../../../util/commons.js";
+import {
+  computeButterworthTermsArrays,
+  minSamplingT,
+} from "../../../util/commons.js";
 import {
   computePaddedTfStrings,
   polynomialTermsArrayToMarkup,
@@ -20,6 +23,7 @@ import { createNewReadyMadeTf } from "./elementCreationService.js";
 const readyMadeTfsSubsections = [];
 
 let butterworthFilterDesignContentsMarkup;
+let specifySamplingTWindowContentsMarkup;
 
 export const openNewReadyMadeTfPopupWindow = async function (
   invokedByTouchEvent
@@ -34,9 +38,11 @@ export const openNewReadyMadeTfPopupWindow = async function (
     .map((subsection) => {
       const subsectionMarkup = subsection[1]
         .map((x) => {
+          const tfParam = x[3] && x[3] === "discrete" ? "z" : "s";
+
           //compute numerator & denominator markup
-          const numMarkup = polynomialTermsArrayToMarkup(x[1]);
-          const denMarkup = polynomialTermsArrayToMarkup(x[2]);
+          const numMarkup = polynomialTermsArrayToMarkup(x[1], tfParam);
+          const denMarkup = polynomialTermsArrayToMarkup(x[2], tfParam);
 
           //compute horizontal line of proper length
           const [, h2] = computePaddedTfStrings(
@@ -48,7 +54,8 @@ export const openNewReadyMadeTfPopupWindow = async function (
 
           return `
             <a class="popup-window-selectable-content popup-window-tf-content" data-content-id='${tfsCounter}'>
-              <div class="element tf popup-window-tf measured"> 
+              <div class="element tf popup-window-tf measured 
+              ${tfParam === "z" ? "discrete" : ""}"> 
                 <p>${numMarkup}</p>
                 <p>${h2}</p>
                 <p>${denMarkup}</p>
@@ -154,6 +161,43 @@ export const openNewReadyMadeTfPopupWindow = async function (
           invokedByTouchEvent
         );
       }
+    } else if (
+      (tfDefinitionSelected.length == 4) &
+      (tfDefinitionSelected[3] === "discrete")
+    ) {
+      //open another popup window to specify sampling T
+      const samplingTResult = await openPopupWindow(
+        "Specify sampling T",
+        specifySamplingTWindowContentsMarkup,
+        function (e) {
+          const samplingT = document.getElementById(
+            "transform-tf-sampling-t-input"
+          );
+          const samplingTValue = +samplingT.value;
+
+          if (
+            Number.isFinite(samplingTValue) &&
+            samplingTValue >= minSamplingT &&
+            samplingTValue <= 10
+          ) {
+            return samplingTValue;
+          } else {
+            return;
+          }
+        }
+      );
+
+      if (samplingTResult !== null) {
+        createNewReadyMadeTf(
+          tfDefinitionSelected[1],
+          tfDefinitionSelected[2],
+          clientX,
+          clientY,
+          domElementBoundRect.width,
+          invokedByTouchEvent,
+          samplingTResult
+        );
+      }
     }
   }
 };
@@ -182,6 +226,19 @@ const init = function () {
       ["PD controller", ["kd", "kp"], [1]],
       ["PID controller", ["kd", "kp", "ki"], [1, 0]],
     ],
+  ]);
+  readyMadeTfsSubsections.push([
+    "Discrete-time components",
+    [
+      ["Delay", [1], [1, 0], "discrete"],
+      ["Step", [1, 0], [1, -1], "discrete"],
+    ],
+    // [
+    //   "PID controller",
+    //   ["(ki*T^2 + kp*T + kd)", "(-kp*T - 2*kd)", "kd"],
+    //   ["T", "(-T)"],
+    //   "discrete",
+    // ],
   ]);
 
   butterworthFilterDesignContentsMarkup = `
@@ -247,6 +304,28 @@ const init = function () {
         class="popup-window-input"
       />
       <p>(&#8805 0.01) [rad/s]</p>
+    </div>
+    <div class="flex-row-center">
+      <button id="popup-window-regular-button">Insert</button>
+    </div>
+  </section>
+`;
+
+  specifySamplingTWindowContentsMarkup = `
+  <section class="popup-window-text-content">
+    <p>Specify the following parameter:</p>
+    <div class="flex-row-left">
+      <p>Sampling T:</p>
+      <input
+        type="number"
+        min="${minSamplingT}"
+        value="0.1"
+        step="${minSamplingT}"
+        max="10"
+        id="transform-tf-sampling-t-input"
+        class="popup-window-input"
+      />
+      <p>(&#8805 ${minSamplingT}) [s]</p>
     </div>
     <div class="flex-row-center">
       <button id="popup-window-regular-button">Insert</button>

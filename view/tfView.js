@@ -44,10 +44,11 @@ export default class TfView {
   render(position) {
     const n = getNumerator(this.#tf.getValue());
     const d = getDenominator(this.#tf.getValue());
+    const tfParam = this.#tf.getParam();
 
     //compute numerator & denominator markup
-    const numMarkup = polynomialTermsArrayToMarkup(getTermsArray(n));
-    const denMarkup = polynomialTermsArrayToMarkup(getTermsArray(d));
+    const numMarkup = polynomialTermsArrayToMarkup(getTermsArray(n), tfParam);
+    const denMarkup = polynomialTermsArrayToMarkup(getTermsArray(d), tfParam);
 
     //compute horizontal line of proper length
     const [, h2] = computePaddedTfStrings(
@@ -56,7 +57,9 @@ export default class TfView {
     );
 
     const markup = `
-      <div class="element tf" id="element${this.#domElementId}" tabindex="0"> 
+      <div 
+        class="element tf ${tfParam === "z" ? "discrete" : ""}" 
+        id="element${this.#domElementId}" tabindex="0"> 
         <p>${numMarkup}</p>
         <p>${h2}</p>
         <p>${denMarkup}</p>
@@ -104,10 +107,11 @@ export default class TfView {
   reRender() {
     const n = getNumerator(this.#tf.getValue());
     const d = getDenominator(this.#tf.getValue());
+    const tfParam = this.#tf.getParam();
 
     //compute numerator & denominator markup
-    const numMarkup = polynomialTermsArrayToMarkup(getTermsArray(n));
-    const denMarkup = polynomialTermsArrayToMarkup(getTermsArray(d));
+    const numMarkup = polynomialTermsArrayToMarkup(getTermsArray(n), tfParam);
+    const denMarkup = polynomialTermsArrayToMarkup(getTermsArray(d), tfParam);
 
     //compute horizontal line of proper length
     const [, h2] = computePaddedTfStrings(

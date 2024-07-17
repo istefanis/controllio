@@ -342,6 +342,7 @@ export const loadPolynomialsOperations = function () {
     simplifyPolynomials(p1, p2).map(tag)
   );
 
+  set(["getParam", "polynomial"], param);
   set(["getTermsArray", "polynomial"], termsArray);
 
   set(["round", "polynomial", "real"], (p, d) => tag(roundPolynomial(p, d)));

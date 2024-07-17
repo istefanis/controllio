@@ -24,6 +24,7 @@ import {
   primitiveOperationsSymbols,
   isSymbol,
   isReal,
+  containsSymbols,
 } from "../../util/commons.js";
 
 /**
@@ -53,19 +54,9 @@ export const addTypeTag = (typeTag, content) =>
  * Invocation of the appropriate operation for arguments of the respective data types
  */
 const invokeOperation = function (operation, ...args) {
-  //helper functions
-  const containsSymbols = function (tree) {
-    const traverseTreeForSymbols = (result, t) => {
-      if (t === null) return result;
-      return Array.isArray(t[0])
-        ? traverseTreeForSymbols(result, t[0]) ||
-            traverseTreeForSymbols(result, t[1])
-        : (isSymbol(t[0]) && !primitiveOperationsSymbols.includes(t[0])) ||
-            traverseTreeForSymbols(result, t.slice(1));
-    };
-    return traverseTreeForSymbols(false, tree);
-  };
-
+  //
+  // Helper functions
+  //
   const getTypeTag = function (obj) {
     if (Array.isArray(obj)) {
       return containsSymbols(obj) && primitiveOperationsSymbols.includes(obj[0])
@@ -127,6 +118,7 @@ export const reduce = (p1, p2) => invokeOperation("reduce", p1, p2); // polynomi
 
 export const getNumerator = (r) => invokeOperation("getNumerator", r); // ratios
 export const getDenominator = (r) => invokeOperation("getDenominator", r); // ratios
+export const getParam = (p) => invokeOperation("getParam", p); // polynomials
 export const getTermsArray = (p) => invokeOperation("getTermsArray", p); // polynomials
 
 export const round = (x, d) => invokeOperation("round", x, d);

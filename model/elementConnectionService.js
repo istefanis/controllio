@@ -74,6 +74,28 @@ const connectionAlreadyExists = function (element1, element2) {
 };
 
 /**
+ * Returns true if the connection is not allowed
+ * due to parameter or sampling T mismatch
+ */
+const connectionIsNotAllowed = function (element1, element2) {
+  if (element1.isTf() && element2.isTf()) {
+    const param1 = element1.getParam();
+    const param2 = element2.getParam();
+
+    if (param1 !== param2) {
+      console.warn("Elements do not have the same param");
+      return true;
+    }
+
+    if (param1 === "z" && element1.getSamplingT() !== element2.getSamplingT()) {
+      console.warn("Elements do not have the same sampling T");
+      return true;
+    }
+  }
+  return false;
+};
+
+/**
  * Connect elements serially (a connection has a direction)
  */
 export const connect = function (element1, element2) {
@@ -81,6 +103,8 @@ export const connect = function (element1, element2) {
     console.warn("Elements do not belong to the same block");
     return;
   }
+
+  if (connectionIsNotAllowed(element1, element2)) return;
 
   if (connectionAlreadyExists(element1, element2)) return;
 
@@ -139,6 +163,8 @@ export const connect = function (element1, element2) {
 };
 
 export const connectWithoutChecks = function (element1, element2) {
+  if (connectionIsNotAllowed(element1, element2)) return;
+
   if (element1.getBlock() === element2.getBlock()) {
     //store connection
     element1

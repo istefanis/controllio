@@ -34,7 +34,8 @@ const nyquistSteps = (numeratorTermsArray, denominatorTermsArray) => {
     numeratorTermsArray,
     denominatorTermsArray,
     findComplexRootsOfPolynomial(numeratorTermsArray),
-    findComplexRootsOfPolynomial(denominatorTermsArray)
+    findComplexRootsOfPolynomial(denominatorTermsArray),
+    null
   );
   return [curvePoints, stability];
 };
@@ -45,7 +46,8 @@ const timeDomainSteps = (numeratorTermsArray, denominatorTermsArray) => {
     numeratorTermsArray,
     denominatorTermsArray,
     findComplexRootsOfPolynomial(numeratorTermsArray),
-    findComplexRootsOfPolynomial(denominatorTermsArray)
+    findComplexRootsOfPolynomial(denominatorTermsArray),
+    null
   );
   return [timeResponseCurvePoints, trajectoryCurvePoints];
 };

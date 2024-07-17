@@ -9,6 +9,7 @@
 import {
   getNumerator,
   getDenominator,
+  getParam,
   getTermsArray,
 } from "../math/computerAlgebra/algebraicOperations.js";
 import {
@@ -28,10 +29,11 @@ export const replaceMultipleStringSpacesWithSingle = (s) =>
 /**
  * Transform a polynomial TermsArray into a polynomial string representation in HTML markup
  * @param {Array} termsArray
+ * @param {Array} tfParam the polynomial param in string form (ex. "s", "z")
  * @returns {String} an HTML markup string
  */
-export const polynomialTermsArrayToMarkup = function (termsArray) {
-  // console.log("polynomialTermsArrayToMarkup()", termsArray);
+export const polynomialTermsArrayToMarkup = function (termsArray, tfParam) {
+  // console.log("polynomialTermsArrayToMarkup()", termsArray, tfParam);
 
   //rounding
   termsArray = termsArray.map((x) =>
@@ -74,7 +76,7 @@ export const polynomialTermsArrayToMarkup = function (termsArray) {
     //case2
     // console.log("case2");
     if (order === termsArrayOrder)
-      return `${simpleCoeff}s${exponent}` + loop(a.slice(1));
+      return `${simpleCoeff}${tfParam}${exponent}` + loop(a.slice(1));
 
     //case3
     // console.log("case3");
@@ -92,10 +94,10 @@ export const polynomialTermsArrayToMarkup = function (termsArray) {
     return (
       (!Number.isFinite(a[0])
         ? isSymbol(a[0])
-          ? ` ${sign} ${simpleCoeffAbs}s${exponent}`
-          : ` ${sign} ${simpleCoeffAbs}s${exponent}`
+          ? ` ${sign} ${simpleCoeffAbs}${tfParam}${exponent}`
+          : ` ${sign} ${simpleCoeffAbs}${tfParam}${exponent}`
         : a[0] !== 0
-        ? ` ${sign} ${simpleCoeffAbs}s${exponent}`
+        ? ` ${sign} ${simpleCoeffAbs}${tfParam}${exponent}`
         : "") + loop(a.slice(1))
     );
   };
@@ -166,8 +168,8 @@ export const removeSupTagsFromMarkup = (markupString) =>
  * @param {Array} termsArray
  * @returns {String} a string
  */
-export const polynomialTermsArrayToStringWithCoeffs = (termsArray) => {
-  return polynomialTermsArrayToMarkup(termsArray)
+export const polynomialTermsArrayToStringWithCoeffs = (termsArray, tfParam) => {
+  return polynomialTermsArrayToMarkup(termsArray, tfParam)
     .replaceAll("<sup>", "^")
     .replaceAll("</sup>", "");
 };
@@ -206,16 +208,20 @@ export const computePaddedTfStrings = function (numString, denString) {
  * Display a tf (in ratio form), to the console
  */
 export const displayTf = function (ratio) {
+  const tfParam = getParam(getNumerator(ratio));
+
   //rounding
   const numString = polynomialTermsArrayToStringWithCoeffs(
     getTermsArray(getNumerator(ratio)).map((x) =>
       Number.isFinite(x) ? roundDecimal(x, roundDecimalDigitsPrettyPrinting) : x
-    )
+    ),
+    tfParam
   );
   const denString = polynomialTermsArrayToStringWithCoeffs(
     getTermsArray(getDenominator(ratio)).map((x) =>
       Number.isFinite(x) ? roundDecimal(x, roundDecimalDigitsPrettyPrinting) : x
-    )
+    ),
+    tfParam
   );
 
   const [n, h, d] = computePaddedTfStrings(numString, denString);

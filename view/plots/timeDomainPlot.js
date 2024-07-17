@@ -10,6 +10,7 @@ import { tfEvaluatedWithComplexNumber } from "../../math/complexAnalysis/complex
 import {
   linearInterpolationOfCurvePoints,
   talbotMethodForLaplaceTransformInversion,
+  divisionMethodForZTransformInversion,
 } from "../../math/numericalAnalysis/numericalAnalysisService.js";
 import { areAllTfTermsNumbers } from "../../util/commons.js";
 import { logMessages } from "../../util/loggingService.js";
@@ -26,6 +27,7 @@ export default class TimeDomainPlot {
   #denominatorTermsArray;
   #zeros;
   #poles;
+  #isDiscrete;
 
   #plotContainerDomElement;
 
@@ -35,8 +37,9 @@ export default class TimeDomainPlot {
   #minFunctionValue;
   #maxFunctionValue;
 
-  #tMin = 0.01;
-  #tMax = 20;
+  #tMin;
+  #tMax;
+  #step;
 
   #timeDomainObserver = {};
 
@@ -44,15 +47,45 @@ export default class TimeDomainPlot {
     plotContainerDomElement,
     numeratorTermsArray,
     denominatorTermsArray,
+    timeDomainInputSignal,
     zeros,
-    poles
+    poles,
+    samplingT
   ) {
     this.#numeratorTermsArray = numeratorTermsArray;
-    this.#denominatorTermsArray = denominatorTermsArray;
     this.#zeros = zeros;
     this.#poles = poles;
+    this.#isDiscrete = samplingT ? true : false;
 
     if (areAllTfTermsNumbers(numeratorTermsArray, denominatorTermsArray)) {
+      if (this.#isDiscrete) {
+        this.#tMin = 0;
+        this.#step = samplingT;
+        this.#tMax = Math.min(20, 200 * samplingT);
+
+        // *z/(z-1) for step input
+        this.#numeratorTermsArray =
+          timeDomainInputSignal === "step"
+            ? [...numeratorTermsArray, 0]
+            : numeratorTermsArray;
+        this.#denominatorTermsArray =
+          timeDomainInputSignal === "step"
+            ? [...denominatorTermsArray, 0].map(
+                (x, i) => x - [0, ...denominatorTermsArray][i]
+              )
+            : denominatorTermsArray;
+      } else {
+        this.#tMin = 0.01;
+        this.#step = 0.05;
+        this.#tMax = 20;
+
+        // *1/s for step input
+        this.#denominatorTermsArray =
+          timeDomainInputSignal === "step"
+            ? [...denominatorTermsArray, 0]
+            : denominatorTermsArray;
+      }
+
       this.computeTimeDomainPlotCurvePoints(
         this.#numeratorTermsArray,
         this.#denominatorTermsArray
@@ -101,22 +134,32 @@ export default class TimeDomainPlot {
     let lastFunctionValue;
 
     let i = 0;
-    const step = 0.05;
 
-    for (let t = this.#tMin; t <= this.#tMax; t += step) {
-      //new values
-      newFunctionValue = talbotMethodForLaplaceTransformInversion(
-        tfEvaluatedWithComplexNumber(
+    const discreteFunctionPoints = this.#isDiscrete
+      ? divisionMethodForZTransformInversion(
           this.#numeratorTermsArray,
-          this.#denominatorTermsArray
-        ),
-        t,
-        100
-      );
+          this.#denominatorTermsArray,
+          Math.floor(this.#tMax / this.#step) + 1
+        )
+      : null;
+
+    for (let t = this.#tMin; t <= this.#tMax; t += this.#step) {
+      //new values
+      newFunctionValue = this.#isDiscrete
+        ? discreteFunctionPoints[i]
+        : talbotMethodForLaplaceTransformInversion(
+            tfEvaluatedWithComplexNumber(
+              this.#numeratorTermsArray,
+              this.#denominatorTermsArray
+            ),
+            t,
+            100
+          );
+
       if (!lastFunctionValue) {
         lastFunctionValue = newFunctionValue;
       }
-      newVelocityValue = (newFunctionValue - lastFunctionValue) / step;
+      newVelocityValue = (newFunctionValue - lastFunctionValue) / this.#step;
 
       //add new points
       this.#timeResponseCurvePoints.push([t, newFunctionValue]);
@@ -188,23 +231,43 @@ export default class TimeDomainPlot {
         yLine: true,
       },
       grid: true,
-      data: [
-        this.#timeResponseCurvePoints.length > 0
-          ? {
+      data: this.#isDiscrete
+        ? [
+            {
               graphType: "polyline",
               fn: (scope) => {
                 return linearInterpolationOfCurvePoints(
                   this.#timeResponseCurvePoints
                 )(scope.x);
               },
-            }
-          : {
+              color: "#c0c0c0",
+            },
+            {
               points: this.#timeResponseCurvePoints,
               fnType: "points",
-              color: "red",
               graphType: "scatter",
+              color: "black",
             },
-      ],
+          ]
+        : this.#timeResponseCurvePoints.length > 0
+        ? [
+            {
+              graphType: "polyline",
+              fn: (scope) => {
+                return linearInterpolationOfCurvePoints(
+                  this.#timeResponseCurvePoints
+                )(scope.x);
+              },
+            },
+          ]
+        : [
+            {
+              points: this.#timeResponseCurvePoints,
+              fnType: "points",
+              graphType: "scatter",
+              color: "black",
+            },
+          ],
     });
 
     const trajectoryPlot = functionPlot({
@@ -221,13 +284,28 @@ export default class TimeDomainPlot {
         domain: [-maxAbsoluteFunctionValue, maxAbsoluteFunctionValue],
       },
       grid: true,
-      data: [
-        {
-          points: this.#trajectoryCurvePoints,
-          fnType: "points",
-          graphType: "polyline",
-        },
-      ],
+      data: this.#isDiscrete
+        ? [
+            {
+              points: this.#trajectoryCurvePoints,
+              fnType: "points",
+              graphType: "polyline",
+              color: "#c0c0c0",
+            },
+            {
+              points: this.#trajectoryCurvePoints,
+              fnType: "points",
+              graphType: "scatter",
+              color: "black",
+            },
+          ]
+        : [
+            {
+              points: this.#trajectoryCurvePoints,
+              fnType: "points",
+              graphType: "polyline",
+            },
+          ],
     });
 
     //adjust appearance

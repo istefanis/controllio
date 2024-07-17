@@ -48,7 +48,8 @@ export const computeCharacteristicNumbers = function (
   wMin,
   wMax,
   minMagnitude,
-  maxMagnitude
+  maxMagnitude,
+  isDiscrete
 ) {
   resetCharacteristicNumbers();
 
@@ -70,7 +71,9 @@ export const computeCharacteristicNumbers = function (
 
   generateBandwidthAndThresholdText(wMin);
 
-  generateRollOffText(magnitude, wMin, wMax);
+  if (!isDiscrete) {
+    generateRollOffText(magnitude, wMin, wMax);
+  }
 
   // console.log(characteristicNumbers);
   return characteristicNumbers;
@@ -264,7 +267,8 @@ const generateRollOffText = function (magnitude, wMin, wMax) {
 export const insertCharacteristicNumbersMarkup = function (
   characteristicNumbersGridDomElement,
   characteristicNumbers,
-  displayWarning
+  displayWarning,
+  nyquistF
 ) {
   const filterTypeOrWarningBanner =
     characteristicNumbersGridDomElement.parentNode.querySelector(
@@ -291,11 +295,15 @@ export const insertCharacteristicNumbersMarkup = function (
         ? characteristicNumbers.thresholdText
         : "N/A"
     }</p>
-    <p>Roll-off</p><p>= ${
-      characteristicNumbers.rollOffText !== ""
-        ? characteristicNumbers.rollOffText
-        : "N/A"
-    }</p>
+    ${
+      nyquistF
+        ? `<p>Nyquist freq</p><p>= ${roundDecimal(nyquistF, 3)} [Hz]</p>`
+        : `<p>Roll-off</p><p>= ${
+            characteristicNumbers.rollOffText !== ""
+              ? characteristicNumbers.rollOffText
+              : "N/A"
+          }</p>`
+    }
   `;
   characteristicNumbersGridDomElement.innerHTML = "";
   characteristicNumbersGridDomElement.insertAdjacentHTML("afterbegin", markup);

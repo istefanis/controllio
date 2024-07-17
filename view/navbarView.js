@@ -18,6 +18,7 @@ import {
   copyExpandedOrSelectedElements,
   deleteExpandedOrSelectedElements,
   toggleNewConnectionMode,
+  transformExpandedOrSelectedTf,
 } from "./services/core/elementSelectingAndDraggingService.js";
 import {
   getLineViewsNumber,
@@ -187,6 +188,20 @@ deleteAllButton.addEventListener("click", function (e) {
   getTopBlock().clearState();
   getTopBlock().storeNewHistoricalState();
 });
+
+//
+// Continuous / Discrete-time transform button
+//
+const continuousDiscreteTimeTransformButton = document.getElementById(
+  "transform-tf-button"
+);
+continuousDiscreteTimeTransformButton.disabled = true;
+continuousDiscreteTimeTransformButton.addEventListener(
+  "click",
+  async function () {
+    await transformExpandedOrSelectedTf();
+  }
+);
 
 //
 // Optimize Topology button

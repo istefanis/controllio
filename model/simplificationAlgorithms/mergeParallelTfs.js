@@ -103,13 +103,17 @@ const checkReferenceInputSchemas = async function (
           const position = adder.getPosition();
           const position1 = adder1.getPosition();
 
+          const param = referenceInput.isTf() ? referenceInput.getParam() : "s";
+
           const identityTf = new Tf(
-            new Ratio(new Polynomial("s", [1]), new Polynomial("s", [1])),
+            new Ratio(new Polynomial(param, [1]), new Polynomial(param, [1])),
             this,
             {
               left: (position.left + position1.left) / 2,
               top: (position.top + position1.top) / 2,
-            }
+            },
+            null,
+            param === "z" ? referenceInput.getSamplingT() : null
           );
 
           connectWithoutChecks(adder1, identityTf);

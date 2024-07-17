@@ -7,6 +7,8 @@
  */
 
 import {
+  discreteTimePolynomialEvaluatedWithWiImagTermsFunction,
+  discreteTimePolynomialEvaluatedWithWiRealTermsFunction,
   polynomialEvaluatedWithWiImagTermsArray,
   polynomialEvaluatedWithWiRealTermsArray,
 } from "../../math/complexAnalysis/complexAnalysisService.js";
@@ -39,6 +41,8 @@ export default class BodePlot {
   #denominatorTermsArray;
   #zeros;
   #poles;
+  #isDiscrete;
+  #samplingT;
 
   #plotContainerDomElement;
   #phaseCanvasElement;
@@ -53,7 +57,8 @@ export default class BodePlot {
   #maxMagnitude;
 
   #wMin = 5 * 10 ** -4;
-  #wMax = 5 * 10 ** 3;
+  #wMax;
+  #plotWMax = 5 * 10 ** 3;
 
   #bandwidthThreshold;
 
@@ -64,12 +69,27 @@ export default class BodePlot {
     numeratorTermsArray,
     denominatorTermsArray,
     zeros,
-    poles
+    poles,
+    samplingT
   ) {
     this.#numeratorTermsArray = numeratorTermsArray;
     this.#denominatorTermsArray = denominatorTermsArray;
     this.#zeros = zeros;
     this.#poles = poles;
+
+    if (samplingT) {
+      this.#isDiscrete = true;
+      this.#samplingT = samplingT;
+
+      //computation of Nyquist frequency
+      const samplingF = 1 / this.#samplingT;
+      const nyquistF = samplingF / 2;
+
+      this.#wMax = Math.min(2 * Math.PI * nyquistF, this.#plotWMax);
+    } else {
+      this.#isDiscrete = false;
+      this.#wMax = this.#plotWMax;
+    }
 
     let characteristicNumbers;
 
@@ -91,7 +111,8 @@ export default class BodePlot {
         this.#wMin,
         this.#wMax,
         this.#minMagnitude,
-        this.#maxMagnitude
+        this.#maxMagnitude,
+        this.#isDiscrete
       );
 
       if (characteristicNumbers.bandwidthThreshold) {
@@ -137,7 +158,8 @@ export default class BodePlot {
           "#characteristic-numbers-grid"
         ),
         characteristicNumbers,
-        allTfTermsAreNumbers ? false : true
+        allTfTermsAreNumbers ? false : true,
+        this.#isDiscrete ? 1 / (2 * this.#samplingT) : null
       );
 
       return this.#bodeObserver;
@@ -151,10 +173,16 @@ export default class BodePlot {
     this.#magnitudeCurvePoints = [];
     this.#phaseCurvePoints = [];
 
-    const [magnitude, phase] = computeBodeMagnitudeAndPhaseWFunctions(
-      this.#numeratorTermsArray,
-      this.#denominatorTermsArray
-    );
+    const [magnitude, phase] = this.#isDiscrete
+      ? computeDiscreteTimeBodeMagnitudeAndPhaseWFunctions(
+          this.#numeratorTermsArray,
+          this.#denominatorTermsArray,
+          this.#samplingT
+        )
+      : computeBodeMagnitudeAndPhaseWFunctions(
+          this.#numeratorTermsArray,
+          this.#denominatorTermsArray
+        );
 
     this.#magnitude = magnitude;
     this.#phase = phase;
@@ -366,7 +394,7 @@ export default class BodePlot {
       xAxis: {
         label: "Frequency [rad/s]",
         type: "log",
-        domain: [this.#wMin, this.#wMax],
+        domain: [this.#wMin, this.#plotWMax],
       },
       yAxis: {
         label: "Magnitude (abs)",
@@ -390,6 +418,7 @@ export default class BodePlot {
                   this.#magnitudeCurvePoints
                 )(scope.x);
               },
+              color: this.#isDiscrete ? "black" : null,
             }
           : {
               points: this.#magnitudeCurvePoints,
@@ -414,11 +443,10 @@ export default class BodePlot {
       xAxis: {
         label: "Frequency [rad/s]",
         type: "log",
-        domain: [this.#wMin, this.#wMax],
+        domain: [this.#wMin, this.#plotWMax],
       },
       yAxis: {
         label: "Phase [deg]",
-        // type: "log",
         domain: [minPhase ? minPhase : -90, maxPhase ? maxPhase : 90],
       },
       tip: {
@@ -435,6 +463,7 @@ export default class BodePlot {
                   scope.x
                 );
               },
+              color: this.#isDiscrete ? "black" : null,
             }
           : {
               points: this.#phaseCurvePoints,
@@ -508,7 +537,7 @@ const computeBodeMagnitudeAndPhaseWFunctions = function (
 ) {
   logMessages(
     [
-      "[CP-79] Bode plot s=w*i substitution - " +
+      "[CP-78] Bode plot s=w*i substitution - " +
         "numerator: " +
         `[${polynomialEvaluatedWithWiRealTermsArray(
           numeratorTermsArray
@@ -540,6 +569,53 @@ const computeBodeMagnitudeAndPhaseWFunctions = function (
   );
   const denImag = functionFromPolynomialTermsArray(
     polynomialEvaluatedWithWiImagTermsArray(denominatorTermsArray)
+  );
+
+  const magnitude = (w) =>
+    Math.sqrt(
+      (numReal(w) ** 2 + numImag(w) ** 2) / (denReal(w) ** 2 + denImag(w) ** 2)
+    );
+
+  const phase = (w) =>
+    Math.atan2(numImag(w), numReal(w)) - Math.atan2(denImag(w), denReal(w));
+
+  return [magnitude, phase];
+};
+
+/**
+ * Starting from the total transfer function of a discrete-time system,
+ * as a ratio of polynomials of variable z,
+ * after the latter variable is substituted by the complex number z=e^(w*T*i),
+ * compute the magnitude & phase functions of variable w, constituting the Bode plot's curves
+ */
+const computeDiscreteTimeBodeMagnitudeAndPhaseWFunctions = function (
+  numeratorTermsArray,
+  denominatorTermsArray,
+  samplingT
+) {
+  logMessages(
+    ["[CP-79] Discrete-time Bode plot z=e^(w*T*i) substitution"],
+    "checkpoints"
+  );
+
+  //
+  // define magnitude & phase functions
+  //
+  const numReal = discreteTimePolynomialEvaluatedWithWiRealTermsFunction(
+    numeratorTermsArray,
+    samplingT
+  );
+  const numImag = discreteTimePolynomialEvaluatedWithWiImagTermsFunction(
+    numeratorTermsArray,
+    samplingT
+  );
+  const denReal = discreteTimePolynomialEvaluatedWithWiRealTermsFunction(
+    denominatorTermsArray,
+    samplingT
+  );
+  const denImag = discreteTimePolynomialEvaluatedWithWiImagTermsFunction(
+    denominatorTermsArray,
+    samplingT
   );
 
   const magnitude = (w) =>

@@ -263,6 +263,31 @@ Controllio · Open source web drafting table for studying control systems
       </section>
       <section class="ribbon-section">
         <header class="ribbon-section-header">
+          <h2>Discretize</h2>
+        </header>
+        <div class="ribbon-section-contents">
+          <button
+            class="navbar-button button-with-tooltip"
+            id="transform-tf-button"
+          >
+            <i>s &#x21C4; z</i>
+            <p>Transform</p>
+            <div class="tooltip">
+              <h5>Continuous &#x21C4; Discrete-time transform</h5>
+              <p>
+                Create a new tf, which is a transformed copy of the original tf
+                (discrete or continuous-time respectively) using an
+                approximation method
+              </p>
+              <p class="tooltip-expansion">
+                After selecting a tf, click this button
+              </p>
+            </div>
+          </button>
+        </div>
+      </section>
+      <section class="ribbon-section">
+        <header class="ribbon-section-header">
           <h2>Optimize</h2>
         </header>
         <div
@@ -422,7 +447,7 @@ Controllio · Open source web drafting table for studying control systems
     </main>
     <section class="element-analysis-window hidden">
       <div class="element-analysis-window-header">
-        <h2>Transfer function</h2>
+        <h2 id="element-analysis-window-header-text">Transfer function</h2>
         <div>
           <button
             class="element-analysis-window-header-button hidden"
@@ -448,29 +473,45 @@ Controllio · Open source web drafting table for studying control systems
         </div>
       </div>
       <div class="element-analysis-window-contents">
-        <form class="modify-element-value">
-          <div>
-            <p>Numer:</p>
-            <input
-              type="text"
-              placeholder="[1, 2, 3]"
-              id="update-element-numerator-input"
-              class="update-element-value-input"
-            />
+        <section class="element-info-container">
+          <form>
+            <div>
+              <p>Numer:</p>
+              <input
+                type="text"
+                placeholder="[1, 2, 3]"
+                id="update-element-numerator-input"
+                class="update-element-value-input"
+              />
+            </div>
+            <div>
+              <p>Denom:</p>
+              <input
+                type="text"
+                placeholder="[1, 2, 3]"
+                id="update-element-denominator-input"
+                class="update-element-value-input"
+              />
+            </div>
+            <button class="update-element-value-button" type="submit">
+              Update value
+            </button>
+          </form>
+          <div class="sampling-t-input-container hidden">
+            <div>
+              <p>Sampling T:</p>
+            </div>
+            <div>
+              <p
+                id="element-sampling-t-input"
+                class="update-element-value-input"
+              >
+                N/A
+              </p>
+              <p>[s]</p>
+            </div>
           </div>
-          <div>
-            <p>Denom:</p>
-            <input
-              type="text"
-              placeholder="[1, 2, 3]"
-              id="update-element-denominator-input"
-              class="update-element-value-input"
-            />
-          </div>
-          <button class="update-element-value-button" type="submit">
-            Update value
-          </button>
-        </form>
+        </section>
         <section class="single-plot-container">
           <div
             class="element-analysis-window-tab-buttons tab-buttons-container"

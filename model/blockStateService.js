@@ -91,7 +91,8 @@ export const setBlockState = function (state) {
           left: x.position.left * zoomFactor,
           top: x.position.top * zoomFactor,
         },
-        x.elementId
+        x.elementId,
+        x.samplingT
       )
   );
   state.adders.forEach(
@@ -157,6 +158,7 @@ export const getBlockState = function () {
         top: roundDecimal((boundRect.top - navbarHeight) / zoomFactor, 1),
       },
       elementId: x.getElementId(),
+      samplingT: x.getSamplingT(),
     });
   });
 

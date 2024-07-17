@@ -30,6 +30,8 @@
 
 import { Complex } from "../../assets/lib/Complex/Complex.js";
 import findRoots from "../../assets/lib/durand-kerner/roots.js";
+import { divide } from "../computerAlgebra/algebraicOperations.js";
+import { Polynomial } from "../computerAlgebra/dataTypes/polynomials.js";
 import {
   roundDecimal,
   roundDecimalDigitsNumericalAnalysis,
@@ -270,4 +272,40 @@ export const talbotMethodForLaplaceTransformInversion = function (F, t, N) {
     }
   };
   return loop(0, new Complex(0, 0)).real;
+};
+
+//
+// z-transform inversion
+//
+
+/**
+ * Using the division numerical method for z-transform inversion,
+ * after taking as inputs the z-domain transfer function's terms
+ * and the number of points to be computed,
+ * approximate the discrete t-domain function values f(t) for t=k*T
+ */
+export const divisionMethodForZTransformInversion = function (
+  numeratorTermsArray,
+  denominatorTermsArray,
+  numberOfPoints
+) {
+  const p1 = new Polynomial("z", [
+    ...numeratorTermsArray,
+    ...new Array(numberOfPoints).fill(0),
+  ]);
+  const p2 = new Polynomial("z", denominatorTermsArray);
+
+  const division = divide(p1, p2)[0];
+  // console.log(numberOfPoints, p1, p2, division);
+
+  const denomNumerDiff =
+    denominatorTermsArray.length - numeratorTermsArray.length;
+
+  if (denomNumerDiff > 0) {
+    //add t>=0 delay points
+    return Array(denomNumerDiff).fill(0).concat(division[1]);
+  } else {
+    //remove t<0 points
+    return division[1].slice(-denomNumerDiff);
+  }
 };

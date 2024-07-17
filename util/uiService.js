@@ -159,6 +159,21 @@ export const getNavbarHeight = () =>
   document.getElementById("navbar").getBoundingClientRect().height;
 
 //
+// The buttons to be toggled according to element expansion
+//
+const copyButton = document.getElementById("copy-button");
+const deleteButton = document.getElementById("delete-button");
+const continuousDiscreteTimeTransformButton = document.getElementById(
+  "transform-tf-button"
+);
+
+export const toggledButtons = [
+  copyButton,
+  deleteButton,
+  continuousDiscreteTimeTransformButton,
+];
+
+//
 // All DOM elements of class 'element'
 // (stored here to avoid circular dependencies, since it is used by 'resetActiveElements()')
 //

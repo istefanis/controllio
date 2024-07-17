@@ -29,6 +29,7 @@ import {
   isLargeScreenDevice,
   resetActiveElements,
   moveToGroundLevel,
+  toggledButtons,
 } from "../util/uiService.js";
 import {
   replaceMultipleStringSpacesWithSingle,
@@ -45,12 +46,14 @@ import { renderAllLines } from "./services/core/lineRenderingService.js";
 //
 // Select DOM elements
 //
-const copyButton = document.getElementById("copy-button");
-const deleteButton = document.getElementById("delete-button");
-
 const elementAnalysisWindow = document.querySelector(
   ".element-analysis-window"
 );
+
+const elementAnalysisWindowHeaderText = document.querySelector(
+  "#element-analysis-window-header-text"
+);
+
 const elementAnalysisWindowMinimizeButton = elementAnalysisWindow.querySelector(
   "#element-analysis-window-minimize-button"
 );
@@ -72,6 +75,12 @@ const updateElementDenominatorInput = elementAnalysisWindow.querySelector(
 );
 const updateElementValueButton = elementAnalysisWindow.querySelector(
   ".update-element-value-button"
+);
+const samplingTInputContainer = elementAnalysisWindow.querySelector(
+  ".sampling-t-input-container"
+);
+const samplingTInput = elementAnalysisWindow.querySelector(
+  "#element-sampling-t-input"
 );
 
 const singlePlotContainer = elementAnalysisWindow.querySelector(
@@ -106,22 +115,22 @@ let expandedDomElement;
 export const setExpandedElement = (element) => {
   expandedDomElement = element;
   if (element) {
-    copyButton.disabled = false;
-    deleteButton.disabled = false;
+    toggledButtons.forEach((x) => (x.disabled = false));
   }
 };
 export const getExpandedElement = () => expandedDomElement;
 
 export const resetExpandedElement = () => {
   if (expandedDomElement) {
-    closeElementAnalysisWindow();
     moveToGroundLevel(expandedDomElement);
+    closeElementAnalysisWindow();
     setExpandedElement(null);
-    copyButton.disabled = true;
-    deleteButton.disabled = true;
+    toggledButtons.forEach((x) => (x.disabled = true));
   }
 };
 
+let tfParam;
+let samplingT;
 let numeratorTermsArray;
 let denominatorTermsArray;
 let zeros = [];
@@ -138,8 +147,7 @@ let timeDomainInputSignal;
 let isWindowMaximized = false;
 
 export const openOrUpdateElementAnalysisWindow = function (domElement) {
-  copyButton.disabled = false;
-  deleteButton.disabled = false;
+  toggledButtons.forEach((x) => (x.disabled = false));
 
   let updateExistingWindow = false;
 
@@ -189,8 +197,6 @@ export const closeElementAnalysisWindow = function () {
     makeElementUnexpanded(expandedDomElement);
     expandedDomElement = null;
 
-    resetExpandedElement();
-
     makeElementHidden(elementAnalysisWindow);
 
     resetPlotContainersMarkup();
@@ -202,9 +208,23 @@ const populateElementAnalysisWindow = function (element, updateExistingWindow) {
   if (!updateExistingWindow) {
     addElementAnalysisWindowEventListeners();
   }
+
   const tfValue = element.getValue();
   numeratorTermsArray = getTermsArray(getNumerator(tfValue));
   denominatorTermsArray = getTermsArray(getDenominator(tfValue));
+
+  tfParam = element.getParam();
+  if (tfParam === "z") {
+    samplingT = element.getSamplingT();
+    makeElementUnhidden(samplingTInputContainer);
+    samplingTInput.textContent = samplingT;
+    elementAnalysisWindowHeaderText.textContent = "Discrete transfer function";
+  } else {
+    samplingT = null;
+    makeElementHidden(samplingTInputContainer);
+    elementAnalysisWindowHeaderText.textContent = "Transfer function";
+  }
+
   updateElementNumeratorInput.value = polynomialTermsArrayToStringWithoutCoeffs(
     numeratorTermsArray.map((x) => (!Number.isNaN(+x) ? x : toInfixNotation(x)))
   );
@@ -263,8 +283,8 @@ const updateElementValueButtonCallback = function (e) {
       .map((x) => round(x, roundDecimalDigitsTfComputations));
 
     const newTfValue = new Ratio(
-      new Polynomial("s", numeratorTermsArray),
-      new Polynomial("s", denominatorTermsArray)
+      new Polynomial(tfParam, numeratorTermsArray),
+      new Polynomial(tfParam, denominatorTermsArray)
     );
     //update value
     const element = getElementFromElementId(
@@ -353,7 +373,8 @@ const populateActiveTab = function () {
       numeratorTermsArray,
       denominatorTermsArray,
       zeros,
-      poles
+      poles,
+      samplingT
     );
   } else if (activeTab === 2) {
     nyquistObserver = new NyquistPlot(
@@ -361,17 +382,18 @@ const populateActiveTab = function () {
       numeratorTermsArray,
       denominatorTermsArray,
       zeros,
-      poles
+      poles,
+      samplingT
     );
   } else if (activeTab === 3) {
     timeDomainObserver = new TimeDomainPlot(
       plotContainerTab3,
       numeratorTermsArray,
-      timeDomainInputSignal === "step"
-        ? [...denominatorTermsArray, 0]
-        : denominatorTermsArray,
+      denominatorTermsArray,
+      timeDomainInputSignal,
       zeros,
-      poles
+      poles,
+      samplingT
     );
   }
 };
@@ -407,23 +429,25 @@ const populateAllTabs = function () {
     numeratorTermsArray,
     denominatorTermsArray,
     zeros,
-    poles
+    poles,
+    samplingT
   );
   nyquistObserver = new NyquistPlot(
     plotContainerTab2,
     numeratorTermsArray,
     denominatorTermsArray,
     zeros,
-    poles
+    poles,
+    samplingT
   );
   timeDomainObserver = new TimeDomainPlot(
     plotContainerTab3,
     numeratorTermsArray,
-    timeDomainInputSignal === "step"
-      ? [...denominatorTermsArray, 0]
-      : denominatorTermsArray,
+    denominatorTermsArray,
+    timeDomainInputSignal,
     zeros,
-    poles
+    poles,
+    samplingT
   );
 };
 
@@ -436,11 +460,11 @@ const updateOnlyTimeDomainTab = function () {
   timeDomainObserver = new TimeDomainPlot(
     plotContainerTab3,
     numeratorTermsArray,
-    timeDomainInputSignal === "step"
-      ? [...denominatorTermsArray, 0]
-      : denominatorTermsArray,
+    denominatorTermsArray,
+    timeDomainInputSignal,
     zeros,
-    poles
+    poles,
+    samplingT
   );
 };
 

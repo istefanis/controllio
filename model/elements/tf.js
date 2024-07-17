@@ -8,7 +8,11 @@
 
 import { Ratio } from "../../math/computerAlgebra/dataTypes/ratios.js";
 import { Polynomial } from "../../math/computerAlgebra/dataTypes/polynomials.js";
-import { round } from "../../math/computerAlgebra/algebraicOperations.js";
+import {
+  getNumerator,
+  getParam,
+  round,
+} from "../../math/computerAlgebra/algebraicOperations.js";
 import {
   generateNewElementIdForElement,
   setElementIdForElement,
@@ -37,8 +41,9 @@ export class Tf {
   #iAmAdder = false;
   #input = null;
   #outputsArray = [];
+  #samplingT = null;
 
-  constructor(value, block, position, id) {
+  constructor(value, block, position, id, samplingT) {
     if (!id) {
       this.#elementId = generateNewElementIdForElement(this);
     } else {
@@ -50,6 +55,10 @@ export class Tf {
     this.setValue(value, position);
 
     block.adjoinTfs(this);
+
+    if (samplingT) {
+      this.#samplingT = samplingT;
+    }
 
     return this;
   }
@@ -91,15 +100,18 @@ export class Tf {
   //
   // API
   //
-  getElementId = () => this.#elementId;
   render = () => this.#render();
-  getPosition = () => this.#tfView.getPosition();
 
   getValue = () => this.#value;
   setValue = (x, position) => {
     this.#value = round(x, roundDecimalDigitsTfComputations);
     this.#render(position);
   };
+
+  getParam = () => getParam(getNumerator(this.#value));
+  getPosition = () => this.#tfView.getPosition();
+  getElementId = () => this.#elementId;
+  getSamplingT = () => this.#samplingT;
 
   isBlock = () => this.#iAmBlock;
   isTf = () => this.#iAmTf;
@@ -124,5 +136,14 @@ export class Tf {
 /**
  * Shortcut constructor for transfer functions
  */
-export const tf = (n, d, block) =>
-  new Tf(new Ratio(new Polynomial("s", n), new Polynomial("s", d)), block);
+export const tf = (n, d, block, param, _, samplingT) =>
+  new Tf(
+    new Ratio(
+      new Polynomial(param ? param : "s", n),
+      new Polynomial(param ? param : "s", d)
+    ),
+    block,
+    null,
+    null,
+    samplingT
+  );

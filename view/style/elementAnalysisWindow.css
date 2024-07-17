@@ -6,6 +6,8 @@
  * View / Style / ElementAnalysisWindow
  */
 
+/* Window */
+
 .element-analysis-window {
   width: 380px;
   max-width: 100%;
@@ -79,24 +81,88 @@
   margin: 0;
 }
 
-.element-analysis-window-contents form {
+/* Element info container */
+
+.element-info-container {
   width: 100%;
   display: flex;
+  flex-direction: row;
+  gap: 15px;
+}
+
+.element-info-container form {
+  width: 100%;
+  display: flex;
+  flex-basis: 150px;
+  flex-grow: 10;
   flex-direction: column;
   gap: 8px;
   margin-bottom: 5px;
 }
 
-.element-analysis-window-contents form div {
+.element-info-container form div {
   display: flex;
   flex-direction: row;
 }
 
-.element-analysis-window-contents form div p {
+.element-info-container form div p {
   width: 60px;
   flex-shrink: 0;
   align-self: center;
 }
+
+/* Update element value input & button */
+
+.update-element-value-input {
+  flex-grow: 1;
+}
+
+.update-element-value-button {
+  min-height: 25px;
+  align-self: flex-end;
+  background-color: #fff;
+  border: 1px solid var(--color-grey-200);
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.update-element-value-button:hover {
+  background-color: var(--color-grey-240);
+}
+
+/* Sampling T value container */
+
+.sampling-t-input-container {
+  width: 100%;
+  display: flex;
+  flex-basis: 60px;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 5px;
+}
+
+.element-info-container .sampling-t-input-container div {
+  height: 22px;
+  display: flex;
+  gap: 5px;
+}
+
+.element-info-container .sampling-t-input-container div p {
+  align-self: center;
+}
+
+.element-info-container .sampling-t-input-container #element-sampling-t-input {
+  height: 16px;
+  width: 45px;
+  min-width: 45px;
+  flex-grow: 0;
+  padding: 2px;
+  border: 1px gray solid;
+  border-radius: 2px;
+  text-align: right;
+}
+
+/* Plots containers/tabs */
 
 .multiple-plots-container {
   display: flex;
@@ -119,24 +185,7 @@
   margin: 0;
 }
 
-.update-element-value-input {
-  flex-grow: 1;
-}
-
-.update-element-value-button {
-  min-height: 25px;
-  align-self: flex-end;
-  background-color: #fff;
-  border: 1px solid var(--color-grey-200);
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-.update-element-value-button:hover {
-  background-color: var(--color-grey-240);
-}
-
-/* Plots: */
+/* Plots */
 
 .plot-container {
   width: 100%;
@@ -149,7 +198,9 @@
 
 .nyquist-plot {
   width: 100%;
+  max-width: 340px;
   height: 310px;
+  margin-left: 5px;
 }
 
 .time-domain-subplot {
@@ -172,15 +223,18 @@ text.axis-label {
   font-size: 10px;
 }
 
+/* Plot analysis containers */
+
 #characteristic-numbers-container {
   /* width: 100%; */
-  margin: -10px 0 10px 40px;
+  margin: -8px 0 10px 40px;
   display: flex;
   flex-direction: column;
   gap: 8px;
 }
 
 #warning-banner {
+  margin-top: -5px;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -200,16 +254,28 @@ text.axis-label {
 
 #zeros-poles-and-stability-grid-container {
   /* width: 100%; */
-  margin: 5px 0 0px 40px;
+  margin: 2px 0 0 40px;
   display: flex;
   flex-direction: column;
   gap: 8px;
+}
+
+#zeros-poles-and-stability-grid-container.font-size-smaller {
+  margin: 0 0 0 20px;
 }
 
 #zeros-poles-and-stability-grid {
   display: grid;
   grid-template-columns: 1fr 7fr;
   gap: 5px;
+  align-items: center;
+}
+
+#zeros-poles-and-stability-grid div {
+  display: flex;
+  flex-direction: row;
+  gap: 5px;
+  align-items: center;
 }
 
 .input-signal-radio-buttons {
@@ -223,4 +289,37 @@ text.axis-label {
   display: flex;
   flex-direction: row;
   gap: 5px;
+}
+
+/* Zeros/poles symbols */
+
+.symbol-open-loop-zero,
+.symbol-closed-loop-zero {
+  height: 10px;
+  width: 10px;
+  justify-content: center;
+  text-align: center;
+}
+
+.symbol-open-loop-zero div {
+  height: 3px;
+  width: 3px;
+  border: 1px red solid;
+  border-radius: 3px;
+  background-color: var(--color-red);
+}
+
+.symbol-closed-loop-zero div {
+  height: 3px;
+  width: 3px;
+  border: 1px blue solid;
+  border-radius: 3px;
+  background-color: var(--color-blue);
+}
+
+.symbol-pole {
+  width: 10px;
+  text-align: center;
+  font-size: 15px;
+  color: green;
 }

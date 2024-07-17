@@ -47,6 +47,11 @@
   border: var(--zoomed-1px) solid var(--color-blue-darker);
 }
 
+.discrete {
+  background-color: var(--color-grey-230);
+  border: var(--zoomed-1px) solid var(--color-grey-120);
+}
+
 /* applies only for tfs */
 .element-expanded {
   background-color: var(--color-purple);

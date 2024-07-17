@@ -22,6 +22,7 @@ import {
   getNavbarHeight,
   makeElementUnexpanded,
   moveAllElementsToGroundLevel,
+  toggledButtons,
 } from "../../../util/uiService.js";
 import {
   getCanvasContext,
@@ -46,6 +47,7 @@ import {
   enableHistoricalStateStorage,
 } from "../../../model/blockStateService.js";
 import { copyElement } from "../feature/elementCopyService.js";
+import { continuousDiscreteTimeTransform } from "../feature/continuousDiscreteTimeTransformService.js";
 
 let currentElement; //single selected DOM element
 let isDraggingActive = false;
@@ -70,9 +72,6 @@ let newConnectionElement2;
 
 const canvasContext = getCanvasContext();
 let navbarHeight;
-
-const copyButton = document.getElementById("copy-button");
-const deleteButton = document.getElementById("delete-button");
 
 //
 // A. Exports to other modules for interacting with this Service
@@ -119,6 +118,44 @@ export const copyExpandedOrSelectedElements = function () {
   }
 };
 
+export const transformExpandedOrSelectedTf = async function () {
+  if (getExpandedElement()) {
+    const element = getElementFromElementId(
+      +getExpandedElement().dataset.elementId
+    );
+    closeElementAnalysisWindow();
+
+    //store only one new block state for all changes
+    const block = element.getBlock();
+    disableHistoricalStateStorage();
+    await continuousDiscreteTimeTransform(element);
+    moveAllElementsToGroundLevel();
+    enableHistoricalStateStorage();
+    block.storeNewHistoricalState();
+
+    resetExpandedOrSelectedElements();
+  } else if (selectedElements.length !== 0) {
+    //multiple elements case
+    //store only one new block state for all changes
+    const block = getElementFromElementId(
+      +selectedElements[0].dataset.elementId
+    ).getBlock();
+    disableHistoricalStateStorage();
+    const selectedElementsState = [...selectedElements];
+    for (se of selectedElementsState) {
+      const element = getElementFromElementId(+se.dataset.elementId);
+      if (element.isTf()) {
+        await continuousDiscreteTimeTransform(element);
+      }
+      moveAllElementsToGroundLevel();
+    }
+    enableHistoricalStateStorage();
+    block.storeNewHistoricalState();
+
+    resetExpandedOrSelectedElements();
+  }
+};
+
 export const deleteExpandedOrSelectedElements = function () {
   if (getExpandedElement()) {
     //single element case
@@ -135,8 +172,7 @@ export const deleteExpandedOrSelectedElements = function () {
     block.storeNewHistoricalState();
 
     setExpandedElement(null);
-    copyButton.disabled = true;
-    deleteButton.disabled = true;
+    toggledButtons.forEach((x) => (x.disabled = true));
   } else if (selectedElements.length !== 0) {
     //multiple elements case
     //store only one new block state for all changes
@@ -152,8 +188,7 @@ export const deleteExpandedOrSelectedElements = function () {
     block.storeNewHistoricalState();
 
     selectedElements = [];
-    copyButton.disabled = true;
-    deleteButton.disabled = true;
+    toggledButtons.forEach((x) => (x.disabled = true));
   }
 };
 
@@ -190,8 +225,7 @@ export const toggleNewConnectionMode = () => {
 
     newConnectionMode = true;
     selectedElements = [];
-    copyButton.disabled = true;
-    deleteButton.disabled = true;
+    toggledButtons.forEach((x) => (x.disabled = true));
     isDraggingActive = false;
   } else {
     makeButtonInActive(newConnectionButton);
@@ -286,8 +320,7 @@ export const startSelectionOrDrag = function (e) {
       //(the expanded element to be unexpanded if drag and drop starts)
 
       elementToBeUnexpanded = getExpandedElement();
-      copyButton.disabled = true;
-      deleteButton.disabled = true;
+      toggledButtons.forEach((x) => (x.disabled = true));
     }
   } else {
     // console.log("start-5");
@@ -315,8 +348,7 @@ export const startSelectionOrDrag = function (e) {
       moveToGroundLevel(getExpandedElement());
       closeElementAnalysisWindow();
       setExpandedElement(null);
-      copyButton.disabled = true;
-      deleteButton.disabled = true;
+      toggledButtons.forEach((x) => (x.disabled = true));
     }
   }
   isDraggingActive = true;
@@ -445,11 +477,9 @@ export const selectionOrDrag = function (e) {
       )
     );
     if (selectedElements.length > 0) {
-      copyButton.disabled = false;
-      deleteButton.disabled = false;
+      toggledButtons.forEach((x) => (x.disabled = false));
     } else if (selectedElements.length === 0) {
-      copyButton.disabled = true;
-      deleteButton.disabled = true;
+      toggledButtons.forEach((x) => (x.disabled = true));
     }
 
     //make elements active or inactive
@@ -545,8 +575,7 @@ export const endSelectionOrDrag = function (e) {
     //case: expand another element by clicking on it
 
     setExpandedElement(currentElement);
-    copyButton.disabled = false;
-    deleteButton.disabled = false;
+    toggledButtons.forEach((x) => (x.disabled = false));
     moveToGroundLevel(elementToBeUnexpanded);
     makeElementUnexpanded(elementToBeUnexpanded);
     moveΤοForeground(getExpandedElement());
@@ -560,8 +589,7 @@ export const endSelectionOrDrag = function (e) {
     //case: expand new element by clicking on it (no other element is previously expanded)
 
     setExpandedElement(currentElement);
-    copyButton.disabled = false;
-    deleteButton.disabled = false;
+    toggledButtons.forEach((x) => (x.disabled = false));
     makeElementInactive(getExpandedElement());
     moveΤοForeground(getExpandedElement());
     changeCursorStyle("pointer", getExpandedElement());
@@ -605,8 +633,7 @@ export const endSelectionOrDrag = function (e) {
 const resetSelectedElements = function () {
   selectedElements.forEach(makeElementInactive);
   selectedElements = [];
-  copyButton.disabled = true;
-  deleteButton.disabled = true;
+  toggledButtons.forEach((x) => (x.disabled = true));
 };
 
 /**

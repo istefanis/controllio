@@ -51,7 +51,7 @@
 
 .ribbon-section-header h2 {
   margin: 0;
-  padding: 0 15px;
+  padding: 0 10px;
 }
 
 .app-title-section .ribbon-section-header {
@@ -73,15 +73,16 @@
   flex-wrap: wrap;
   justify-content: center;
   align-items: center;
-  gap: 8px;
-  padding: 8px;
+  gap: 6px;
+  padding: 6px;
+  padding-top: 8px;
 }
 
 .app-title-section .ribbon-section-contents i {
   margin-bottom: 1px;
 }
 
-@media (max-width: 800px) {
+@media (max-width: 750px) {
   .ribbon-section {
     flex-grow: 1;
   }
@@ -105,6 +106,14 @@
   .ribbon-section-contents {
     gap: 2px;
     padding: 4px;
+    padding-top: 6px;
+  }
+}
+
+@media (max-width: 360px) {
+  .ribbon-section-contents {
+    padding: 1px;
+    padding-top: 4px;
   }
 }
 
@@ -174,7 +183,7 @@ label.navbar-button:hover {
 }
 
 #speed-slider {
-  width: 120px;
+  width: 110px;
   accent-color: var(--color-grey-240);
   cursor: pointer;
 }
@@ -182,11 +191,11 @@ label.navbar-button:hover {
 #speed-slider-markers {
   display: flex;
   justify-content: space-between;
-  width: 105px;
+  width: 100px;
 }
 
 #log-mode-slider {
-  width: 120px;
+  width: 110px;
   accent-color: var(--color-grey-240);
   cursor: pointer;
 }

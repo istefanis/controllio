@@ -236,3 +236,7 @@ th {
 .popup-window-text-content .flex-row-left input:invalid {
   outline: 1px solid red;
 }
+
+.popup-window-text-content select {
+  margin-left: 10px;
+}
