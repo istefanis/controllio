@@ -45,7 +45,11 @@ import { isEven, pascalTriangleElement } from "../../util/commons.js";
  * - new Polynomial("z", [a + b*T + T^2*c + T^3*d, - 3*a - 2*b*T - c*T^2, 3*a + b*T, -a]) /
  * - new Polynomial("z", [T^3, 0, 0, 0]);
  */
-export const c2dViaEulerBackwardDifferenceMethod = function (continuousTf, T) {
+export const c2dViaEulerBackwardDifferenceMethod = function (
+  continuousTfNumTermsArray,
+  continuousTfDenomTermsArray,
+  T
+) {
   const getPolynomialSubstitutionNumTerms = (ta, T) => {
     const newTermsArray = new Array(ta.length).fill(0);
     const numericalCounterbalance = T ** (ta.length - 2);
@@ -71,13 +75,6 @@ export const c2dViaEulerBackwardDifferenceMethod = function (continuousTf, T) {
     }
     return newTermsArray;
   };
-
-  const continuousTfNumTermsArray = getTermsArray(
-    getNumerator(continuousTf.getValue())
-  );
-  const continuousTfDenomTermsArray = getTermsArray(
-    getDenominator(continuousTf.getValue())
-  );
 
   const discreteTfNum = multiply(
     new Polynomial(
@@ -145,7 +142,11 @@ export const c2dViaEulerBackwardDifferenceMethod = function (continuousTf, T) {
  * - new Polynomial("s", [-d*T^3, (c+3*d)*T^2, (-b-2*c-3*d)*T, a+b+c+d]) /
  * - new Polynomial("s", [-T^3, 3*T^2, -3*T, 1]);
  */
-export const d2cViaEulerBackwardDifferenceMethod = function (discreteTf, T) {
+export const d2cViaEulerBackwardDifferenceMethod = function (
+  discreteTfNumTermsArray,
+  discreteTfDenomTermsArray,
+  T
+) {
   const getPolynomialSubstitutionNumTerms = (ta, T) => {
     const newTermsArray = new Array(ta.length).fill(0);
     const numericalCounterbalance = T ** (ta.length - 2);
@@ -175,13 +176,6 @@ export const d2cViaEulerBackwardDifferenceMethod = function (discreteTf, T) {
     }
     return newTermsArray;
   };
-
-  const discreteTfNumTermsArray = getTermsArray(
-    getNumerator(discreteTf.getValue())
-  );
-  const discreteTfDenomTermsArray = getTermsArray(
-    getDenominator(discreteTf.getValue())
-  );
 
   const continuousTfNum = multiply(
     new Polynomial(

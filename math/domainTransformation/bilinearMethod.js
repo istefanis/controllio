@@ -86,7 +86,11 @@ import { isOdd, pascalTriangleLine } from "../../util/commons.js";
  *   e     4*e       6*e         4*e     e  | *1
  *
  */
-export const c2dViaTustinBilinearMethod = function (continuousTf, T) {
+export const c2dViaTustinBilinearMethod = function (
+  continuousTfNumTermsArray,
+  continuousTfDenomTermsArray,
+  T
+) {
   const getPolynomialSubstitutionNumTerms = (ta, T) => {
     let newTermsPolynomial = new Polynomial("z", Array(ta.length).fill(0));
     // const numericalCounterbalance = T ** (ta.length - 2);
@@ -119,13 +123,6 @@ export const c2dViaTustinBilinearMethod = function (continuousTf, T) {
     // console.log(pascalTriangleLine(ta.length - 1, false));
     return pascalTriangleLine(ta.length - 1, false);
   };
-
-  const continuousTfNumTermsArray = getTermsArray(
-    getNumerator(continuousTf.getValue())
-  );
-  const continuousTfDenomTermsArray = getTermsArray(
-    getDenominator(continuousTf.getValue())
-  );
 
   const discreteTfNum = multiply(
     new Polynomial(
@@ -189,7 +186,11 @@ export const c2dViaTustinBilinearMethod = function (continuousTf, T) {
  *   d          3*d                 3*d               d     |
  *
  */
-export const d2cViaTustinBilinearMethod = function (discreteTf, T) {
+export const d2cViaTustinBilinearMethod = function (
+  discreteTfNumTermsArray,
+  discreteTfDenomTermsArray,
+  T
+) {
   const getPolynomialSubstitutionNumTerms = (ta, T) => {
     let newTermsPolynomial = new Polynomial("s", Array(ta.length).fill(0));
     // const numericalCounterbalance = T ** (ta.length - 2);
@@ -228,13 +229,6 @@ export const d2cViaTustinBilinearMethod = function (discreteTf, T) {
       (x, j) => x * (2 / T) ** j
     );
   };
-
-  const discreteTfNumTermsArray = getTermsArray(
-    getNumerator(discreteTf.getValue())
-  );
-  const discreteTfDenomTermsArray = getTermsArray(
-    getDenominator(discreteTf.getValue())
-  );
 
   const continuousTfNum = multiply(
     new Polynomial(

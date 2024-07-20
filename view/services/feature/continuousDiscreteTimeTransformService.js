@@ -99,7 +99,9 @@ export const continuousDiscreteTimeTransform = async function (element) {
             : c2dViaEulerBackwardDifferenceMethod;
 
         return new Tf(
-          new Ratio(...c2dFunction(element, samplingTResult)),
+          new Ratio(
+            ...c2dFunction(tfNumTermsArray, tfDenomTermsArray, samplingTResult)
+          ),
           block,
           transformedElementPosition,
           null,
@@ -136,7 +138,9 @@ export const continuousDiscreteTimeTransform = async function (element) {
             : d2cViaEulerBackwardDifferenceMethod;
 
         return new Tf(
-          new Ratio(...d2cFunction(element, samplingT)),
+          new Ratio(
+            ...d2cFunction(tfNumTermsArray, tfDenomTermsArray, samplingT)
+          ),
           block,
           transformedElementPosition,
           null,

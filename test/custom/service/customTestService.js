@@ -9,6 +9,7 @@
 import { sleep } from "../../../util/commons.js";
 import { getLogMode, setLogMode } from "../../../util/loggingService.js";
 import { runComputerAlgebraCustomTests } from "../computerAlgebra.customTest.js";
+import { runDomainTransformationCustomTests } from "../domainTranformation.customTest.js";
 import { runPlotsCustomTests } from "../plots.customTest.js";
 import { runSimplificationAlgorithmsCustomTests } from "../simplificationAlgorithms.customTest.js";
 import { runViewServicesCustomTests } from "../viewServices.customTest.js";
@@ -18,6 +19,7 @@ export const runAllCustomTests = async function () {
   setLogMode("null");
 
   await runComputerAlgebraCustomTests();
+  await runDomainTransformationCustomTests();
   await runPlotsCustomTests();
   await runSimplificationAlgorithmsCustomTests();
   await runViewServicesCustomTests();
