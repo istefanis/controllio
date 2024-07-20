@@ -6,13 +6,16 @@
 
 Controllio is a web app which lets Control Systems engineers design & experiment with LTI (linear time-invariant) dynamical systems.
 
-So far, functionality has been implemented for:
+It provides functionality for both continuous-time (s-domain) & discrete-time (z-domain) systems.
 
-- the analytical computation of the overall transfer function (tf) of a system modeled by interconnected elements in the s-domain
+So far, the following features have been implemented:
+
+- the analytical computation of the overall transfer function (tf) of a system modeled by interconnected elements in the s- and z-domains
 - the generation of its Bode and Nyquist plots
 - the numerical computation of its time response plot
 - the numerical computation of its zeros/poles & some characteristic numbers, ex. bandwidth
 - the numerical computation of its stability
+- the transformation of a tf between continuous and discrete-time domains via approximate methods
 
 > _This is a web GUI tool. For a command-line one, check the [lti-freq-domain-toolbox](https://github.com/istefanis/lti-freq-domain-toolbox)_
 
@@ -36,6 +39,10 @@ The motivation behind Controllio is to create an open-source tool for studying C
 - Polynomial complex roots: Weierstrass / Durand-Kerner algorithm
 - Laplace inversion: Talbot algorithm
 
+### Continuous &#x21C4; discrete-time transform
+
+- Approximate methods: Tustin/Bilinear, Backward difference
+
 ### Topology optimization
 
 - A stochastic algorithm to simplify the circuit's topology
@@ -44,9 +51,12 @@ The motivation behind Controllio is to create an open-source tool for studying C
 
 ### Ready-made components
 
-- Utilities: integrator / step, exponential decay, sine, phase delay
-- Filters: Butterworth
-- Controllers: PI, PD, PID
+- Continuous-time:
+  - Utilities: integrator / step, exponential decay, sine, phase delay
+  - Filters: Butterworth
+  - Controllers: PI, PD, PID
+- Discrete-time:
+  - Utilities: delay, step
 
 ## User Guide
 
@@ -92,7 +102,7 @@ A User Guide is included in the web app, and can be launched from the main menu
 
 4. Run `npm test` to execute the tests via [Jest](https://jestjs.io/)
 
-> _Current test coverage according to Jest: 63% (statements)_
+> _Current test coverage according to Jest: 65% (statements)_
 
 ## Code Structure
 

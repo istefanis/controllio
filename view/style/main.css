@@ -185,6 +185,10 @@ h3 {
   align-items: center;
 }
 
+.gap-2 {
+  gap: 2rem;
+}
+
 /* Loading spinner */
 
 .loading-spinner {

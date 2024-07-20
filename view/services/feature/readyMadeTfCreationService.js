@@ -228,7 +228,7 @@ const init = function () {
     ],
   ]);
   readyMadeTfsSubsections.push([
-    "Discrete-time components",
+    "Discrete-time simple components",
     [
       ["Delay", [1], [1, 0], "discrete"],
       ["Step", [1, 0], [1, -1], "discrete"],

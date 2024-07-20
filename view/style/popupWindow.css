@@ -116,6 +116,16 @@
   font-size: 14px;
 }
 
+.popup-window-tab-contents h5 {
+  font-size: 11px;
+  margin: 0;
+  padding-left: 1rem;
+}
+
+.popup-window-tab-contents .figure-description {
+  font-style: italic;
+}
+
 /* Custom popup windows: tfs */
 
 .popup-window-tf-content {
