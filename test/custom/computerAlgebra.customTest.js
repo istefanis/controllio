@@ -34,5 +34,5 @@ export const runComputerAlgebraCustomTests = async function () {
     await sleep(100);
   }
 
-  logMessages([`[TE-06] Computer algebra tests end`], "tests");
+  logMessages([`[TE-03] Computer algebra tests end`], "tests");
 };

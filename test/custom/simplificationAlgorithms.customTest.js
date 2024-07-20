@@ -38,7 +38,7 @@ const runSimplificationAlgorithmsCustomTest = async (t) => {
 
   logMessages(
     [
-      `[TE-04] ` +
+      `[TE-11] ` +
         `%c ${testCondition ? "success" : "failure"} ` +
         `%c - ${t.description} - ${actualValue} ~== ${expectedValue}`,
       `background: ${testCondition ? "#00aa00" : "#dd0000"}; color: #fff`,
@@ -55,13 +55,13 @@ export const runSimplificationAlgorithmsCustomTests = async function () {
   let c = animationSpeedCoeff;
   setAnimationSpeedCoeff(1);
 
-  logMessages([`[TE-01] Simplification algorithms tests start`], "tests");
+  logMessages([`[TE-10] Simplification algorithms tests start`], "tests");
   for (let test of Object.values(
     Object.values(simplificationAlgorithmsTests)
   )) {
     await runSimplificationAlgorithmsCustomTest(test);
   }
-  logMessages([`[TE-06] Simplification algorithms tests end`], "tests");
+  logMessages([`[TE-12] Simplification algorithms tests end`], "tests");
 
   setAnimationSpeedCoeff(c);
 };

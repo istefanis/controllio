@@ -37,7 +37,7 @@ const runSimplificationAlgorithmsJestTest = async (t) => {
     roundDecimalDigitsTests
   );
 
-  test(`[TE-04] ${t.description} - ${actualValue} ~== ${expectedValue}`, () => {
+  test(`[TE-11] ${t.description} - ${actualValue} ~== ${expectedValue}`, () => {
     expect(testCondition).toBeTruthy();
   });
 

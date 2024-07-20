@@ -19,7 +19,7 @@ const runViewServicesCustomTest = async (t) => {
 
   logMessages(
     [
-      `[TE-05] ` +
+      `[TE-14] ` +
         `%c ${testCondition ? "success" : "failure"} ` +
         `%c - ${t.description}${
           testResultsDescription ? " - " + testResultsDescription : ""
@@ -34,9 +34,9 @@ const runViewServicesCustomTest = async (t) => {
 };
 
 export const runViewServicesCustomTests = async function () {
-  logMessages([`[TE-01] View services tests start`], "tests");
+  logMessages([`[TE-13] View services tests start`], "tests");
   for (let test of Object.values(Object.values(viewServicesTests))) {
     await runViewServicesCustomTest(test);
   }
-  logMessages([`[TE-06] View services tests end`], "tests");
+  logMessages([`[TE-15] View services tests end`], "tests");
 };

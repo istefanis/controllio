@@ -24,7 +24,7 @@ const runPlotsJestTest = (t) => {
   const assertionsEvaluated = t.assertions.call(null, ...returnedValuesArray);
 
   if (assertionsEvaluated.length > 0) {
-    test(`[TE-03] ${
+    test(`[TE-08] ${
       t.description +
       "\n" +
       assertionsEvaluated

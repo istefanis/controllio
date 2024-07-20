@@ -32,7 +32,7 @@ const runPlotsCustomTest = (t) => {
 
     logMessages(
       [
-        `[TE-03] ` +
+        `[TE-08] ` +
           `%c ${testCondition ? "success" : "failure"} ` +
           `%c - ${
             t.description +
@@ -54,10 +54,10 @@ const runPlotsCustomTest = (t) => {
 };
 
 export const runPlotsCustomTests = async function () {
-  logMessages([`[TE-01] Plots tests start`], "tests");
+  logMessages([`[TE-07] Plots tests start`], "tests");
   for (let test of Object.values(Object.values(plotsTests))) {
     runPlotsCustomTest(test);
     await sleep(100);
   }
-  logMessages([`[TE-06] Plots tests end`], "tests");
+  logMessages([`[TE-09] Plots tests end`], "tests");
 };
