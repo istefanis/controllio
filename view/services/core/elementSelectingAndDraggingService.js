@@ -145,7 +145,7 @@ export const transformExpandedOrSelectedTf = async function () {
     ).getBlock();
     disableHistoricalStateStorage();
     const selectedElementsState = [...selectedElements];
-    for (se of selectedElementsState) {
+    for (let se of selectedElementsState) {
       const element = getElementFromElementId(+se.dataset.elementId);
       if (element.isTf()) {
         giveElementAttention(se);
