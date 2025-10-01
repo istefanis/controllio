@@ -7,21 +7,23 @@
  */
 
 import {
+  getNavbarHeight,
+  getAllElements,
+  moveAllElementsToGroundLevel,
+  resetActiveElements,
   selectionEncompasesElement,
   translateElement,
   makeElementActive,
   makeElementInactive,
+  makeElementExpanded,
+  makeElementUnexpanded,
+  giveElementAttention,
+  removeElementAttention,
   changeCursorStyle,
   moveΤοForeground,
   moveToGroundLevel,
-  makeElementExpanded,
   makeButtonActive,
   makeButtonInActive,
-  resetActiveElements,
-  getAllElements,
-  getNavbarHeight,
-  makeElementUnexpanded,
-  moveAllElementsToGroundLevel,
   toggledButtons,
 } from "../../../util/uiService.js";
 import {
@@ -120,15 +122,16 @@ export const copyExpandedOrSelectedElements = function () {
 
 export const transformExpandedOrSelectedTf = async function () {
   if (getExpandedElement()) {
-    const element = getElementFromElementId(
-      +getExpandedElement().dataset.elementId
-    );
+    const e = getExpandedElement();
+    const element = getElementFromElementId(+e.dataset.elementId);
     closeElementAnalysisWindow();
 
     //store only one new block state for all changes
     const block = element.getBlock();
     disableHistoricalStateStorage();
+    giveElementAttention(e);
     await continuousDiscreteTimeTransform(element);
+    removeElementAttention(e);
     moveAllElementsToGroundLevel();
     enableHistoricalStateStorage();
     block.storeNewHistoricalState();
@@ -145,7 +148,9 @@ export const transformExpandedOrSelectedTf = async function () {
     for (se of selectedElementsState) {
       const element = getElementFromElementId(+se.dataset.elementId);
       if (element.isTf()) {
+        giveElementAttention(se);
         await continuousDiscreteTimeTransform(element);
+        removeElementAttention(se);
       }
       moveAllElementsToGroundLevel();
     }

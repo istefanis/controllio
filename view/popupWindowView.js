@@ -12,9 +12,17 @@ const pageOverlay = document.querySelector(".page-overlay");
 const popupWindow = document.querySelector(".popup-window");
 const popupWindowHeader = document.querySelector(".popup-window-header");
 const popupWindowContents = document.querySelector(".popup-window-contents");
+const popupWindowUndockButton = document.querySelector(
+  ".popup-window-undock-button"
+);
+const popupWindowDockButton = document.querySelector(
+  ".popup-window-dock-button"
+);
 const popupWindowCloseButton = document.querySelector(
   ".popup-window-close-button"
 );
+
+let isPopupWindowDocked = false;
 
 /**
  * Open a popup window, and manage its functionality, until it is closed
@@ -22,12 +30,14 @@ const popupWindowCloseButton = document.querySelector(
  * @param {*} headerText The popup window's title
  * @param {*} contentsMarkup The HTML markup to be inserted as the popup window's contents. According to its contents, any event listeners will be attached to the respective elements
  * @param {*} buttonCallbackFunction A function to be called, if the first button included in the popup window's contents is clicked
+ * @param {*} displayToggleDockButton Whether a button should be displayed that can toggle docking the popup window to the bottom right of the screen
  * @returns A promise resolved with null or with an array object. The latter occurs only in the case of a popup window containing elements to be selected. The array then contains data related to the element selected
  */
 export const openPopupWindow = function (
   headerText,
   contentsMarkup,
-  buttonCallbackFunction
+  buttonCallbackFunction,
+  displayToggleDockButton
 ) {
   //fill popup window
   popupWindowContents.innerHTML = "";
@@ -37,6 +47,21 @@ export const openPopupWindow = function (
   //display popup window
   pageOverlay.classList.remove("hidden");
   popupWindow.classList.remove("hidden");
+
+  //manage popup window docking
+  if (displayToggleDockButton) {
+    if (isPopupWindowDocked) {
+      popupWindow.classList.add("popup-window-docked");
+      popupWindowUndockButton.classList.remove("hidden");
+    } else {
+      popupWindowDockButton.classList.remove("hidden");
+    }
+  } else {
+    popupWindow.classList.remove("popup-window-docked");
+    popupWindowDockButton.classList.add("hidden");
+    popupWindowUndockButton.classList.add("hidden");
+  }
+
   popupWindowCloseButton.focus();
 
   //option 1: popup window with tabs
@@ -64,6 +89,17 @@ export const openPopupWindow = function (
     //
     // Callback functions for event listeners
     //
+
+    const toggleDockPopupWindowCallback = function () {
+      popupWindow.classList.toggle("popup-window-docked");
+      popupWindowUndockButton.classList.toggle("hidden");
+      popupWindowDockButton.classList.toggle("hidden");
+
+      isPopupWindowDocked = popupWindow.classList.contains(
+        "popup-window-docked"
+      );
+    };
+
     const cancelCase1Callback = function () {
       removePopupWindowEventListeners();
       closePopupWindow();
@@ -137,6 +173,11 @@ export const openPopupWindow = function (
      */
     const addPopupWindowEventListeners = function () {
       pageOverlay.addEventListener("click", cancelCase1Callback);
+      if (displayToggleDockButton) {
+        [popupWindowUndockButton, popupWindowDockButton].forEach((x) =>
+          x.addEventListener("click", toggleDockPopupWindowCallback)
+        );
+      }
       popupWindowCloseButton.addEventListener("click", cancelCase2Callback);
       if (tabButtonsContainer) {
         tabButtonsContainer.addEventListener("click", tabButtonsCaseCallback);
@@ -170,6 +211,11 @@ export const openPopupWindow = function (
      */
     const removePopupWindowEventListeners = function () {
       pageOverlay.removeEventListener("click", cancelCase1Callback);
+      if (displayToggleDockButton) {
+        [popupWindowUndockButton, popupWindowDockButton].forEach((x) =>
+          x.removeEventListener("click", toggleDockPopupWindowCallback)
+        );
+      }
       popupWindowCloseButton.removeEventListener("click", cancelCase2Callback);
       if (tabButtonsContainer) {
         tabButtonsContainer.removeEventListener(

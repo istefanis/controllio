@@ -87,7 +87,8 @@ export const continuousDiscreteTimeTransform = async function (element) {
           } else {
             return -1;
           }
-        }
+        },
+        true
       );
 
       if (result !== null) {
@@ -128,7 +129,8 @@ export const continuousDiscreteTimeTransform = async function (element) {
           } else {
             return -1;
           }
-        }
+        },
+        true
       );
 
       if (discretizationMethodResult !== null) {
